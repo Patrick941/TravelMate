@@ -43,15 +43,15 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        /*recommendationsAdapter = RecommendationsAdapter(R.layout.fragment_home)
+        recommendationsAdapter = RecommendationsAdapter()
         recommendationsRecycler = root.findViewById(R.id.LocationsRecycler)
         recommendationsRecycler.layoutManager = LinearLayoutManager(context)
         recommendationsRecycler.adapter = recommendationsAdapter
 
-        notificationsAdapter = NotificationsAdapter(R.layout.fragment_home)
+        notificationsAdapter = NotificationsAdapter()
         notificationsRecycler = root.findViewById(R.id.NotificationsRecycler)
         notificationsRecycler.layoutManager = LinearLayoutManager(context)
-        notificationsRecycler.adapter = notificationsAdapter*/
+        notificationsRecycler.adapter = notificationsAdapter
 
         val locationView: TextView = binding.BasedOnLocation
         homeViewModel.text.observe(viewLifecycleOwner) {

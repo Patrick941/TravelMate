@@ -29,14 +29,7 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var mapButton : Button
 
-    private lateinit var recommendationsRecycler : RecyclerView
-    private lateinit var recommendationsAdapter : RecommendationsAdapter
 
-    private lateinit var notificationsRecycler : RecyclerView
-    private lateinit var notificationsAdapter : NotificationsAdapter
-
-    private lateinit var historyRecycler : RecyclerView
-    private lateinit var historyAdapter: HistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,12 +37,12 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        recommendationsAdapter = RecommendationsAdapter(this)
+        /*recommendationsAdapter = RecommendationsAdapter()
         recommendationsRecycler = findViewById(R.id.LocationsRecycler)
         recommendationsRecycler.layoutManager = LinearLayoutManager(this)
         recommendationsRecycler.adapter = recommendationsAdapter
 
-        notificationsAdapter = NotificationsAdapter(this)
+        notificationsAdapter = NotificationsAdapter()
         notificationsRecycler = findViewById(R.id.NotificationsRecycler)
         notificationsRecycler.layoutManager = LinearLayoutManager(this)
         notificationsRecycler.adapter = notificationsAdapter
@@ -61,7 +54,7 @@ class HomeActivity : AppCompatActivity() {
         historyRecycler.adapter = historyAdapter
 
 
-        setContentView(binding.root)
+        setContentView(binding.root)*/
         Log.i("MyTag", "creating $thisName")
         setSupportActionBar(binding.appBarHome.toolbar)
         val drawerLayout: DrawerLayout = binding.drawerLayout

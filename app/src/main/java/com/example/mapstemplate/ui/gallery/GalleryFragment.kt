@@ -7,6 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.mapstemplate.HistoryAdapter
+import com.example.mapstemplate.R
+import com.example.mapstemplate.RecommendationsAdapter
 import com.example.mapstemplate.databinding.FragmentGalleryBinding
 
 class GalleryFragment : Fragment() {
@@ -16,6 +21,9 @@ class GalleryFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var historyRecycler : RecyclerView
+    private lateinit var historyAdapter: HistoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,6 +35,11 @@ class GalleryFragment : Fragment() {
 
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        historyAdapter = HistoryAdapter()
+        historyRecycler = root.findViewById(R.id.historyRecycler)
+        historyRecycler.layoutManager = LinearLayoutManager(context)
+        historyRecycler.adapter = historyAdapter
 
         val textView: TextView = binding.historyTV
         galleryViewModel.text.observe(viewLifecycleOwner) {

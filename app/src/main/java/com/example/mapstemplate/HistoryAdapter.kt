@@ -7,11 +7,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 
-class HistoryAdapter(private val context: HomeActivity) :
+class HistoryAdapter() :
     RecyclerView.Adapter<HistoryAdapter.UserViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType : Int):UserViewHolder {
-        val view: View = LayoutInflater.from(context).inflate(R.layout.notifications_box_recycler, parent, false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.notifications_box_recycler, parent, false)
         return UserViewHolder(view)
     }
 
