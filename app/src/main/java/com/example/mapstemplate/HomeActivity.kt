@@ -37,26 +37,10 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        /*recommendationsAdapter = RecommendationsAdapter()
-        recommendationsRecycler = findViewById(R.id.LocationsRecycler)
-        recommendationsRecycler.layoutManager = LinearLayoutManager(this)
-        recommendationsRecycler.adapter = recommendationsAdapter
-
-        notificationsAdapter = NotificationsAdapter()
-        notificationsRecycler = findViewById(R.id.NotificationsRecycler)
-        notificationsRecycler.layoutManager = LinearLayoutManager(this)
-        notificationsRecycler.adapter = notificationsAdapter
-
-        setContentView(R.layout.fragment_gallery)
-        historyAdapter = HistoryAdapter(this)
-        historyRecycler = findViewById(R.id.historyRecycler)
-        historyRecycler.layoutManager = LinearLayoutManager(this)
-        historyRecycler.adapter = historyAdapter
-
-
-        setContentView(binding.root)*/
         Log.i("MyTag", "creating $thisName")
         setSupportActionBar(binding.appBarHome.toolbar)
+
+        //variables assigned to different aspects of the view
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_home)
@@ -71,16 +55,21 @@ class HomeActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        //Detect when map button is pressed and follow intent to map
         mapButton.setOnClickListener{
             val intent = Intent(this@HomeActivity, MapsActivity::class.java)
             startActivity(intent)
         }
     }
 
+    // Logging messages
     override fun onPause(){
         super.onPause()
         Log.i("MyTag", "pausing $thisName")
     }
+
+    //Functions to hide parts of the UI when app is running, not yet correctly implemented
     override fun onResume(){
         super.onResume()
         hideSystemUI()
@@ -104,6 +93,7 @@ class HomeActivity : AppCompatActivity() {
         Log.i("MyTag", "destroying $thisName")
     }
 
+    //Function does not operate fully correctly, only does part of job, will need to be updated
     private fun hideSystemUI() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).let { controller ->

@@ -51,6 +51,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        //Lists are declared for various purposes, will probably be changed after MVP
         highSafetyAreas = ArrayList()
         mediumSafetyAreas = ArrayList()
         lowSafetyAreas = ArrayList()
@@ -59,9 +60,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mediumSafetyAreasOptions = ArrayList()
         lowSafetyAreasOptions = ArrayList()
 
+        //initialising poly
         poly = PolygonOptions()
     }
 
+    //logging messages
     override fun onPause(){
         super.onPause()
         Log.i("MyTag", "pausing $thisName")
@@ -96,6 +99,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
+    //Temporary changes made to help understanding of manipulating the camera
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -216,6 +221,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var opaqueYellow = Color.argb(100,255,255,15)
     private var opaqueYelloweyGreen = Color.argb(100,154,205,50)
     private var opaqueGreen = Color.argb(100,0,255,0)
+
+    //Function currently redundant, will probably be altered and used again in the future
     private fun countPolygonPoints() {
         //Function to draw Polygon
         if (poly.points.size > 3) {

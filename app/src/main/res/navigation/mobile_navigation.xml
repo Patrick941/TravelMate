@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/nav_history"
-        android:name="com.example.mapstemplate.ui.gallery.GalleryFragment"
+        android:name="com.example.mapstemplate.ui.history.HistoryFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
         android:id="@+id/nav_Contacts"
-        android:name="com.example.mapstemplate.ui.slideshow.SlideshowFragment"
+        android:name="com.example.mapstemplate.ui.contacts.ContactsFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
 </navigation>

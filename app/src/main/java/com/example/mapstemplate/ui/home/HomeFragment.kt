@@ -26,6 +26,8 @@ class HomeFragment : Fragment() {
 
     private val thisName = "Home Fragment"
 
+    // Declaration of recycler view variable and recycler view adapter for recommendations and
+    // notifications inside the home fragment.
     private lateinit var recommendationsRecycler : RecyclerView
     private lateinit var recommendationsAdapter : RecommendationsAdapter
 
@@ -37,27 +39,36 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //declaration of view model variable and assignment to viewmodel
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
+        Log.i("MyTag", "creating view for $thisName")
 
+        //set root variable to fragment view
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // assign adapter class constructor to recommendationsAdapter, then make the recommendations
+        // point to the correct recycler view in the correct LinearLayoutManager, finally attach the
+        // recycler view to the adapter
         recommendationsAdapter = RecommendationsAdapter()
         recommendationsRecycler = root.findViewById(R.id.LocationsRecycler)
         recommendationsRecycler.layoutManager = LinearLayoutManager(context)
         recommendationsRecycler.adapter = recommendationsAdapter
 
+        //The same process as above
         notificationsAdapter = NotificationsAdapter()
         notificationsRecycler = root.findViewById(R.id.NotificationsRecycler)
         notificationsRecycler.layoutManager = LinearLayoutManager(context)
         notificationsRecycler.adapter = notificationsAdapter
 
+        //Attach variable to correct textView
         val locationView: TextView = binding.BasedOnLocation
         homeViewModel.text.observe(viewLifecycleOwner) {
             locationView.text = "Recommended based on location"
         }
 
+        //Attach variable to correct textView
         val notificationsView: TextView = binding.Notifications
         homeViewModel.text.observe(viewLifecycleOwner) {
             notificationsView.text = "Recent Notifications"
@@ -88,6 +99,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.i("MyTag", "destroying view for $thisName")
         _binding = null
     }
 }
