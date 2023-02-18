@@ -66,27 +66,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onPause()
         Log.i("MyTag", "pausing $thisName")
     }
-
     override fun onResume(){
         super.onResume()
         Log.i("MyTag", "resuming $thisName")
     }
-
     override fun onStart(){
         super.onStart()
         Log.i("MyTag", "starting $thisName")
     }
-
     override fun onStop(){
         super.onStop()
         Log.i("MyTag", "stopping $thisName")
     }
-
     override fun onRestart(){
         super.onRestart()
         Log.i("MyTag", "restarting $thisName")
     }
-
     override fun onDestroy(){
         super.onDestroy()
         Log.i("MyTag", "destroying $thisName")
@@ -113,12 +108,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
         mMap.setOnMapClickListener {
             //pointsList.add(it)
-            reportArea(3, it)
+            reportArea(7, it)
 
         }
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
     }
 
+    //Function to change the colour of a certain area of the map
     private fun reportArea(danger: Number, cords : LatLng){
         val precision = 0.001
         val cordsNorth = LatLng(cords.latitude + precision, cords.longitude)
@@ -208,6 +204,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
+
 
     //Colour variables to adjust colours of areas to represent level of safety
     private var transparent = Color.argb(0,50,50,50)
