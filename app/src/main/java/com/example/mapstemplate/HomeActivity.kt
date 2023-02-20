@@ -35,6 +35,9 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var notificationsRecycler : RecyclerView
     private lateinit var notificationsAdapter : NotificationsAdapter
 
+    private lateinit var historyRecycler : RecyclerView
+    private lateinit var historyAdapter: HistoryAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,6 +54,14 @@ class HomeActivity : AppCompatActivity() {
         notificationsRecycler.layoutManager = LinearLayoutManager(this)
         notificationsRecycler.adapter = notificationsAdapter
 
+        setContentView(R.layout.fragment_gallery)
+        historyAdapter = HistoryAdapter(this)
+        historyRecycler = findViewById(R.id.historyRecycler)
+        historyRecycler.layoutManager = LinearLayoutManager(this)
+        historyRecycler.adapter = historyAdapter
+
+
+        setContentView(binding.root)
         Log.i("MyTag", "creating $thisName")
         setSupportActionBar(binding.appBarHome.toolbar)
         val drawerLayout: DrawerLayout = binding.drawerLayout

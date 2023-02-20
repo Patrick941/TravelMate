@@ -5,9 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Recycler
 
-class NotificationsAdapter(private val context: HomeActivity) :
-    RecyclerView.Adapter<NotificationsAdapter.UserViewHolder>(){
+class HistoryAdapter(private val context: HomeActivity) :
+    RecyclerView.Adapter<HistoryAdapter.UserViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType : Int):UserViewHolder {
         val view: View = LayoutInflater.from(context).inflate(R.layout.notifications_box_recycler, parent, false)
@@ -15,7 +16,7 @@ class NotificationsAdapter(private val context: HomeActivity) :
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int){
-        holder.textName.text = "Notification #$position"
+        holder.textName.text = "Previous journey taken #$position"
     }
 
     override fun getItemCount(): Int{
