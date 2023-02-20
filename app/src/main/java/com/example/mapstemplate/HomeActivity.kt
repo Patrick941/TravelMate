@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
@@ -26,17 +28,23 @@ class HomeActivity : AppCompatActivity() {
     private val thisName = "HomeActivity"
 
     private lateinit var mapButton : Button
+
+    private lateinit var recommendationsRecycler : RecyclerView
+    private lateinit var recommendationsAdapter : RecommendationsAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        recommendationsAdapter = RecommendationsAdapter(this)
+        recommendationsRecycler = findViewById(R.id.LocationsRecycler)
+        recommendationsRecycler.layoutManager = LinearLayoutManager(this)
+        recommendationsRecycler.adapter = recommendationsAdapter
+
         Log.i("MyTag", "creating $thisName")
-
         setSupportActionBar(binding.appBarHome.toolbar)
-
-
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_home)
