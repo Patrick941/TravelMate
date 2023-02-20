@@ -32,6 +32,9 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var recommendationsRecycler : RecyclerView
     private lateinit var recommendationsAdapter : RecommendationsAdapter
 
+    private lateinit var notificationsRecycler : RecyclerView
+    private lateinit var notificationsAdapter : NotificationsAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,6 +45,11 @@ class HomeActivity : AppCompatActivity() {
         recommendationsRecycler = findViewById(R.id.LocationsRecycler)
         recommendationsRecycler.layoutManager = LinearLayoutManager(this)
         recommendationsRecycler.adapter = recommendationsAdapter
+
+        notificationsAdapter = NotificationsAdapter(this)
+        notificationsRecycler = findViewById(R.id.NotificationsRecycler)
+        notificationsRecycler.layoutManager = LinearLayoutManager(this)
+        notificationsRecycler.adapter = notificationsAdapter
 
         Log.i("MyTag", "creating $thisName")
         setSupportActionBar(binding.appBarHome.toolbar)
