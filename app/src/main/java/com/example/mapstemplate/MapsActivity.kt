@@ -10,10 +10,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.*
+import com.google.maps.android.heatmaps.Gradient
+import com.google.maps.android.heatmaps.HeatmapTileProvider
 import kotlin.random.Random
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -62,6 +61,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //initialising poly
         poly = PolygonOptions()
+
+        LatLngs = ArrayList()
+        LatLngsRed = ArrayList()
     }
 
     //logging messages
@@ -114,13 +116,58 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.setOnMapClickListener {
             //pointsList.add(it)
             reportArea(7, it)
+            getDangerNearArea(it, 0.1)
 
         }
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
     }
+    //temporary variables to be deleted later
+    private lateinit var LatLngs : ArrayList<LatLng>
+    private lateinit var LatLngsRed : ArrayList<LatLng>
+    val tempHardCodedArray = Array(10) { Array(10) { LatLng(0.0, 0.0) } }
+    private var counter : Int = 0
+    private var lastOverlay : TileOverlay? = null
+
+    private fun reportArea(danger: Number, cords : LatLng){
+        tempHardCodedArray[counter][0] = cords
+        tempHardCodedArray[counter][1] = cords
+        tempHardCodedArray[counter][2] = cords
+        counter += 1
+        if(counter == 8){
+            counter = 0;
+        }
+        //ToDo
+    }
+
+    private fun getDangerNearArea(cords: LatLng, radius: Number){
+        //ToDo
+        //Temporary hard coded Array for testing purposes.
+        lastOverlay?.remove()
+        for(i in 1 .. 7){
+            val colors = intArrayOf(
+                safetyColors[i]
+            )
+            val mutableList = tempHardCodedArray[i].toMutableList()
+            //val mutableList = arrayListOf<LatLng>(cords)
+            val startPoints = floatArrayOf(1f)
+            val gradient = Gradient(colors, startPoints)
+            val provider = HeatmapTileProvider.Builder()
+                .data(mutableList)
+                .gradient(gradient)
+                .build()
+            lastOverlay = mMap.addTileOverlay(TileOverlayOptions().tileProvider(provider))
+            tempHardCodedArray[i].fill(LatLng(0.0, 0.0))
+            //lastOverlay = mMap.
+        }
+
+
+        // Add a tile overlay to the map, using the heat map tile provider./
+
+
+    }
 
     //Function to change the colour of a certain area of the map
-    private fun reportArea(danger: Number, cords : LatLng){
+    private fun demoReportArea(danger: Number, cords : LatLng){
         val precision = 0.001
         val cordsNorth = LatLng(cords.latitude + precision, cords.longitude)
         val cordsSouth = LatLng(cords.latitude - precision, cords.longitude)
@@ -213,6 +260,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     //Colour variables to adjust colours of areas to represent level of safety
+    val safetyColors = intArrayOf(
+        Color.argb(0,50,50,50),
+        Color.argb(255,255,0,0),
+        Color.argb(255,255,165,0),
+        Color.argb(255,255,130,0),
+        Color.argb(255,245,174,66),
+        Color.argb(255,255,255,15),
+        Color.argb(255,154,205,50),
+        Color.argb(255,0,255,0)
+    )
     private var transparent = Color.argb(0,50,50,50)
     private var opaqueRed = Color.argb(100,255,0,0)
     private var opaqueOrange = Color.argb(100,255,165,0)
@@ -221,6 +278,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var opaqueYellow = Color.argb(100,255,255,15)
     private var opaqueYelloweyGreen = Color.argb(100,154,205,50)
     private var opaqueGreen = Color.argb(100,0,255,0)
+
 
     //Function currently redundant, will probably be altered and used again in the future
     private fun countPolygonPoints() {
