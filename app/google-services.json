@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "156283712763",
+    "project_id": "travelsafeapp-f660b",
+    "storage_bucket": "travelsafeapp-f660b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156283712763:android:49110dd52dfe5d7cc0ac5e",
+        "android_client_info": {
+          "package_name": "com.example.mapstemplate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "156283712763-59sgq5kr209k6oegtunp47cebfog9qsq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1L7iAQkBBpk4HVQR3XJDX46nCE97RxFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "156283712763-59sgq5kr209k6oegtunp47cebfog9qsq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
