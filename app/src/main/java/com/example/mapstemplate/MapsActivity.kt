@@ -125,7 +125,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var LatLngs : ArrayList<LatLng>
     private lateinit var LatLngsRed : ArrayList<LatLng>
     val tempHardCodedArray = Array(10) { Array(10) { LatLng(0.0, 0.0) } }
-    private var counter : Int = 0
+    private var counter : Int = 1
     private var lastOverlay : TileOverlay? = null
 
     private fun reportArea(danger: Number, cords : LatLng){
@@ -134,7 +134,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         tempHardCodedArray[counter][2] = cords
         counter += 1
         if(counter == 8){
-            counter = 0;
+            counter = 1;
         }
         //ToDo
     }
