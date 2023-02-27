@@ -22,4 +22,10 @@
         android:name="com.example.mapstemplate.ui.contacts.ContactsFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_itinerary"
+        android:name="com.example.mapstemplate.ui.itinerary.ItineraryFragment"
+        android:label="Itinerary"
+        tools:layout="@layout/fragment_itinerary" />
 </navigation>
