@@ -2,19 +2,19 @@
     <!-- Base application theme. -->
     <style name="Theme.MapsTemplate" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#B47800</item>
-        <item name="colorPrimaryVariant">#FB8C00</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/Primary</item>
+        <item name="colorPrimaryVariant">@color/PrimaryVariant</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#5A5A5A</item>
-        <item name="colorSecondaryVariant">#5A5A5A</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/hint_grey</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/Primary</item>
         <!-- Customize your theme here. -->
         <!-- Customize your theme here. -->
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
@@ -26,35 +26,37 @@
 
     <style name="Theme.MapsTemplate.AppBarOverlay" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#B47800</item>
-        <item name="colorPrimaryVariant">#FB8C00</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/Primary</item>
+        <item name="colorPrimaryVariant">@color/PrimaryVariant</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#5A5A5A</item>
-        <item name="colorSecondaryVariant">#5A5A5A</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/hint_grey</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/Primary</item>
         <!-- Customize your theme here. -->
+        <!-- Customize your theme here. -->
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="Theme.MapsTemplate.PopupOverlay" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#B47800</item>
-        <item name="colorPrimaryVariant">#FB8C00</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/Primary</item>
+        <item name="colorPrimaryVariant">@color/PrimaryVariant</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#5A5A5A</item>
-        <item name="colorSecondaryVariant">#5A5A5A</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/hint_grey</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <!-- Customize your theme here. -->
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowFullscreen">true</item>
     </style>
 </resources>

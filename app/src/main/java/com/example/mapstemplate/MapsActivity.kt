@@ -1,7 +1,10 @@
 package com.example.mapstemplate
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +16,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.HeatmapTileProvider
-import kotlin.random.Random
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -49,6 +54,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        /*val myClient = GoogleApiClient.Builder(this)
+            .addApi(LocationServices.API)
+            .addApi(Places.GEO_DATA_API)
+            .build()*/
+
+        //https://maps.googleapis.com/maps/api/places/nearbySearch/json?location=53.343792,-6.254572&radius=100000&type=bank&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q
 
         //Lists are declared for various purposes, will probably be changed after MVP
         highSafetyAreas = ArrayList()
@@ -115,12 +127,44 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
         mMap.setOnMapClickListener {
             //pointsList.add(it)
-            reportArea(7, it)
-            getDangerNearArea(it, 0.1)
-
+            //reportArea(7, it)
+            //getDangerNearArea(it, 0.1)
+            placesApiTest(it)
         }
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
     }
+
+    private fun placesApiTest(cords: LatLng){
+        var result = ""
+
+        val SDK_INT = Build.VERSION.SDK_INT
+        if (SDK_INT > 8) {
+            val policy = ThreadPolicy.Builder()
+                .permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+            //your codes here
+            println("Quering place")
+            try{
+                var key : String = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
+                var urlStr : String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${cords.latitude},${cords.longitude}&radius=1000&type=restaurant&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
+                //var urlStr : String = https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.7749,-122.4194&radius=500&type=restaurant&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q
+
+                var url : URL = URL(urlStr)
+                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.requestMethod = "GET"
+                connection.doInput = true
+                val br = connection.inputStream.bufferedReader()
+                result = br.use {br.readText()}
+                connection.disconnect()
+            } catch(e:Exception){
+                e.printStackTrace()
+                result = "error"
+            }
+            Log.i("mapsTag", result)
+        }
+    }
+
     //temporary variables to be deleted later
     private lateinit var LatLngs : ArrayList<LatLng>
     private lateinit var LatLngsRed : ArrayList<LatLng>
@@ -142,7 +186,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun getDangerNearArea(cords: LatLng, radius: Number){
         //ToDo
         //Temporary hard coded Array for testing purposes.
-        lastOverlay?.remove()
         for(i in 1 .. 7){
             val colors = intArrayOf(
                 safetyColors[i]
@@ -154,6 +197,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val provider = HeatmapTileProvider.Builder()
                 .data(mutableList)
                 .gradient(gradient)
+                .opacity(1.0)
                 .build()
             lastOverlay = mMap.addTileOverlay(TileOverlayOptions().tileProvider(provider))
             tempHardCodedArray[i].fill(LatLng(0.0, 0.0))
