@@ -16,5 +16,9 @@
             android:id="@+id/nav_Contacts"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Contacts" />
+        <item
+            android:id="@+id/nav_itinerary"
+            android:icon="@drawable/ic_menu_itinerary"
+            android:title="Itinerary" />
     </group>
 </menu>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingVertical="10dp"
+    >
+
+    <TextView
+        android:id="@+id/textView_itinerary_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Default element"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="20dp"
+        />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        />
+
+    <TextView
+        android:id="@+id/textView_itinerary_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 €"
+        android:textSize="20sp"
+        android:layout_margin="30dp"
+        />
+
+</LinearLayout>

@@ -46,6 +46,10 @@
             android:exported="true"
             android:label="@string/title_activity_maps">
         </activity>
+        <activity android:name=".activities.CreateItemActivity"/>
+        <activity android:name=".activities.ItineraryActivity"/>
+        <activity android:name=".activities.StepViewActivity"/>
+        <activity android:name=".activities.AddItineraryActivity"/>
     </application>
 
 </manifest>
