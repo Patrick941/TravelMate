@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ListView
 import com.example.mapstemplate.R
 import com.example.mapstemplate.activities.AddItineraryActivity
@@ -20,7 +21,7 @@ class ItineraryFragment : Fragment() {
     private val binding get() = _binding!!
 
     lateinit var listViewItinerary: ListView
-    lateinit var createButton: ImageView
+    lateinit var createButton: LinearLayout
     lateinit var itineraryListAdapter: ItineraryListAdapter
 
     companion object {
