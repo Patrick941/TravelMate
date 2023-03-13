@@ -32,7 +32,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityHomeBinding
 
-    var tempString : String? = null
+    private var tempString : String? = null
 
     private val thisName = "HomeActivity"
 

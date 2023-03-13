@@ -15,8 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.NotificationsAdapter
 import com.example.mapstemplate.R
 import com.example.mapstemplate.RecommendationsAdapter
+import com.example.mapstemplate.User
 import com.example.mapstemplate.databinding.FragmentHomeBinding
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -35,7 +39,12 @@ class HomeFragment : Fragment() {
     private lateinit var nearbyRatings : ArrayList<Number>
     private val trinity = LatLng(53.343792, -6.254572)
 
+    private lateinit var notifications : ArrayList<String>
+
     private val thisName = "Home Fragment"
+
+    private lateinit var mDbRef: DatabaseReference
+    private lateinit var mAuth : FirebaseAuth
 
     // Declaration of recycler view variable and recycler view adapter for recommendations and
     // notifications inside the home fragment.
@@ -50,9 +59,15 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         nearbyLocations = ArrayList()
         nearbyRatings = ArrayList()
+        notifications = ArrayList()
+
+        mDbRef = FirebaseDatabase.getInstance().getReference()
+        mAuth = FirebaseAuth.getInstance()
+
+        sendNotification("testing")
+
         //declaration of view model variable and assignment to viewmodel
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
@@ -71,6 +86,15 @@ class HomeFragment : Fragment() {
             }
         }
 
+        notifications.add("There was a car crash near CollegeGreen")
+        notifications.add("There is a robbery in progress in the Lloyd institute")
+        notifications.add("A masked gunman is on a mugging spree in the arts block")
+        notifications.add("There are wanted fugitives hiding in the business building")
+        notifications.add("There was a toxic gas leak in lg12")
+        notifications.add("A fire alarm has gone off in trinity gym")
+        notifications.add("The pavement is cracked underneath the campanile causing increased danger of stubbed toes")
+        //notificationsAdapter.notifyDataSetChanged()
+
         // assign adapter class constructor to recommendationsAdapter, then make the recommendations
         // point to the correct recycler view in the correct LinearLayoutManager, finally attach the
         // recycler view to the adapter
@@ -81,7 +105,7 @@ class HomeFragment : Fragment() {
         recommendationsRecycler.adapter = recommendationsAdapter
 
         //The same process as above
-        notificationsAdapter = NotificationsAdapter()
+        notificationsAdapter = NotificationsAdapter(notifications)
         notificationsRecycler = root.findViewById(R.id.NotificationsRecycler)
         notificationsRecycler.layoutManager = LinearLayoutManager(context)
         notificationsRecycler.adapter = notificationsAdapter
@@ -97,6 +121,27 @@ class HomeFragment : Fragment() {
         homeViewModel.text.observe(viewLifecycleOwner) {
             notificationsView.text = "Recent Notifications"
         }
+
+
+
+        mDbRef.child("notifications").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(postSnapshot in snapshot.children){
+                    // Problem for future Patrick
+
+                    //val notification = snapshot.getValue<String>()
+                    //notifications.add("test")
+                }
+                notificationsAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
+
         return root
     }
 
@@ -151,6 +196,11 @@ class HomeFragment : Fragment() {
             }
             //Log.i("mapsTag", result)
         }
+    }
+
+    private fun sendNotification(message : String){
+        mDbRef.child("notifications").setValue(message)
+        notifications.add(message)
     }
 
     override fun onPause(){
