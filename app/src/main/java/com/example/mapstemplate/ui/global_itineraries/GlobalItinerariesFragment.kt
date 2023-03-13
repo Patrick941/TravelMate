@@ -37,7 +37,7 @@ class GlobalItinerariesFragment : Fragment() {
     }
 
     fun setupItineraryListView() {
-        itineraryListAdapter = ItineraryListAdapter(requireContext(), HomeActivity.currentUserItineraryList)
+        itineraryListAdapter = ItineraryListAdapter(requireContext(), HomeActivity.globalItineraryList)
         listViewItinerary.isClickable = true
         listViewItinerary.adapter = itineraryListAdapter
 
