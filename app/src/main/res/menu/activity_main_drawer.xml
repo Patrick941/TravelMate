@@ -22,7 +22,7 @@
             android:title="My Itineraries" />
         <item
             android:id="@+id/nav_global_itineraries"
-            android:icon="@drawable/ic_menu_my_itineraries"
+            android:icon="@drawable/ic_menu_global_itineraries"
             android:title="Global Itineraries" />
     </group>
 </menu>
