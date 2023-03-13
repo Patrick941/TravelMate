@@ -47,6 +47,7 @@ class CurrentUserItinerariesFragment : Fragment() {
         listViewItinerary.setOnItemClickListener { parent, view, position, id ->
             val intent = Intent(context, ItineraryActivity::class.java)
             intent.putExtra("itinerary_index", position)
+            intent.putExtra("is_global", false)
             startActivity(intent)
         }
     }
