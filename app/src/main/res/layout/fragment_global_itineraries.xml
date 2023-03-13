@@ -6,6 +6,29 @@
     tools:context=".ui.global_itineraries.GlobalItinerariesFragment"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <EditText
+            android:id="@+id/itineraryName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:ems="10"
+            android:hint="Search itinerary name: "
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="Submit" />
+    </LinearLayout>
+
+
     <ListView
         android:id="@+id/global_itineraries_list_item"
         android:layout_width="match_parent"
