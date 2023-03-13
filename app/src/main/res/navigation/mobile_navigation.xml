@@ -26,12 +26,12 @@
     <fragment
         android:id="@+id/nav_my_itineraries"
         android:name="com.example.mapstemplate.ui.current_user_itineraries.CurrentUserItinerariesFragment"
-        android:label="My Itinerary"
+        android:label="My Itineraries"
         tools:layout="@layout/fragment_current_user_itineraries" />
 
     <fragment
         android:id="@+id/nav_global_itineraries"
         android:name="com.example.mapstemplate.ui.global_itineraries.GlobalItinerariesFragment"
-        android:label="Global Itinerary"
+        android:label="Global Itineraries"
         tools:layout="@layout/fragment_global_itineraries" />
 </navigation>
