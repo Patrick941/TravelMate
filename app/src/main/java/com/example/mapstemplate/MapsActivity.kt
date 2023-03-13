@@ -16,6 +16,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.HeatmapTileProvider
+import org.json.JSONArray
+import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -129,12 +131,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             //pointsList.add(it)
             //reportArea(7, it)
             //getDangerNearArea(it, 0.1)
-            placesApiTest(it)
+            //nearbyPlaces(it, 100, "bank")
+            searchPlace("Wedding")
         }
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
     }
 
-    private fun placesApiTest(cords: LatLng){
+    private fun searchPlace(name: String){
         var result = ""
 
         val SDK_INT = Build.VERSION.SDK_INT
@@ -143,12 +146,45 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .permitAll().build()
             StrictMode.setThreadPolicy(policy)
             //your codes here
-            println("Quering place")
             try{
                 var key : String = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
-                var urlStr : String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${cords.latitude},${cords.longitude}&radius=1000&type=restaurant&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
-                //var urlStr : String = https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.7749,-122.4194&radius=500&type=restaurant&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q
+                //key = getString(R.string.api_key)
+                var urlStr : String = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=$name&key=$key"
+                //https://maps.googleapis.com/maps/api/place/textsearch/json?query=Buttery&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q
+                var url : URL = URL(urlStr)
+                println(url)
+                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.requestMethod = "GET"
+                connection.doInput = true
+                val br = connection.inputStream.bufferedReader()
+                result = br.use {br.readText()}
+                //result = br.use {br.r}
+                //parseJson(result)
+                connection.disconnect()
+            } catch(e:Exception){
+                e.printStackTrace()
+                result = "error"
+            }
+            Log.i("PlacesAPI", result)
+        }
+    }
 
+    private fun nearbyPlaces(cords: LatLng, radius: Number, type : String){
+        var result = ""
+
+        val SDK_INT = Build.VERSION.SDK_INT
+        if (SDK_INT > 8) {
+            val policy = ThreadPolicy.Builder()
+                .permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+            //your codes here
+            try{
+                var key : String = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
+                //key = getString(R.string.api_key)
+                var urlStr : String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${cords.latitude},${cords.longitude}&radius=$radius&type=$type&key=$key"
+                //var urlStr : String = https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.7749,-122.4194&radius=500&type=restaurant&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q
+                println("$urlStr")
                 var url : URL = URL(urlStr)
                 val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
                 connection.setRequestProperty("Content-Type", "application/json")
@@ -156,12 +192,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 connection.doInput = true
                 val br = connection.inputStream.bufferedReader()
                 result = br.use {br.readText()}
+                //result = br.use {br.r}
+                parseJson(result)
                 connection.disconnect()
             } catch(e:Exception){
                 e.printStackTrace()
                 result = "error"
             }
-            Log.i("mapsTag", result)
+            //Log.i("mapsTag", result)
+        }
+    }
+
+    fun parseJson(jsonString: String) {
+        val jsonObject = JSONObject(jsonString)
+        val resultsArray: JSONArray = jsonObject.getJSONArray("results")
+
+        for (i in 0 until resultsArray.length()) {
+            val resultObject = resultsArray.getJSONObject(i)
+            val name = resultObject.getString("name")
+            val rating = resultObject.getDouble("rating")
+            val vicinity = resultObject.getString("vicinity")
+
+            Log.i("PlacesAPI", "====================================================")
+            Log.i("PlacesAPI", "Name: $name")
+            Log.i("PlacesAPI", "Rating: $rating")
+            Log.i("PlacesAPI", "Vicinity: $vicinity")
         }
     }
 
