@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 
-class ContactsAdapter() :
+class ContactsAdapter(private val friends: ArrayList<String>) :
     RecyclerView.Adapter<ContactsAdapter.UserViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType : Int):UserViewHolder {
@@ -18,13 +18,17 @@ class ContactsAdapter() :
 
     //Placeholder text to be replaced
     override fun onBindViewHolder(holder: UserViewHolder, position: Int){
-        holder.textName.text = "Contact #$position"
+        if (position < friends.size) {
+            holder.textName.text = friends[position]
+        } else {
+            holder.textName.text = "Error in contacts list length"
+        }
     }
 
     //Placeholder number to be changed (should not be a constant, should be size of list)
     //Represents the amount of views in recycler
     override fun getItemCount(): Int{
-        return 20
+        return friends.size
     }
 
     //View items to be attached to each view

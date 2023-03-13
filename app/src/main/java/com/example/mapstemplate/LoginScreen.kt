@@ -114,7 +114,7 @@ class LoginScreen : AppCompatActivity() {
     }
 
     private fun addUserToDatabase(email: String, uid: String, user : String){
-        mDbRef = FirebaseDatabase.getInstance().getReference()
+        mDbRef = FirebaseDatabase.getInstance().reference
         Log.i("MyTag", "Database reference is ${mDbRef.database.reference}")
 
         mDbRef.child("user").child(uid).setValue(User(email, uid, user))

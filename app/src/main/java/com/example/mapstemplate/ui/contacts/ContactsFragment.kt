@@ -17,17 +17,26 @@ import com.example.mapstemplate.R
 import com.example.mapstemplate.User
 import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.databinding.FragmentSlideshowBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
 class ContactsFragment : Fragment() {
 
     private var _binding: FragmentSlideshowBinding? = null
     private val binding get() = _binding!!
 
+
     private lateinit var friendsList : ArrayList<User>
+    private lateinit var friendsNames : ArrayList<String>
+    private lateinit var localUser : User
 
     lateinit var createButton: LinearLayout
 
     private val thisName = "contacts fragment"
+
+    private lateinit var mDbRef: DatabaseReference
+    private lateinit var mAuth : FirebaseAuth
+
 
     //Declaration of recycler view variable and recycler view adapter for contacts page
     private lateinit var contactsRecycler : RecyclerView
@@ -41,7 +50,13 @@ class ContactsFragment : Fragment() {
     ): View {
         //declaration of view model variable and assignment to viewmodel
 
+
+
         friendsList = ArrayList()
+        friendsNames = ArrayList()
+
+        mAuth = FirebaseAuth.getInstance()
+
         val contactsViewModel =
             ViewModelProvider(this)[ContactsViewModel::class.java]
 
@@ -62,10 +77,40 @@ class ContactsFragment : Fragment() {
             startActivity(intent)
         }
 
-        contactsAdapter = ContactsAdapter()
+        var testUser : User
+        testUser = User()
+        testUser.email = "patrickfarmer09@outlook.ie"
+        testUser.nick = "Patrick"
+        friendsNames.add("PatrickTest")
+
+        contactsAdapter = ContactsAdapter(friendsNames)
         contactsRecycler = root.findViewById(R.id.contactsRecycler)
         contactsRecycler.layoutManager = LinearLayoutManager(context)
         contactsRecycler.adapter = contactsAdapter
+
+        mDbRef = FirebaseDatabase.getInstance().getReference()
+
+        mDbRef.child("user").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                friendsList.clear()
+                for(postSnapshot in snapshot.children){
+                    val currentUser = postSnapshot.getValue(User::class.java)
+
+                    if(mAuth.currentUser?.uid == currentUser?.uid) {
+                        currentUser?.nick = "you"
+                    }
+                    friendsList.add(currentUser!!)
+                    currentUser.nick?.let { friendsNames.add(it) }
+                    Log.i("MyTag", "Adding user with email ${currentUser.email} to contacts")
+                }
+                contactsAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
 
         //Attach variable to correct textView
         val textView: TextView = binding.textSlideshow
