@@ -32,6 +32,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityHomeBinding
 
+    var tempString : String? = null
+
     private val thisName = "HomeActivity"
 
 
@@ -138,6 +140,7 @@ class HomeActivity : AppCompatActivity() {
         hideSystemUI()
         setTheme(R.style.Theme_MapsTemplate)
         nearbyPlaces(trinity, 1000, "restaurant")
+        tempString = intent.getStringExtra("email")
         Log.i("MyTag", "resuming $thisName")
     }
     override fun onStart(){

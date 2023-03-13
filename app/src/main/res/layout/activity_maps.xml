@@ -1,9 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapsActivity" />
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:context=".MapsActivity" />
+
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/SearchBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autofillHints="Type your destination"
+            map:cardBackgroundColor="@color/Primary"
+            map:layout_constraintBottom_toBottomOf="parent"
+            map:layout_constraintEnd_toStartOf="@+id/my_button"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toTopOf="parent"
+            map:layout_constraintVertical_bias="0.060000002">
+
+                <EditText
+                    android:id="@+id/searchText"
+                    android:layout_width="288dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Search safe map:"
+                    android:inputType="textPersonName" />
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/my_button"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:text="Search"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            map:layout_constraintHorizontal_bias="1.0"
+            map:layout_constraintVertical_bias="0.050000012" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

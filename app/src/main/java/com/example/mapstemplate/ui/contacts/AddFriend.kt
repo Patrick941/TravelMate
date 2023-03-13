@@ -6,13 +6,17 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import com.example.mapstemplate.MainActivity
 import com.example.mapstemplate.R
+import com.example.mapstemplate.ui.itinerary.ItineraryFragment
 import com.google.firebase.auth.FirebaseAuth
 
 class AddFriend : AppCompatActivity() {
 
     private lateinit var addButton : Button
     private lateinit var email : TextView
+
+    var tempString : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +27,17 @@ class AddFriend : AppCompatActivity() {
         email = findViewById(R.id.MessageText)
 
         addButton.setOnClickListener{
-            Log.i("FriendsTag", "Adding new friend with email $email")
-            val intent = Intent(this, ContactsFragment::class.java)
-            startActivity(intent)
+            Log.i("FriendsTag", "Adding new friend with email ${email.text}")
+            tempString = email.text as String?
+            //val intent = Intent(this, MainActivity::class.java)
+            //intent.putExtra("email", email.text)
+            //val contactsFragment = ContactsFragment()
+            //val fragmentTransaction = fragmentManager.beginTransaction()
+            //val fragmentManager = supportFragmentManager
+            //fragmentTransaction.replace(R.id.nav_home, contactsFragment)
+            //fragmentTransaction.commit()
+            //startActivity(intent)
+            finish()
         }
 
 

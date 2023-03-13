@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.ContactsAdapter
+import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
 import com.example.mapstemplate.User
 import com.example.mapstemplate.activities.AddItineraryActivity
@@ -48,8 +49,9 @@ class ContactsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        //declaration of view model variable and assignment to viewmodel
+        //declaration of view model variable and assignment to view-model
 
+        //val tempString : String? = homeActivity.tempString
 
 
         friendsList = ArrayList()
@@ -77,11 +79,17 @@ class ContactsFragment : Fragment() {
             startActivity(intent)
         }
 
+        //val homeActivity = activity as AddFriend
+        //val tempString : String? = homeActivity.tempString
+
         var testUser : User
         testUser = User()
         testUser.email = "patrickfarmer09@outlook.ie"
         testUser.nick = "Patrick"
-        friendsNames.add("PatrickTest")
+        /*if (tempString != null) {
+            friendsNames.add(tempString)
+            Log.i("FriendsTag", "Patrick testing the string: $tempString")
+        }*/
 
         contactsAdapter = ContactsAdapter(friendsNames)
         contactsRecycler = root.findViewById(R.id.contactsRecycler)
@@ -99,9 +107,16 @@ class ContactsFragment : Fragment() {
                     if(mAuth.currentUser?.uid == currentUser?.uid) {
                         currentUser?.nick = "you"
                     }
-                    friendsList.add(currentUser!!)
-                    currentUser.nick?.let { friendsNames.add(it) }
-                    Log.i("MyTag", "Adding user with email ${currentUser.email} to contacts")
+                    //friendsList.add(currentUser!!)
+                    friendsList.forEach{
+
+                    }
+                    if (currentUser != null) {
+                        currentUser.nick?.let { friendsNames.add(it) }
+                    }
+                    if (currentUser != null) {
+                        Log.i("MyTag", "Adding user with email ${currentUser.email} to contacts")
+                    }
                 }
                 contactsAdapter.notifyDataSetChanged()
             }

@@ -2,6 +2,7 @@ package com.example.mapstemplate
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -9,10 +10,13 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -37,6 +41,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var  polygon : Polygon
     private lateinit var poly : PolygonOptions
 
+    //Search stuff
+    private lateinit var searchButton : Button
+    private lateinit var searchContent : TextView
+
+    //Search results
+    private lateinit var searchResult : ArrayList<String>
+
     //List of points
     private lateinit var highSafetyAreasOptions : ArrayList<PolygonOptions>
     private lateinit var mediumSafetyAreasOptions : ArrayList<PolygonOptions>
@@ -57,10 +68,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        searchResult = ArrayList()
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        searchButton = findViewById(R.id.my_button)
+        searchContent = findViewById(R.id.searchText)
+
+        searchButton.setOnClickListener{
+            val searchData : String = searchContent.text.toString()
+            searchPlace("Trinity");
+            val intent = Intent(this, SearchResults::class.java)
+            intent.putExtra("searchText", searchData)
+            startActivity(intent)
+        }
+
+
 
         /*val myClient = GoogleApiClient.Builder(this)
             .addApi(LocationServices.API)
@@ -165,13 +191,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 val br = connection.inputStream.bufferedReader()
                 result = br.use {br.readText()}
                 //result = br.use {br.r}
-                //parseJson(result)
+                parseJsonSearch(result)
                 connection.disconnect()
             } catch(e:Exception){
                 e.printStackTrace()
                 result = "error"
             }
-            Log.i("PlacesAPI", result)
+            //Log.i("PlacesAPIExtra", result)
         }
     }
 
@@ -222,6 +248,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             Log.i("PlacesAPI", "Name: $name")
             Log.i("PlacesAPI", "Rating: $rating")
             Log.i("PlacesAPI", "Vicinity: $vicinity")
+        }
+    }
+
+    private fun parseJsonSearch(jsonString: String) {
+        val jsonObject = JSONObject(jsonString)
+        val resultsArray: JSONArray = jsonObject.getJSONArray("results")
+
+        for (i in 0 until resultsArray.length()) {
+            val resultObject = resultsArray.getJSONObject(i)
+            val name = resultObject.getString("name")
+
+            Log.i("PlacesAPI", "====================================================")
+            Log.i("PlacesAPI", "Name: $name")
+            searchResult.add(name)
         }
     }
 
