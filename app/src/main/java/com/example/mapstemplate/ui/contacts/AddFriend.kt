@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.TextView
 import com.example.mapstemplate.MainActivity
 import com.example.mapstemplate.R
-import com.example.mapstemplate.ui.current_user_itineraries.CurrentUserItinerariesFragment
 import com.google.firebase.auth.FirebaseAuth
 
 class AddFriend : AppCompatActivity() {

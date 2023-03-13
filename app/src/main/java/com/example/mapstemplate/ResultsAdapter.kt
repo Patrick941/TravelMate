@@ -35,7 +35,7 @@ class ResultsAdapter(private val locations: ArrayList<String>) :
 
     // Objects from view assigned to vals
     class UserViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        val textName: TextView = itemView.findViewById(R.id.notificationTV)
+        val textName: TextView = itemView.findViewById(R.id.source)
     }
 
 }

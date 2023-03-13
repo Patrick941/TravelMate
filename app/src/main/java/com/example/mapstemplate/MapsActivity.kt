@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -29,6 +30,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.ChoiceFormat.nextDouble
+import kotlin.random.Random
+import kotlin.random.Random.Default.nextFloat
+
+private var trinity = LatLng(53.343792, -6.254572)
 
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -85,8 +91,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             intent.putExtra("searchText", searchData)
             startActivity(intent)
         }
-
-
 
         /*val myClient = GoogleApiClient.Builder(this)
             .addApi(LocationServices.API)
@@ -156,15 +160,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val trinity = LatLng(53.343792, -6.254572)
         val temp = CameraPosition.Builder()
             .target(trinity)
-            .zoom(13f)
+            .zoom(11f)
             .build()
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
         mMap.setOnMapClickListener {
             //pointsList.add(it)
-            //reportArea(7, it)
-            //getDangerNearArea(it, 0.1)
+            reportArea(1, it)
+            getDangerNearArea(it, 0.1)
             //searchPlace("Restaurant")
+            //heatmapDemo()
         }
+
+
+        //Problems for future Patrick, remove this demo data
+
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
     }
 
@@ -273,9 +282,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var lastOverlay : TileOverlay? = null
 
     private fun reportArea(danger: Number, cords : LatLng){
-        tempHardCodedArray[counter][0] = cords
-        tempHardCodedArray[counter][1] = cords
-        tempHardCodedArray[counter][2] = cords
+        tempHardCodedArray[danger as Int][0] = cords
+        tempHardCodedArray[danger as Int][1] = cords
+        tempHardCodedArray[danger as Int][2] = cords
         counter += 1
         if(counter == 8){
             counter = 1;
@@ -432,6 +441,52 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             poly.fillColor(opaqueRed)
             polygon = mMap.addPolygon(poly)
         }
+    }
+
+    private fun heatmapDemo(){
+        var i :Number
+        /*for(i in 0..10000){
+            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            val randomValue1 = (Random.nextFloat() * 0.01) - 0.001
+            val trinityX = trinity.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
+            val randomValue2 = (Random.nextFloat() * 0.01) - 0.001
+            val trinityY = trinity.longitude + randomValue2
+
+            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            reportArea(7, LatLng(trinityX, trinityY))
+            Log.i("HeatmapTag", "Entering group")
+        }*/
+
+        var trinityX = trinity.latitude
+        var trinityY = trinity.longitude
+        reportArea(1, LatLng(trinityX,trinityY))
+        trinityX = trinity.latitude + 0.001
+        trinityY = trinity.longitude + 0.001
+        reportArea(1, LatLng(trinityX,trinityY))
+        trinityX = trinity.latitude + 0.002
+        trinityY = trinity.longitude + 0.003
+        reportArea(1, LatLng(trinityX,trinityY))
+        trinityX = trinity.latitude + 0.004
+        trinityY = trinity.longitude + 0.002
+        reportArea(1, LatLng(trinityX,trinityY))
+        trinityX = trinity.latitude + 0.001
+        trinityY = trinity.longitude + 0.002
+        reportArea(1, LatLng(trinityX,trinityY))
+        trinityX = trinity.latitude + 0.002
+        trinityY = trinity.longitude + 0.001
+        reportArea(1, LatLng(trinityX,trinityY))
+        trinityX = trinity.latitude + 0.003
+        trinityY = trinity.longitude + 0.002
+        reportArea(1, LatLng(trinityX,trinityY))
+        trinityX = trinity.latitude + 0.004
+        trinityY = trinity.longitude + 0.002
+        reportArea(1, LatLng(trinityX,trinityY))
+        trinityX = trinity.latitude + 0.004
+        trinityY = trinity.longitude + 0.001
+        reportArea(1, LatLng(trinityX,trinityY))
+
+        getDangerNearArea(trinity, 1000)
+
     }
 
 }

@@ -18,10 +18,10 @@ class NotificationsAdapter(private val notifications: ArrayList<String>) :
     }
 
     // Placeholder text to be assigned to the textName object of the view
-    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserViewHolder, position: Int){
         Log.i("PlacesAPI", "Adding Item to recommendations")
         if(position < notifications.size) {
-            holder.textName.text = notifications[position]
+            holder.textName.text = "${notifications[position]}"
         } else {
             holder.textName.text = "Placeholder"
         }
@@ -35,7 +35,7 @@ class NotificationsAdapter(private val notifications: ArrayList<String>) :
 
     // Objects from view assigned to vals
     class UserViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        val textName: TextView = itemView.findViewById(R.id.notificationTV)
+        val textName: TextView = itemView.findViewById(R.id.source)
     }
 
 }

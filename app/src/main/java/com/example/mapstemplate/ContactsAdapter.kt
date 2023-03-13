@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
 
 class ContactsAdapter(private val friends: ArrayList<String>) :
     RecyclerView.Adapter<ContactsAdapter.UserViewHolder>(){
@@ -33,7 +32,7 @@ class ContactsAdapter(private val friends: ArrayList<String>) :
 
     //View items to be attached to each view
     class UserViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        val textName: TextView = itemView.findViewById(R.id.notificationTV)
+        val textName: TextView = itemView.findViewById(R.id.source)
     }
 
 }
