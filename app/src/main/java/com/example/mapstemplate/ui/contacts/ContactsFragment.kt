@@ -1,10 +1,12 @@
 package com.example.mapstemplate.ui.contacts
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -12,12 +14,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.ContactsAdapter
 import com.example.mapstemplate.R
+import com.example.mapstemplate.User
+import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.databinding.FragmentSlideshowBinding
 
 class ContactsFragment : Fragment() {
 
     private var _binding: FragmentSlideshowBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var friendsList : ArrayList<User>
+
+    lateinit var createButton: LinearLayout
 
     private val thisName = "contacts fragment"
 
@@ -32,8 +40,12 @@ class ContactsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         //declaration of view model variable and assignment to viewmodel
+
+        friendsList = ArrayList()
         val contactsViewModel =
             ViewModelProvider(this)[ContactsViewModel::class.java]
+
+
 
         //set root variable to fragment view
         _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
@@ -42,6 +54,14 @@ class ContactsFragment : Fragment() {
         // assign adapter class constructor to contactsAdapter, then make the contactsRecycler point
         // to the correct recycler view in the correct LinearLayoutManager, finally attach the
         // recycler view to the adapter
+
+        createButton = root.findViewById(R.id.createButton)
+
+        createButton.setOnClickListener{
+            val intent = Intent(context, AddFriend::class.java)
+            startActivity(intent)
+        }
+
         contactsAdapter = ContactsAdapter()
         contactsRecycler = root.findViewById(R.id.contactsRecycler)
         contactsRecycler.layoutManager = LinearLayoutManager(context)
