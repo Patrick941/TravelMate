@@ -4,8 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
-import com.example.mapstemplate.ui.itinerary.ItineraryFragment
 import com.example.travelapp.itineraries.Step
 
 // when you press the step in the itinerary should display this activity:
@@ -17,7 +17,7 @@ class StepViewActivity : AppCompatActivity() {
 
         val itineraryIndex: Int = intent.getIntExtra("itinerary_index", 0)
         val stepIndex: Int = intent.getIntExtra("step_index", 0)
-        val step: Step = ItineraryFragment.itineraryList[itineraryIndex].steps[stepIndex]
+        val step: Step = HomeActivity.currentUserItineraryList[itineraryIndex].steps[stepIndex]
 
         back_arrow = findViewById(R.id.back_arrow_display_step)
 
