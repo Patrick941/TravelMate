@@ -107,6 +107,7 @@ class HomeActivity : AppCompatActivity() {
         globalItineraryList.clear()
 
         db.collection("itineraries")
+            .whereNotEqualTo("user_email", mAuth.currentUser!!.email)
             .get()
             .addOnSuccessListener { itineraries ->
                 storeFetchedItinerariesInList(globalItineraryList, itineraries)
