@@ -1,6 +1,8 @@
 package com.example.mapstemplate.ui.home
 
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,11 @@ import com.example.mapstemplate.NotificationsAdapter
 import com.example.mapstemplate.R
 import com.example.mapstemplate.RecommendationsAdapter
 import com.example.mapstemplate.databinding.FragmentHomeBinding
+import com.google.android.gms.maps.model.LatLng
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class HomeFragment : Fragment() {
@@ -23,6 +30,10 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var nearbyLocations : ArrayList<String>
+    private lateinit var nearbyRatings : ArrayList<Number>
+    private val trinity = LatLng(53.343792, -6.254572)
 
     private val thisName = "Home Fragment"
 
@@ -39,6 +50,9 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        nearbyLocations = ArrayList()
+        nearbyRatings = ArrayList()
         //declaration of view model variable and assignment to viewmodel
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
@@ -48,10 +62,20 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        //nearbyLocations.add("Test string")
+
+        nearbyLocations.forEach {
+            Log.i("PlacesAPI", "Locations list currently contains $it")
+            if (nearbyLocations.size == 0) {
+                Log.i("PlacesAPI", "No locations available")
+            }
+        }
+
         // assign adapter class constructor to recommendationsAdapter, then make the recommendations
         // point to the correct recycler view in the correct LinearLayoutManager, finally attach the
         // recycler view to the adapter
-        recommendationsAdapter = RecommendationsAdapter()
+        nearbyPlaces(trinity, 1000, "restaurant")
+        recommendationsAdapter = RecommendationsAdapter(nearbyLocations, nearbyRatings)
         recommendationsRecycler = root.findViewById(R.id.LocationsRecycler)
         recommendationsRecycler.layoutManager = LinearLayoutManager(context)
         recommendationsRecycler.adapter = recommendationsAdapter
@@ -74,6 +98,59 @@ class HomeFragment : Fragment() {
             notificationsView.text = "Recent Notifications"
         }
         return root
+    }
+
+    private fun parseJson(jsonString: String) {
+        val jsonObject = JSONObject(jsonString)
+        val resultsArray: JSONArray = jsonObject.getJSONArray("results")
+
+        for (i in 0 until resultsArray.length()) {
+            val resultObject = resultsArray.getJSONObject(i)
+            val name = resultObject.getString("name")
+            val rating = resultObject.getDouble("rating")
+            val vicinity = resultObject.getString("vicinity")
+
+            Log.i("PlacesAPI", "====================================================")
+            nearbyLocations.add(name)
+            nearbyRatings.add(rating)
+            Log.i("PlacesAPI", "Name: $name")
+            Log.i("PlacesAPI", "Rating: $rating")
+            Log.i("PlacesAPI", "Vicinity: $vicinity")
+        }
+    }
+
+
+    private fun nearbyPlaces(cords: LatLng, radius: Number, type : String){
+        var result = ""
+
+        val SDK_INT = Build.VERSION.SDK_INT
+        if (SDK_INT > 8) {
+            val policy = StrictMode.ThreadPolicy.Builder()
+                .permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+            //your codes here
+            try{
+                var key : String = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
+                //key = getString(R.string.api_key)
+                var urlStr : String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${cords.latitude},${cords.longitude}&radius=$radius&type=$type&key=$key"
+                //var urlStr : String = https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.7749,-122.4194&radius=500&type=restaurant&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q
+                println("$urlStr")
+                var url : URL = URL(urlStr)
+                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.requestMethod = "GET"
+                connection.doInput = true
+                val br = connection.inputStream.bufferedReader()
+                result = br.use {br.readText()}
+                //result = br.use {br.r}
+                parseJson(result)
+                connection.disconnect()
+            } catch(e:Exception){
+                e.printStackTrace()
+                result = "error"
+            }
+            //Log.i("mapsTag", result)
+        }
     }
 
     override fun onPause(){

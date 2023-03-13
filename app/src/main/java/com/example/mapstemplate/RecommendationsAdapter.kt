@@ -1,12 +1,13 @@
 package com.example.mapstemplate
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class RecommendationsAdapter() :
+class RecommendationsAdapter(private val locations: ArrayList<String>, private val rating: ArrayList<Number>) :
     RecyclerView.Adapter<RecommendationsAdapter.UserViewHolder>(){
 
     // Assigned the recommendations_box_recycler to act as the view, it will be updated, currently just
@@ -18,13 +19,18 @@ class RecommendationsAdapter() :
 
     // Placeholder text to be assigned to the textName object of the view
     override fun onBindViewHolder(holder: UserViewHolder, position: Int){
-        holder.textName.text = "Recommendation #$position"
+        Log.i("PlacesAPI", "Adding Item to recommendations")
+        if(position < locations.size) {
+            holder.textName.text = "${locations[position]}       Rating:${rating[position]}"
+        } else {
+            holder.textName.text = "Placeholder"
+        }
     }
 
     // Temporary number, must be changed, may cause crashes and segmentation faults when other
     // aspects of code are changed
     override fun getItemCount(): Int{
-        return 15
+        return locations.size
     }
 
     // Objects from view assigned to vals

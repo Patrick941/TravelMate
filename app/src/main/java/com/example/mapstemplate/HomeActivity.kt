@@ -34,6 +34,7 @@ class HomeActivity : AppCompatActivity() {
 
     private val thisName = "HomeActivity"
 
+
     private lateinit var mapButton : Button
     private val trinity = LatLng(53.343792, -6.254572)
 
@@ -44,6 +45,8 @@ class HomeActivity : AppCompatActivity() {
 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
 
         Log.i("MyTag", "creating $thisName")
         setSupportActionBar(binding.appBarHome.toolbar)
@@ -82,6 +85,7 @@ class HomeActivity : AppCompatActivity() {
             val vicinity = resultObject.getString("vicinity")
 
             Log.i("PlacesAPI", "====================================================")
+            //nearbyLocations.add(name)
             Log.i("PlacesAPI", "Name: $name")
             Log.i("PlacesAPI", "Rating: $rating")
             Log.i("PlacesAPI", "Vicinity: $vicinity")
