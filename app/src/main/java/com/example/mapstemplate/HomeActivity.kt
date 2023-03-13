@@ -42,7 +42,6 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var mapButton : Button
     private val trinity = LatLng(53.343792, -6.254572)
 
-
     private val db = Firebase.firestore
 
     companion object {
@@ -93,7 +92,10 @@ class HomeActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { itineraries ->
                 for (itineraryDocument in itineraries) {
-                    val itinerary = Itinerary(itineraryDocument.data.get("title") as String)
+                    val itinerary = Itinerary(
+                        itineraryDocument.data.get("title") as String,
+                        itineraryDocument.id
+                    )
 
                     db.collection("itineraries/${itineraryDocument.id}/steps")
                         .get()

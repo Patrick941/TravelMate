@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
 import com.example.mapstemplate.ui.itinerary.ItineraryFragment
 import com.example.travelapp.adapters.StepListAdapter
@@ -25,7 +26,7 @@ class ItineraryActivity : AppCompatActivity() {
 
         // get extras
         itineraryIndex = intent.getIntExtra("itinerary_index", 0)
-        val itinerary: Itinerary = ItineraryFragment.itineraryList[itineraryIndex]
+        val itinerary: Itinerary = HomeActivity.userItineraryList[itineraryIndex]
 
         textViewTitle = findViewById(R.id.textView_title)
         listViewSteps = findViewById(R.id.listView_steps)

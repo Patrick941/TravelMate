@@ -1,7 +1,8 @@
 package com.example.travelapp.itineraries
 
-class Itinerary(var name: String) : java.io.Serializable  {
+class Itinerary(var name: String, var id: String) : java.io.Serializable  {
     val steps: ArrayList<Step> = ArrayList()
+    val itineraryId: String = id
 
     fun calculateItineraryPrice(): Double {
         var totalPrice = 0.0

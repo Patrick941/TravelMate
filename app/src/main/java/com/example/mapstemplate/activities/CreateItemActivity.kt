@@ -4,9 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
 import com.example.travelapp.itineraries.Step
-import com.example.mapstemplate.ui.itinerary.ItineraryFragment.Companion.itineraryList
 
 class CreateItemActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +27,7 @@ class CreateItemActivity : AppCompatActivity() {
                 print("ERROR : " + e.message)
             }
 
-            itineraryList[itineraryIndex].steps.add(Step(name, address, cost, description))
+            HomeActivity.userItineraryList[itineraryIndex].steps.add(Step(name, address, cost, description))
             finish()
         }
     }
