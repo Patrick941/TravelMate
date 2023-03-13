@@ -23,6 +23,9 @@ class HistoryFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private lateinit var history1 : ArrayList<String>
+    private lateinit var history2 : ArrayList<String>
+
     //Declaration of recycler view variable and recycler view adapter for history page
     private lateinit var historyRecycler : RecyclerView
     private lateinit var historyAdapter: HistoryAdapter
@@ -32,6 +35,17 @@ class HistoryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        history1 = ArrayList()
+        history2 = ArrayList()
+
+        history1.add("Trinity College Dublin")
+        history2.add("21 Morell Lawns")
+        history1.add("Hamilton library")
+        history2.add("Trinity sports centre")
+        history1.add("Tesco, trinity street")
+        history2.add("Trinity Halls")
+
         //declaration of view model variable and assignment to viewmodel
         val galleryViewModel =
             ViewModelProvider(this).get(HistoryViewModel::class.java)
@@ -43,7 +57,7 @@ class HistoryFragment : Fragment() {
         // assign adapter class constructor to historyAdapter, then make the historyRecycler point
         // to the correct recycler view in the correct LinearLayoutManager, finally attach the
         // recycler view to the adapter
-        historyAdapter = HistoryAdapter()
+        historyAdapter = HistoryAdapter(history1, history2)
         historyRecycler = root.findViewById(R.id.historyRecycler)
         historyRecycler.layoutManager = LinearLayoutManager(context)
         historyRecycler.adapter = historyAdapter

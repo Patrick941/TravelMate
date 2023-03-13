@@ -66,7 +66,7 @@ class HomeFragment : Fragment() {
         mDbRef = FirebaseDatabase.getInstance().getReference()
         mAuth = FirebaseAuth.getInstance()
 
-        sendNotification("testing")
+        //sendNotification("testing")
 
         //declaration of view model variable and assignment to viewmodel
         val homeViewModel =
