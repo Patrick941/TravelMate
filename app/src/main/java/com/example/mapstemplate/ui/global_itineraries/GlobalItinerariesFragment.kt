@@ -45,7 +45,7 @@ class GlobalItinerariesFragment : Fragment() {
             val newItineraryList = ArrayList<Itinerary>()
             enteredSearch = inputField.text.toString()
             for (i in HomeActivity.globalItineraryList) {
-                if (i.name.contains(enteredSearch)) {
+                if (i.name.contains(enteredSearch, true)) {
                     newItineraryList.add(i)
                 } else {
                     Toast.makeText(
