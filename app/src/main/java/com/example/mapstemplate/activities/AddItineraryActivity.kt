@@ -8,8 +8,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
-import com.example.mapstemplate.ui.itinerary.ItineraryFragment
 import com.example.travelapp.itineraries.Itinerary
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -18,11 +18,15 @@ class AddItineraryActivity : AppCompatActivity() {
     lateinit var editTextTitle: EditText
     lateinit var addButton: Button
 
+
+    private lateinit var mAuth : FirebaseAuth
     private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_itinerary)
+
+        mAuth = FirebaseAuth.getInstance()
 
         back_arrow = findViewById(R.id.back_arrow_add_itinerary_activity)
         editTextTitle = findViewById(R.id.editText_add_itinerary_title)
@@ -48,14 +52,15 @@ class AddItineraryActivity : AppCompatActivity() {
 
     fun addItinerary(title: String) {
         val itineraryHashMap = hashMapOf(
-            "title" to title
+            "title" to title,
+            "user_email" to mAuth.currentUser!!.email
         )
 
         db.collection("itineraries")
             .add(itineraryHashMap)
             .addOnSuccessListener { documentReference ->
                 val itinerary = Itinerary(title, documentReference.id)
-                HomeActivity.userItineraryList.add(itinerary)
+                HomeActivity.currentUserItineraryList.add(itinerary)
                 // Return to previous page
                 finish()
             }

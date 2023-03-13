@@ -32,7 +32,7 @@ class AddStepActivity : AppCompatActivity() {
                 print("ERROR : " + e.message)
             }
 
-            addStep(HomeActivity.userItineraryList[itineraryIndex], name, address, cost, description)
+            addStep(HomeActivity.currentUserItineraryList[itineraryIndex], name, address, cost, description)
         }
 
     }

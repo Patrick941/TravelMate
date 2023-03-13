@@ -17,8 +17,12 @@
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Contacts" />
         <item
-            android:id="@+id/nav_itinerary"
-            android:icon="@drawable/ic_menu_itinerary"
-            android:title="Itinerary" />
+            android:id="@+id/nav_my_itineraries"
+            android:icon="@drawable/ic_menu_my_itineraries"
+            android:title="My Itineraries" />
+        <item
+            android:id="@+id/nav_global_itineraries"
+            android:icon="@drawable/ic_menu_my_itineraries"
+            android:title="Global Itineraries" />
     </group>
 </menu>

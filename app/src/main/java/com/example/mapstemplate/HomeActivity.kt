@@ -18,8 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.databinding.ActivityHomeBinding
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
@@ -28,6 +26,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 import com.example.travelapp.itineraries.Itinerary
 import com.example.travelapp.itineraries.Step
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -38,25 +38,23 @@ class HomeActivity : AppCompatActivity() {
 
     private val thisName = "HomeActivity"
 
-
     private lateinit var mapButton : Button
     private val trinity = LatLng(53.343792, -6.254572)
 
     private val db = Firebase.firestore
+    private lateinit var mAuth : FirebaseAuth
 
     companion object {
-        val userItineraryList = ArrayList<Itinerary>();
+        val currentUserItineraryList = ArrayList<Itinerary>();
+        val globalItineraryList = ArrayList<Itinerary>();
     }
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        mAuth = FirebaseAuth.getInstance()
 
         Log.i("MyTag", "creating $thisName")
         setSupportActionBar(binding.appBarHome.toolbar)
@@ -71,7 +69,7 @@ class HomeActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_history, R.id.nav_Contacts, R.id.nav_itinerary
+                R.id.nav_home, R.id.nav_history, R.id.nav_Contacts, R.id.nav_my_itineraries, R.id.nav_global_itineraries
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -83,41 +81,64 @@ class HomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        fetchUserData()
+        fetchCurrentUserItineraries()
+        fetchGlobalItineraries()
     }
 
-    // read user data from firstore
-    fun fetchUserData() {
+    // get current user itineraries from firestore
+    fun fetchCurrentUserItineraries() {
+        // clear previous data to prevent bug
+        currentUserItineraryList.clear()
+
         db.collection("itineraries")
+            .whereEqualTo("user_email", mAuth.currentUser!!.email)
             .get()
             .addOnSuccessListener { itineraries ->
-                for (itineraryDocument in itineraries) {
-                    val itinerary = Itinerary(
-                        itineraryDocument.data.get("title") as String,
-                        itineraryDocument.id
-                    )
-
-                    db.collection("itineraries/${itineraryDocument.id}/steps")
-                        .get()
-                        .addOnSuccessListener { steps ->
-                            for (stepDocument in steps) {
-                                Log.d("DEBUG", "fetchUserData: ${stepDocument.data}")
-                                val step = Step(
-                                    stepDocument.data.get("name") as String,
-                                    stepDocument.data.get("address") as String,
-                                    stepDocument.data.get("price") as Double,
-                                    stepDocument.data.get("description") as String
-                                    )
-                                itinerary.steps.add(step)
-                            }
-                        }
-
-                    userItineraryList.add(itinerary)
-                }
+                storeFetchedItinerariesInList(currentUserItineraryList, itineraries)
             }
             .addOnFailureListener { exception ->
                 Log.w("DEBUG", "Error getting documents.", exception)
             }
+    }
+
+    // get all itineraries from firestore
+    fun fetchGlobalItineraries() {
+        // clear previous data to prevent bug
+        globalItineraryList.clear()
+
+        db.collection("itineraries")
+            .get()
+            .addOnSuccessListener { itineraries ->
+                storeFetchedItinerariesInList(globalItineraryList, itineraries)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("DEBUG", "Error getting documents.", exception)
+            }
+    }
+
+    private fun storeFetchedItinerariesInList(list: ArrayList<Itinerary>, querySnapshot: QuerySnapshot) {
+        for (itineraryDocument in querySnapshot) {
+            val itinerary = Itinerary(
+                itineraryDocument.data.get("title") as String,
+                itineraryDocument.id
+            )
+
+            db.collection("itineraries/${itineraryDocument.id}/steps")
+                .get()
+                .addOnSuccessListener { steps ->
+                    for (stepDocument in steps) {
+                        val step = Step(
+                            stepDocument.data.get("name") as String,
+                            stepDocument.data.get("address") as String,
+                            stepDocument.data.get("price") as Double,
+                            stepDocument.data.get("description") as String
+                        )
+                        itinerary.steps.add(step)
+                    }
+                }
+
+            list.add(itinerary)
+        }
     }
 
     private fun parseJson(jsonString: String) {
