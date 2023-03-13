@@ -26,6 +26,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import com.example.travelapp.itineraries.Itinerary
+import com.example.travelapp.itineraries.Step
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class HomeActivity : AppCompatActivity() {
 
@@ -37,6 +41,13 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var mapButton : Button
     private val trinity = LatLng(53.343792, -6.254572)
+
+
+    private val db = Firebase.firestore
+
+    companion object {
+        val userItineraryList = ArrayList<Itinerary>();
+    }
 
 
 
@@ -72,6 +83,39 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this@HomeActivity, MapsActivity::class.java)
             startActivity(intent)
         }
+
+        fetchUserData()
+    }
+
+    // read user data from firstore
+    fun fetchUserData() {
+        db.collection("itineraries")
+            .get()
+            .addOnSuccessListener { itineraries ->
+                for (itineraryDocument in itineraries) {
+                    val itinerary = Itinerary(itineraryDocument.data.get("title") as String)
+
+                    db.collection("itineraries/${itineraryDocument.id}/steps")
+                        .get()
+                        .addOnSuccessListener { steps ->
+                            for (stepDocument in steps) {
+                                Log.d("DEBUG", "fetchUserData: ${stepDocument.data}")
+                                val step = Step(
+                                    stepDocument.data.get("name") as String,
+                                    stepDocument.data.get("address") as String,
+                                    stepDocument.data.get("price") as Double,
+                                    stepDocument.data.get("description") as String
+                                    )
+                                itinerary.steps.add(step)
+                            }
+                        }
+
+                    userItineraryList.add(itinerary)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("DEBUG", "Error getting documents.", exception)
+            }
     }
 
     private fun parseJson(jsonString: String) {

@@ -4,6 +4,7 @@ class StaticData {
     val itineraryList: ArrayList<Itinerary> = ArrayList()
 
     init {
+        /*
         val itineraryParis = Itinerary("Paris main monuments")
         itineraryParis.steps.add(Step("Eiffel Tower", "Champ de Mars, 5 Av. Anatole France, 75007 Paris, France", 10.90f, "Most know monument in Paris"))
         itineraryParis.steps.add(Step("Louvre museum", "Rue de Rivoli, 75001 Paris, France", 31.25f, "There is a lot of things to discover"))
@@ -25,5 +26,6 @@ class StaticData {
         itineraryList.add(itineraryParis)
         itineraryList.add(itineraryDublin)
         itineraryList.add(itineraryNewYork)
+         */
     }
 }

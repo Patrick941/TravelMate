@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
+import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
 import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.activities.ItineraryActivity
@@ -25,7 +26,7 @@ class ItineraryFragment : Fragment() {
     lateinit var itineraryListAdapter: ItineraryListAdapter
 
     companion object {
-        val itineraryList = StaticData().itineraryList
+        val itineraryList = HomeActivity.userItineraryList
     }
 
     override fun onCreateView(
