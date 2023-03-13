@@ -1,5 +1,8 @@
 package com.example.mapstemplate
 
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -8,6 +11,8 @@ import android.os.StrictMode.ThreadPolicy
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.mapstemplate.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -116,6 +121,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
 
+
     //Temporary changes made to help understanding of manipulating the camera
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -131,8 +137,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             //pointsList.add(it)
             //reportArea(7, it)
             //getDangerNearArea(it, 0.1)
-            //nearbyPlaces(it, 100, "bank")
-            searchPlace("Wedding")
+            //searchPlace("Restaurant")
         }
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
     }
@@ -203,7 +208,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    fun parseJson(jsonString: String) {
+    private fun parseJson(jsonString: String) {
         val jsonObject = JSONObject(jsonString)
         val resultsArray: JSONArray = jsonObject.getJSONArray("results")
 

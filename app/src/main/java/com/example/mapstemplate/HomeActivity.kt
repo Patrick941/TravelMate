@@ -1,7 +1,9 @@
 package com.example.mapstemplate
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
 import android.view.Menu
 import android.widget.Button
@@ -19,6 +21,11 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.databinding.ActivityHomeBinding
+import com.google.android.gms.maps.model.LatLng
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
 
 class HomeActivity : AppCompatActivity() {
 
@@ -28,6 +35,7 @@ class HomeActivity : AppCompatActivity() {
     private val thisName = "HomeActivity"
 
     private lateinit var mapButton : Button
+    private val trinity = LatLng(53.343792, -6.254572)
 
 
 
@@ -63,6 +71,57 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private fun parseJson(jsonString: String) {
+        val jsonObject = JSONObject(jsonString)
+        val resultsArray: JSONArray = jsonObject.getJSONArray("results")
+
+        for (i in 0 until resultsArray.length()) {
+            val resultObject = resultsArray.getJSONObject(i)
+            val name = resultObject.getString("name")
+            val rating = resultObject.getDouble("rating")
+            val vicinity = resultObject.getString("vicinity")
+
+            Log.i("PlacesAPI", "====================================================")
+            Log.i("PlacesAPI", "Name: $name")
+            Log.i("PlacesAPI", "Rating: $rating")
+            Log.i("PlacesAPI", "Vicinity: $vicinity")
+        }
+    }
+
+
+    private fun nearbyPlaces(cords: LatLng, radius: Number, type : String){
+        var result = ""
+
+        val SDK_INT = Build.VERSION.SDK_INT
+        if (SDK_INT > 8) {
+            val policy = StrictMode.ThreadPolicy.Builder()
+                .permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+            //your codes here
+            try{
+                var key : String = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
+                //key = getString(R.string.api_key)
+                var urlStr : String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${cords.latitude},${cords.longitude}&radius=$radius&type=$type&key=$key"
+                //var urlStr : String = https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.7749,-122.4194&radius=500&type=restaurant&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q
+                println("$urlStr")
+                var url : URL = URL(urlStr)
+                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.requestMethod = "GET"
+                connection.doInput = true
+                val br = connection.inputStream.bufferedReader()
+                result = br.use {br.readText()}
+                //result = br.use {br.r}
+                parseJson(result)
+                connection.disconnect()
+            } catch(e:Exception){
+                e.printStackTrace()
+                result = "error"
+            }
+            //Log.i("mapsTag", result)
+        }
+    }
+
     // Logging messages
     override fun onPause(){
         super.onPause()
@@ -74,6 +133,7 @@ class HomeActivity : AppCompatActivity() {
         super.onResume()
         hideSystemUI()
         setTheme(R.style.Theme_MapsTemplate)
+        nearbyPlaces(trinity, 1000, "restaurant")
         Log.i("MyTag", "resuming $thisName")
     }
     override fun onStart(){

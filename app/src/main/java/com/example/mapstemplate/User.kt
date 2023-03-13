@@ -1,4 +1,4 @@
-package com.example.messagingapp
+package com.example.mapstemplate
 
 class User : java.io.Serializable{
     var email: String? = null
