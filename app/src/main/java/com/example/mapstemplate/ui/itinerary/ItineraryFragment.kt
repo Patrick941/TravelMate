@@ -64,7 +64,6 @@ class ItineraryFragment : Fragment() {
         super.onResume()
         // update the data in the listView
         itineraryListAdapter.notifyDataSetChanged()
-        Log.d("DEBUG", "onResume: ${HomeActivity.userItineraryList}")
     }
 
     override fun onDestroyView() {

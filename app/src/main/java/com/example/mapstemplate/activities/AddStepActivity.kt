@@ -2,13 +2,18 @@ package com.example.mapstemplate.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
+import com.example.travelapp.itineraries.Itinerary
 import com.example.travelapp.itineraries.Step
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
-class CreateItemActivity : AppCompatActivity() {
+class AddStepActivity : AppCompatActivity() {
+    private val db = Firebase.firestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_item)
@@ -27,8 +32,29 @@ class CreateItemActivity : AppCompatActivity() {
                 print("ERROR : " + e.message)
             }
 
-            HomeActivity.userItineraryList[itineraryIndex].steps.add(Step(name, address, cost, description))
-            finish()
+            addStep(HomeActivity.userItineraryList[itineraryIndex], name, address, cost, description)
         }
+
+    }
+
+    fun addStep(itinerary: Itinerary, name: String, address: String, price: Double, description: String) {
+        val step = Step(name, address, price, description)
+        val itineraryHashMap = hashMapOf(
+            "name" to name,
+            "address" to address,
+            "price" to price,
+            "description" to description
+        )
+
+        db.collection("itineraries/${itinerary.itineraryId}/steps")
+            .add(itineraryHashMap)
+            .addOnSuccessListener { documentReference ->
+                itinerary.steps.add(step)
+                finish()
+            }
+            .addOnFailureListener { e ->
+                Log.w("DEBUG", "Error adding document", e)
+                finish()
+            }
     }
 }

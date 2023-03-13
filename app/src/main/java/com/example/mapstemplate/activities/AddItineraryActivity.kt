@@ -43,9 +43,6 @@ class AddItineraryActivity : AppCompatActivity() {
                 name = "Itinerary"
 
             addItinerary(name)
-
-            // Return to previous page
-            finish()
         }
     }
 
@@ -59,9 +56,13 @@ class AddItineraryActivity : AppCompatActivity() {
             .addOnSuccessListener { documentReference ->
                 val itinerary = Itinerary(title, documentReference.id)
                 HomeActivity.userItineraryList.add(itinerary)
+                // Return to previous page
+                finish()
             }
             .addOnFailureListener { e ->
                 Log.w("DEBUG", "Error adding document", e)
+                // Return to previous page
+                finish()
             }
     }
 }

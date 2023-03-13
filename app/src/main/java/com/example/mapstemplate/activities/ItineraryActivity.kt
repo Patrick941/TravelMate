@@ -3,12 +3,12 @@ package com.example.mapstemplate.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
-import com.example.mapstemplate.ui.itinerary.ItineraryFragment
 import com.example.travelapp.adapters.StepListAdapter
 import com.example.travelapp.itineraries.Itinerary
 
@@ -54,7 +54,7 @@ class ItineraryActivity : AppCompatActivity() {
 
     fun setupButtons() {
         addButton.setOnClickListener {
-            val intent = Intent(this, CreateItemActivity::class.java)
+            val intent = Intent(this, AddStepActivity::class.java)
             intent.putExtra("itinerary_index", itineraryIndex)
             startActivity(intent)
         }
