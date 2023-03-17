@@ -49,6 +49,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //Search stuff
     private lateinit var searchButton : Button
+    private lateinit var testButton : Button
     private lateinit var searchContent : TextView
 
     //Search results
@@ -83,6 +84,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         searchButton = findViewById(R.id.my_button)
         searchContent = findViewById(R.id.searchText)
+        testButton = findViewById(R.id.testButton)
 
         searchButton.setOnClickListener{
             val searchData : String = searchContent.text.toString()
@@ -90,6 +92,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val intent = Intent(this, SearchResults::class.java)
             intent.putExtra("searchText", searchData)
             startActivity(intent)
+        }
+
+        testButton.setOnClickListener{
+            //mMap.mapType = GoogleMap.
+
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+        }
+
+        object {
+            private val MAP_TYPE_KEY = "map_type"
         }
 
         /*val myClient = GoogleApiClient.Builder(this)
