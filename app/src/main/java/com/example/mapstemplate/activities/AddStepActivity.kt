@@ -18,6 +18,7 @@ class AddStepActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_item)
         val submitButton = findViewById<Button>(R.id.submit_button)
+        val addressOnClick = findViewById<EditText>(R.id.item_location)
 
         val itineraryIndex:Int = intent.getIntExtra("itinerary_index", 0)
 
@@ -33,6 +34,9 @@ class AddStepActivity : AppCompatActivity() {
             }
 
             addStep(HomeActivity.currentUserItineraryList[itineraryIndex], name, address, cost, description)
+        }
+        addressOnClick.setOnClickListener{
+
         }
 
     }
