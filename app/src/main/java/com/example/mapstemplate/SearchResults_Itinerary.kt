@@ -1,10 +1,13 @@
 package com.example.mapstemplate
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONArray
@@ -12,32 +15,36 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
-// IN PROGRESS
 
-class SearchResults_Itinerary : AppCompatActivity() {
+class SearchResultsItinerary : AppCompatActivity() {
 
     private lateinit var resultsRecycler : RecyclerView
     private lateinit var resultsAdapter : ResultsAdapter
+
+    private lateinit var searchButton : Button
+    private lateinit var searchContent : TextView
 
     private lateinit var results : ArrayList<String>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search_results)
+        setContentView(R.layout.activity_search_results_itinerary)
 
         results = ArrayList()
 
         results.clear()
 
+        searchButton = findViewById(R.id.search_button)
+        searchContent = findViewById(R.id.searchText)
 
-        if (message != null) {
-            //results.add(message)
-            searchPlace(message)
+        searchButton.setOnClickListener{
+            val place : String = searchContent.text.toString()
+                searchPlace(place)
         }
 
         resultsAdapter = ResultsAdapter(results)
-        resultsRecycler = findViewById(R.id.resultsRecycler)
+        resultsRecycler = findViewById(R.id.itinresultsRecycler)
         resultsRecycler.layoutManager = LinearLayoutManager(this)
         resultsRecycler.adapter = resultsAdapter
     }
@@ -52,11 +59,11 @@ class SearchResults_Itinerary : AppCompatActivity() {
             StrictMode.setThreadPolicy(policy)
             //your codes here
             try{
-                var key : String = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
+                val key : String = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
                 //key = getString(R.string.api_key)
-                var urlStr : String = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=$name&key=$key"
+                val urlStr : String = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=$name&key=$key"
                 //https://maps.googleapis.com/maps/api/place/textsearch/json?query=Buttery&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q
-                var url : URL = URL(urlStr)
+                val url : URL = URL(urlStr)
                 println(url)
                 val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
                 connection.setRequestProperty("Content-Type", "application/json")

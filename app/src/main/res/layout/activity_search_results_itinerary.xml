@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Primary"
-        android:text="Placeholder"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,7 +22,7 @@
         app:layout_constraintVertical_bias="0.103" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/resultsRecycler"
+        android:id="@+id/itinresultsRecycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
@@ -38,15 +37,9 @@
         android:id="@+id/SearchBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_constraintEnd_toStartOf="@+id/my_button"
-        android:layout_constraintVertical_bias="0.060000002"
-        android:layout_constraintBottom_toBottomOf="parent"
-        android:layout_constraintStart_toStartOf="parent"
-        android:layout_constraintTop_toTopOf="parent"
         android:layout_marginHorizontal="10dp"
         android:layout_marginVertical="10dp"
         android:autofillHints="Type your destination"
-        android:cardBackgroundColor="@color/Primary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -55,18 +48,15 @@
             android:layout_width="243dp"
             android:layout_height="56dp"
             android:ems="10"
-            android:hint="Search safe android:"
+            android:hint="Search for places:"
             android:inputType="textPersonName" />
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/my_button"
+        android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:layout_constraintHorizontal_bias="1.0"
-        android:layout_constraintVertical_bias="0.050000012"
         android:layout_marginBottom="7dp"
-        android:text="Search"
         app:layout_constraintBottom_toTopOf="@+id/resultsTV"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.523"

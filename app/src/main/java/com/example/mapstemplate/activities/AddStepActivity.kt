@@ -1,5 +1,6 @@
 package com.example.mapstemplate.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,8 @@ import android.widget.Button
 import android.widget.EditText
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
+import com.example.mapstemplate.SearchResults
+import com.example.mapstemplate.SearchResults_Itinerary
 import com.example.travelapp.itineraries.Itinerary
 import com.example.travelapp.itineraries.Step
 import com.google.firebase.firestore.ktx.firestore
@@ -36,7 +39,8 @@ class AddStepActivity : AppCompatActivity() {
             addStep(HomeActivity.currentUserItineraryList[itineraryIndex], name, address, cost, description)
         }
         addressOnClick.setOnClickListener{
-
+            val intent = Intent(this, SearchResults_Itinerary::class.java)
+            startActivity(intent)
         }
 
     }
