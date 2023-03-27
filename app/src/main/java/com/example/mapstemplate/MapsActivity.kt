@@ -10,11 +10,16 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +31,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.HeatmapTileProvider
+import com.google.maps.android.ktx.utils.heatmaps.heatmapTileProviderWithData
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -67,6 +73,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //Variable for Log.i messages
     private val thisName = "MapsActivity"
+    private lateinit var LatLngs : ArrayList<LatLng>
+    private lateinit var LatLngsRed : ArrayList<LatLng>
+    val tempHardCodedArray = Array(10) { Array(10) { LatLng(0.0, 0.0) } }
+    private var counter : Int = 1
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +88,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
 
         searchResult = ArrayList()
+        tileOverlays = ArrayList()
+        heatmapOverlays = ArrayList()
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        val actionBar: ActionBar? = supportActionBar
+        actionBar?.setDisplayShowTitleEnabled(false)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -176,11 +196,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
         mMap.setOnMapClickListener {
             //pointsList.add(it)
-            reportArea(1, it)
-            getDangerNearArea(it, 0.1)
+            //reportArea(1, it)
+            //getDangerNearArea(it, 0.1)
             //searchPlace("Restaurant")
-            heatmapDemo()
+            //heatmapDemo()
         }
+
 
 
         //Problems for future Patrick, remove this demo data
@@ -218,6 +239,45 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 result = "error"
             }
             //Log.i("PlacesAPIExtra", result)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater : MenuInflater = menuInflater
+        inflater.inflate(R.menu.settings_menu, menu)
+        return true
+    }
+
+    private var heatMap = false
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.title.toString()) {
+            "Settings" -> {
+                // Handle settings click here
+                val intent = Intent(this, MapSettings::class.java)
+                startActivity(intent)
+                true
+            }
+            "MapsThemes" -> {
+                    // Handle settings click here
+                val intent = Intent(this, MapsThemes::class.java)
+                startActivity(intent)
+
+                true
+                }
+            "Safe Mode Toggle" -> {
+                // Handle settings click here
+                if(heatMap){
+                    removeAllHeatmaps()
+                    heatMap = false
+                } else {
+                    heatMap = true
+                    heatmapDemo()
+                }
+                true
+            }
+            // Add cases for other menu items if needed
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -271,6 +331,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private var tileOverlays = mutableListOf<TileOverlay>()
+    private var heatmapOverlays = mutableListOf<TileOverlay>()
+
+    private fun removeAllHeatmaps() {
+        for (overlay in heatmapOverlays) {
+            overlay.remove()
+        }
+        // Clear the list of TileOverlay objects
+        heatmapOverlays.clear()
+    }
+
+
+
     private fun parseJsonSearch(jsonString: String) {
         val jsonObject = JSONObject(jsonString)
         val resultsArray: JSONArray = jsonObject.getJSONArray("results")
@@ -286,11 +359,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     //temporary variables to be deleted later
-    private lateinit var LatLngs : ArrayList<LatLng>
-    private lateinit var LatLngsRed : ArrayList<LatLng>
-    val tempHardCodedArray = Array(10) { Array(10) { LatLng(0.0, 0.0) } }
-    private var counter : Int = 1
-    private var lastOverlay : TileOverlay? = null
+
 
     private fun reportArea(danger: Number, cords : LatLng){
         tempHardCodedArray[danger as Int][0] = cords
@@ -303,6 +372,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         //ToDo
     }
 
+    private lateinit var provider : HeatmapTileProvider
+
     private fun getDangerNearArea(cords: LatLng, radius: Number){
         //ToDo
         //Temporary hard coded Array for testing purposes.
@@ -314,12 +385,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             //val mutableList = arrayListOf<LatLng>(cords)
             val startPoints = floatArrayOf(1f)
             val gradient = Gradient(colors, startPoints)
-            val provider = HeatmapTileProvider.Builder()
+            provider = HeatmapTileProvider.Builder()
                 .data(mutableList)
                 .gradient(gradient)
                 .opacity(1.0)
                 .build()
-            lastOverlay = mMap.addTileOverlay(TileOverlayOptions().tileProvider(provider))
+            val lastOverlay = mMap.addTileOverlay(TileOverlayOptions().tileProvider(provider))
+            if (lastOverlay != null) {
+                heatmapOverlays.add(lastOverlay)
+            }
             tempHardCodedArray[i].fill(LatLng(0.0, 0.0))
             //lastOverlay = mMap.
         }
