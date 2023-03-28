@@ -47,13 +47,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
 
+    private lateinit var modeToIntent : Number
+
     //Polygon Variables
     private lateinit var  polygon : Polygon
     private lateinit var poly : PolygonOptions
 
     //Search stuff
     private lateinit var searchButton : Button
-    private lateinit var testButton : Button
     private lateinit var searchContent : TextView
 
     //Search results
@@ -104,7 +105,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         searchButton = findViewById(R.id.my_button)
         searchContent = findViewById(R.id.searchText)
-        testButton = findViewById(R.id.testButton)
 
         searchButton.setOnClickListener{
             val searchData : String = searchContent.text.toString()
@@ -114,11 +114,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             startActivity(intent)
         }
 
-        testButton.setOnClickListener{
-            //mMap.mapType = GoogleMap.
+        modeToIntent = intent.getIntExtra("modeToIntent", 0)
 
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
-        }
+
+
 
         object {
             private val MAP_TYPE_KEY = "map_type"
@@ -201,6 +200,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             //searchPlace("Restaurant")
             //heatmapDemo()
         }
+        if(modeToIntent == 0){
+
+        } else if(modeToIntent == 1){
+
+        } else if(modeToIntent == 2){
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+        }
 
 
 
@@ -258,7 +264,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 startActivity(intent)
                 true
             }
-            "MapsThemes" -> {
+            "Maps Themes" -> {
                     // Handle settings click here
                 val intent = Intent(this, MapsThemes::class.java)
                 startActivity(intent)
