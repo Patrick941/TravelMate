@@ -12,6 +12,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.mapstemplate.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.component1
@@ -24,6 +25,7 @@ class ImagesItineraryVisualisationActivity : AppCompatActivity() {
     private val storageRef = storage.reference
 
     lateinit var imageView: ImageView
+    lateinit var addImageButton: FloatingActionButton
 
     private val imagesList = ArrayList<File>()
 
@@ -32,9 +34,11 @@ class ImagesItineraryVisualisationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_images_itinerary_visualisation)
 
         imageView = findViewById(R.id.display_image)
+        addImageButton = findViewById(R.id.button_add_image)
 
         Log.d("DEBUG", "START VISUAL")
         fetchTestImages()
+        setupAddImageButton()
     }
 
     fun fetchTestImages() {
@@ -66,5 +70,12 @@ class ImagesItineraryVisualisationActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
+    fun setupAddImageButton() {
+        addImageButton.setOnClickListener {
+
+        }
+    }
+
 
 }
