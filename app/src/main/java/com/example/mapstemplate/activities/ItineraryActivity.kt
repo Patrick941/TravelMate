@@ -20,6 +20,7 @@ class ItineraryActivity : AppCompatActivity() {
     lateinit var backArrow: ImageView
     lateinit var stepListAdapter: StepListAdapter
     lateinit var buttonImageActivity: Button
+    lateinit var itinerary: Itinerary
 
     var itineraryIndex: Int = 0
     var isGlobal: Boolean = true
@@ -32,7 +33,7 @@ class ItineraryActivity : AppCompatActivity() {
         itineraryIndex = intent.getIntExtra("itinerary_index", 0)
         isGlobal = intent.getBooleanExtra("is_global", true)
 
-        var itinerary: Itinerary
+
         if (isGlobal)
             itinerary = HomeActivity.globalItineraryList[itineraryIndex]
         else
@@ -81,6 +82,7 @@ class ItineraryActivity : AppCompatActivity() {
 
         buttonImageActivity.setOnClickListener {
             val intent = Intent(this, ImagesItineraryVisualisationActivity::class.java)
+            intent.putExtra("itinerary_name", itinerary.name)
             startActivity(intent)
         }
     }
