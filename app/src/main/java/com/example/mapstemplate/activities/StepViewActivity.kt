@@ -1,7 +1,10 @@
 package com.example.mapstemplate.activities
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.mapstemplate.HomeActivity
@@ -11,6 +14,7 @@ import com.example.travelapp.itineraries.Step
 // when you press the step in the itinerary should display this activity:
 class StepViewActivity : AppCompatActivity() {
     lateinit var back_arrow: ImageView
+    lateinit var deleteButton: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_step_view)
@@ -20,6 +24,7 @@ class StepViewActivity : AppCompatActivity() {
         val step: Step = HomeActivity.currentUserItineraryList[itineraryIndex].steps[stepIndex]
 
         back_arrow = findViewById(R.id.back_arrow_display_step)
+        deleteButton = findViewById(R.id.button_delete_step)
 
         // want to find the itinerary activity and pull the information from that itinerary object
         // to fill in the fields. Tring to add to the TextView string
@@ -39,5 +44,28 @@ class StepViewActivity : AppCompatActivity() {
         back_arrow.setOnClickListener {
             finish()
         }
+
+        deleteButton.setOnClickListener {
+            warningDeletePopup()
+        }
+
+
+    }
+
+    fun warningDeletePopup() {
+        val alertDialog = AlertDialog.Builder(this).create()
+        alertDialog.setMessage("Are you sur to delete this itinerary ?")
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
+            dialogInterface.dismiss()
+        })
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Delete", DialogInterface.OnClickListener { dialogInterface, i ->
+            deleteStepFromFirebase()
+            dialogInterface.dismiss()
+        })
+        alertDialog.show()
+    }
+
+    fun deleteStepFromFirebase() {
+        Log.d("DEBUG", "deleteStepFromFirebase")
     }
 }
