@@ -10,8 +10,8 @@
     <LinearLayout
         android:id="@+id/p1toolbar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#C82626"
+        android:layout_height="wrap_content"
+        android:background="@color/PrimaryVariant"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         android:gravity="center_vertical"

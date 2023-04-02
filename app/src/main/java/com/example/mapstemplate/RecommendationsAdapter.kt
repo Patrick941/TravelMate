@@ -13,7 +13,8 @@ class RecommendationsAdapter(private val locations: ArrayList<String>, private v
     // Assigned the recommendations_box_recycler to act as the view, it will be updated, currently just
     // displays text
     override fun onCreateViewHolder(parent: ViewGroup, viewType : Int):UserViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.recommendations_box_recycler, parent, false)
+//        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.recommendations_box_recycler, parent, false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.recommendations_card_view, parent, false)
         return UserViewHolder(view)
     }
 
@@ -35,7 +36,7 @@ class RecommendationsAdapter(private val locations: ArrayList<String>, private v
 
     // Objects from view assigned to vals
     class UserViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        val textName: TextView = itemView.findViewById(R.id.recommendationTV)
+        val textName: TextView = itemView.findViewById(R.id.recommendationsTextView)
     }
 
 }

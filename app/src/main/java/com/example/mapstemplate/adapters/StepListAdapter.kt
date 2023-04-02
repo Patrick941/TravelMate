@@ -21,11 +21,13 @@ class StepListAdapter(private val context: Context, dataArray: List<Step>) : Arr
         val title = view.findViewById<TextView>(R.id.textView_step_adapter_title)
         val address = view.findViewById<TextView>(R.id.textView_step_adapter_address)
         val price = view.findViewById<TextView>(R.id.textView_step_adapter_price)
+        val description = view.findViewById<TextView>(R.id.description)
 
-        step_number.text = "${position+1}."
+        // step_number.text = "${position+1}."
         title.text = step!!.name
         address.text = step.address
         price.text = "${step.price} €"
+        description.text = step.description
         return view
     }
 }
