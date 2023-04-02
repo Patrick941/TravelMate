@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="#008FA0"
     tools:context=".LoginScreen">
 
-
-    <LinearLayout
-        android:id="@+id/ConfirmLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+<!--    <View
+        android:id="@+id/rectangle"
+        android:layout_width="342dp"
+        android:layout_height="609dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/login_page_rectangle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.62">
@@ -68,27 +71,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.335">
+        android:gravity="center_horizontal">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/MessageCard"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="10"
-            app:cardBackgroundColor="@color/TextBox">
-
-            <EditText
-                android:id="@+id/MessageText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="Enter your email:"
-                android:inputType="textPersonName"
-                android:textAlignment="gravity" />
-        </androidx.cardview.widget.CardView>
-
-    </LinearLayout>
+        <TextView
+            android:id="@+id/welcome_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="Let's start planning your trip safely together!"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:paddingLeft="40dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="15dp"/>
 
     <LinearLayout
         android:id="@+id/NickNameLayout"
@@ -103,17 +99,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.19999999">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/NickNameCard"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="10"
-            app:cardBackgroundColor="@color/TextBox">
+            <RelativeLayout
+                android:id="@+id/ion_earth"
+                android:layout_width="208dp"
+                android:layout_height="208dp"
+                android:background="@drawable/login_page_earth"
+                android:layout_gravity="center"
+                android:padding="20dp"/>
 
             <EditText
                 android:id="@+id/NickNameText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
                 android:ems="10"
                 android:gravity="center"
                 android:hint="Enter your username:"
@@ -146,15 +143,351 @@
 
             <EditText
                 android:id="@+id/PasswordText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
                 android:ems="10"
                 android:gravity="center"
                 android:hint="Enter your password:"
                 android:inputType="textPassword"
-                android:textAlignment="gravity" />
-        </androidx.cardview.widget.CardView>
+                android:textAlignment="gravity"
+                android:layout_gravity="center" />
 
+            <LinearLayout
+                android:id="@+id/ButtonLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <EditText
+                    android:id="@+id/MessageText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:hint="Enter your email:"
+                    android:inputType="textPersonName"
+                    android:textAlignment="gravity" />
+
+                <Button
+                    android:id="@+id/LogInButton"
+                    android:layout_width="270dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/Button"
+                    android:text="Sign In"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/NoAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingTop="10dp"
+                    android:text="Don't have an Account?"
+                    android:textColor="#585858" />
+
+                <Button
+                    android:id="@+id/SignUpButton"
+                    android:layout_width="270dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginVertical="10dp"
+                    android:backgroundTint="@color/Button"
+                    android:text="Create Account"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
+
+
+
+<!--FIRST-->
+    <!--    <RelativeLayout-->
+<!--        android:id="@+id/ion_earth"-->
+<!--        android:layout_width="208dp"-->
+<!--        android:layout_height="208dp"-->
+<!--        android:layout_alignParentLeft="true"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:background="@drawable/login_page_earth"-->
+<!--        android:clipToOutline="true"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.497"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.233" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/welcome_back"-->
+<!--        android:layout_width="300dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:fontFamily="sans-serif"-->
+<!--        android:text="Let's start planning your trip safely together!"-->
+<!--        android:textColor="#FFFFFF"-->
+<!--        android:textSize="25sp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.306"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.023" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/LogInButton"-->
+<!--        android:layout_width="270dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginHorizontal="30dp"-->
+<!--        android:layout_marginVertical="10dp"-->
+<!--        android:backgroundTint= "@color/Button"-->
+<!--        android:text="Sign In"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:textColor="#FFFFFF"-->
+<!--        android:textSize="15sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.496"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.814" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/SignUpButton"-->
+<!--        android:layout_width="270dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginHorizontal="30dp"-->
+<!--        android:layout_marginVertical="10dp"-->
+<!--        android:backgroundTint="@color/Button"-->
+<!--        android:text="Create Account"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:textColor="#FFFFFF"-->
+<!--        android:textSize="15sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.496"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.941" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/NoAccount"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Don't have an Account?"-->
+<!--        android:textColor="#585858"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.498"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.852" />-->
+
+
+<!--    <EditText-->
+<!--        android:id="@+id/MessageText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="48dp"-->
+<!--        android:ems="10"-->
+<!--        android:gravity="center"-->
+<!--        android:hint="Enter your email:"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:textAlignment="gravity"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.497"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.519" />-->
+
+<!--    <EditText-->
+<!--        android:id="@+id/NickNameText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="48dp"-->
+<!--        android:ems="10"-->
+<!--        android:gravity="center"-->
+<!--        android:hint="Enter your username:"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:textAlignment="gravity"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.502"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.61" />-->
+
+<!--    <EditText-->
+<!--        android:id="@+id/PasswordText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="48dp"-->
+<!--        android:ems="10"-->
+<!--        android:gravity="center"-->
+<!--        android:hint="Enter your password:"-->
+<!--        android:inputType="textPassword"-->
+<!--        android:textAlignment="gravity"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.502"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.699" />-->
+
+
+
+<!--    MASTER-->
+<!--            <LinearLayout-->
+<!--        android:id="@+id/ConfirmLayout"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.62">-->
+<!--                -->
+
+
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:id="@+id/SignUpCard"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="10"-->
+<!--            app:cardBackgroundColor="@color/TextBox">-->
+
+
+<!--            <Button-->
+<!--                android:id="@+id/SignUpButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="30dp"-->
+<!--                android:layout_marginVertical="10dp"-->
+<!--                android:background="@color/Button"-->
+<!--                android:text="SignUp" />-->
+<!--        </androidx.cardview.widget.CardView>-->
+
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:id="@+id/LogInCard"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="10"-->
+<!--            app:cardBackgroundColor="@color/TextBox">-->
+
+
+<!--            <Button-->
+<!--                android:id="@+id/LogInButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="30dp"-->
+<!--                android:layout_marginVertical="10dp"-->
+<!--                android:background="@color/Button"-->
+<!--                android:text="LogIn" />-->
+<!--        </androidx.cardview.widget.CardView>-->
+
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/UserNameLayout"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.335">-->
+
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:id="@+id/MessageCard"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_weight="10"-->
+<!--            app:cardBackgroundColor="@color/TextBox">-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/MessageText"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:ems="10"-->
+<!--                android:gravity="center"-->
+<!--                android:hint="Enter your email:"-->
+<!--                android:inputType="textPersonName"-->
+<!--                android:textAlignment="gravity" />-->
+<!--        </androidx.cardview.widget.CardView>-->
+
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/NickNameLayout"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.19999999">-->
+
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:id="@+id/NickNameCard"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_weight="10"-->
+<!--            app:cardBackgroundColor="@color/TextBox">-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/NickNameText"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:ems="10"-->
+<!--                android:gravity="center"-->
+<!--                android:hint="Enter your username:"-->
+<!--                android:inputType="textPersonName"-->
+<!--                android:textAlignment="gravity" />-->
+<!--        </androidx.cardview.widget.CardView>-->
+
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/PasswordLayout"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.47000003">-->
+
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:id="@+id/PasswordCard"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_weight="10"-->
+<!--            app:cardBackgroundColor="@color/TextBox">-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/PasswordText"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:ems="10"-->
+<!--                android:gravity="center"-->
+<!--                android:hint="Enter your password:"-->
+<!--                android:inputType="textPassword"-->
+<!--                android:textAlignment="gravity" />-->
+
+<!--        </androidx.cardview.widget.CardView>-->
+
+<!--    </LinearLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
