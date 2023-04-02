@@ -1,61 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ItineraryActivity"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/p1toolbar"
+
+
+    <!-- User Profile Picture -->
+    <ImageView
+        android:id="@+id/profile_picture"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/default_profile_pic"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"/>
+
+    <!-- User's Name -->
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="User name"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"/>
+
+    <!-- User's Bio -->
+    <TextView
+        android:layout_width="116dp"
+        android:layout_height="35dp"
+        android:layout_margin="13dp"
+        android:text="Followers: 34"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="107dp"
+        android:layout_height="26dp"
+        android:layout_margin="13dp"
+        android:text="Ratings: 3.5"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/bio"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#C82626"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="I love to travel and take photos!"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"/>
 
-        <ImageView
-            android:id="@+id/back_arrow_itinerary_activity"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/baseline_arrow_back_ios_40"
-            android:paddingStart="20dp"
-            />
+    <!-- User's Posts -->
+    <TextView
+        android:id="@+id/posts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Iterneries"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"/>
 
-        <TextView
-            android:id="@+id/textView_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="default title"
-            android:textSize="25sp"
-            android:gravity="center"
-            android:textColor="@color/black"
-            />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
-
-        <ImageView
-            android:id="@+id/button_add_step"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/baseline_add_location_alt_40"
-            android:paddingHorizontal="20dp"
-            />
-
-    </LinearLayout>
-
+    <!-- List of User's Posts -->
     <ListView
-        android:id="@+id/listView_steps"
+        android:id="@+id/posts_list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
+    <ListView
+        android:id="@+id/posts_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
+
+
+
 
 </LinearLayout>
