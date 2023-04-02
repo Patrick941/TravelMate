@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings2"
+        android:title="@string/action_settings2"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings3"
+        android:title="@string/action_settings3"
+        app:showAsAction="never" />
+    <!-- Add more menu items here if needed -->
+
+</menu>

@@ -10,11 +10,16 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +31,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.HeatmapTileProvider
+import com.google.maps.android.ktx.utils.heatmaps.heatmapTileProviderWithData
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -33,8 +39,6 @@ import java.net.URL
 import java.text.ChoiceFormat.nextDouble
 import kotlin.random.Random
 import kotlin.random.Random.Default.nextFloat
-
-private var trinity = LatLng(53.343792, -6.254572)
 
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -65,8 +69,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mediumSafetyAreas : ArrayList<Polygon>
     private lateinit var lowSafetyAreas : ArrayList<Polygon>
 
+    private val trinity = LatLng(53.343792, -6.254572)
+
     //Variable for Log.i messages
     private val thisName = "MapsActivity"
+    private lateinit var LatLngs : ArrayList<LatLng>
+    private lateinit var LatLngsRed : ArrayList<LatLng>
+    val tempHardCodedArray = Array(10) { Array(10) { LatLng(0.0, 0.0) } }
+    private var counter : Int = 1
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +88,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
 
         searchResult = ArrayList()
+        tileOverlays = ArrayList()
+        heatmapOverlays = ArrayList()
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        val actionBar: ActionBar? = supportActionBar
+        actionBar?.setDisplayShowTitleEnabled(false)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -169,7 +189,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         // Marker is added to trinity college, camera is zoomed in and map click listener is created
-        val trinity = LatLng(53.343792, -6.254572)
         val temp = CameraPosition.Builder()
             .target(trinity)
             .zoom(11f)
@@ -177,11 +196,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
         mMap.setOnMapClickListener {
             //pointsList.add(it)
-            reportArea(1, it)
-            getDangerNearArea(it, 0.1)
+            //reportArea(1, it)
+            //getDangerNearArea(it, 0.1)
             //searchPlace("Restaurant")
             //heatmapDemo()
         }
+
 
 
         //Problems for future Patrick, remove this demo data
@@ -219,6 +239,45 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 result = "error"
             }
             //Log.i("PlacesAPIExtra", result)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater : MenuInflater = menuInflater
+        inflater.inflate(R.menu.settings_menu, menu)
+        return true
+    }
+
+    private var heatMap = false
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.title.toString()) {
+            "Settings" -> {
+                // Handle settings click here
+                val intent = Intent(this, MapSettings::class.java)
+                startActivity(intent)
+                true
+            }
+            "MapsThemes" -> {
+                    // Handle settings click here
+                val intent = Intent(this, MapsThemes::class.java)
+                startActivity(intent)
+
+                true
+                }
+            "Safe Mode Toggle" -> {
+                // Handle settings click here
+                if(heatMap){
+                    removeAllHeatmaps()
+                    heatMap = false
+                } else {
+                    heatMap = true
+                    heatmapDemo()
+                }
+                true
+            }
+            // Add cases for other menu items if needed
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -272,6 +331,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private var tileOverlays = mutableListOf<TileOverlay>()
+    private var heatmapOverlays = mutableListOf<TileOverlay>()
+
+    private fun removeAllHeatmaps() {
+        for (overlay in heatmapOverlays) {
+            overlay.remove()
+        }
+        // Clear the list of TileOverlay objects
+        heatmapOverlays.clear()
+    }
+
+
+
     private fun parseJsonSearch(jsonString: String) {
         val jsonObject = JSONObject(jsonString)
         val resultsArray: JSONArray = jsonObject.getJSONArray("results")
@@ -287,11 +359,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     //temporary variables to be deleted later
-    private lateinit var LatLngs : ArrayList<LatLng>
-    private lateinit var LatLngsRed : ArrayList<LatLng>
-    val tempHardCodedArray = Array(10) { Array(10) { LatLng(0.0, 0.0) } }
-    private var counter : Int = 1
-    private var lastOverlay : TileOverlay? = null
+
 
     private fun reportArea(danger: Number, cords : LatLng){
         tempHardCodedArray[danger as Int][0] = cords
@@ -304,6 +372,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         //ToDo
     }
 
+    private lateinit var provider : HeatmapTileProvider
+
     private fun getDangerNearArea(cords: LatLng, radius: Number){
         //ToDo
         //Temporary hard coded Array for testing purposes.
@@ -315,12 +385,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             //val mutableList = arrayListOf<LatLng>(cords)
             val startPoints = floatArrayOf(1f)
             val gradient = Gradient(colors, startPoints)
-            val provider = HeatmapTileProvider.Builder()
+            provider = HeatmapTileProvider.Builder()
                 .data(mutableList)
                 .gradient(gradient)
                 .opacity(1.0)
                 .build()
-            lastOverlay = mMap.addTileOverlay(TileOverlayOptions().tileProvider(provider))
+            val lastOverlay = mMap.addTileOverlay(TileOverlayOptions().tileProvider(provider))
+            if (lastOverlay != null) {
+                heatmapOverlays.add(lastOverlay)
+            }
             tempHardCodedArray[i].fill(LatLng(0.0, 0.0))
             //lastOverlay = mMap.
         }
@@ -457,47 +530,185 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun heatmapDemo(){
         var i :Number
-        /*for(i in 0..10000){
+        //North of trinity and to the east
+        for(i in 0..20){
+            val radius = 0.05
             //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
-            val randomValue1 = (Random.nextFloat() * 0.01) - 0.001
+            val trinity = LatLng(53.383792, -6.224572)
+            val tempVal1 = Random.nextFloat() % radius
+            val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
+            //randomValue1 = 0.0
             val trinityX = trinity.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
-            val randomValue2 = (Random.nextFloat() * 0.01) - 0.001
+            val tempVal2 = Random.nextFloat() % radius
+            val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
+            val trinityY = trinity.longitude + randomValue2
+
+            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            reportArea(6, LatLng(trinityX, trinityY))
+            getDangerNearArea(trinity, 1000)
+        }
+        //Trinity Green and to the west
+        for(i in 0..20){
+            val radius = 0.06
+            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            val trinity = LatLng(53.373792, -6.269572)
+            val tempVal1 = Random.nextFloat() % radius
+            val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
+            //randomValue1 = 0.0
+            val trinityX = trinity.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
+            val tempVal2 = Random.nextFloat() % radius
+            val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
+            val trinityY = trinity.longitude + randomValue2
+
+            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            reportArea(4, LatLng(trinityX, trinityY))
+            getDangerNearArea(trinity, 1000)
+        }
+        //Trinity Green and to the west a lot
+        for(i in 0..20){
+            val radius = 0.08
+            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            val trinity = LatLng(53.373792, -6.274572)
+            val tempVal1 = Random.nextFloat() % radius
+            val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
+            //randomValue1 = 0.0
+            val trinityX = trinity.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
+            val tempVal2 = Random.nextFloat() % radius
+            val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
+            val trinityY = trinity.longitude + randomValue2
+
+            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            reportArea(2, LatLng(trinityX, trinityY))
+            getDangerNearArea(trinity, 1000)
+        }
+
+        //Trinity Green
+        for(i in 0..20){
+            val radius = 0.08
+            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            val trinity = LatLng(53.343792, -6.254572)
+            val tempVal1 = Random.nextFloat() % radius
+            val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
+            //randomValue1 = 0.0
+            val trinityX = trinity.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
+            val tempVal2 = Random.nextFloat() % radius
+            val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = trinity.longitude + randomValue2
 
             //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(7, LatLng(trinityX, trinityY))
-            Log.i("HeatmapTag", "Entering group")
-        }*/
+            getDangerNearArea(trinity, 1000)
+        }
 
-        var trinityX = trinity.latitude
-        var trinityY = trinity.longitude
-        reportArea(1, LatLng(trinityX,trinityY))
-        trinityX = trinity.latitude + 0.001
-        trinityY = trinity.longitude + 0.001
-        reportArea(1, LatLng(trinityX,trinityY))
-        trinityX = trinity.latitude + 0.002
-        trinityY = trinity.longitude + 0.003
-        reportArea(1, LatLng(trinityX,trinityY))
-        trinityX = trinity.latitude + 0.004
-        trinityY = trinity.longitude + 0.002
-        reportArea(1, LatLng(trinityX,trinityY))
-        trinityX = trinity.latitude + 0.001
-        trinityY = trinity.longitude + 0.002
-        reportArea(1, LatLng(trinityX,trinityY))
-        trinityX = trinity.latitude + 0.002
-        trinityY = trinity.longitude + 0.001
-        reportArea(1, LatLng(trinityX,trinityY))
-        trinityX = trinity.latitude + 0.003
-        trinityY = trinity.longitude + 0.002
-        reportArea(1, LatLng(trinityX,trinityY))
-        trinityX = trinity.latitude + 0.004
-        trinityY = trinity.longitude + 0.002
-        reportArea(1, LatLng(trinityX,trinityY))
-        trinityX = trinity.latitude + 0.004
-        trinityY = trinity.longitude + 0.001
-        reportArea(1, LatLng(trinityX,trinityY))
 
-        getDangerNearArea(trinity, 1000)
+        //Trinity Green and to the a lot but a little less and a bit north
+        for(i in 0..20){
+            val radius = 0.04
+            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            val trinity = LatLng(53.393792, -6.264572)
+            val tempVal1 = Random.nextFloat() % radius
+            val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
+            //randomValue1 = 0.0
+            val trinityX = trinity.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
+            val tempVal2 = Random.nextFloat() % radius
+            val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
+            val trinityY = trinity.longitude + randomValue2
+
+            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            reportArea(1, LatLng(trinityX, trinityY))
+            getDangerNearArea(trinity, 1000)
+        }
+
+        // IFSC GreenyYellow
+        for(i in 0..20){
+            val radius = 0.06
+            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            val tempLocation = LatLng(53.3295, -6.2155)
+            val tempVal1 = Random.nextFloat() % radius
+            val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
+            //randomValue1 = 0.0
+            val trinityX = tempLocation.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
+            val tempVal2 = Random.nextFloat() % radius
+            val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
+            val trinityY = tempLocation.longitude + randomValue2
+
+            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            reportArea(6, LatLng(trinityX, trinityY))
+            getDangerNearArea(trinity, 1000)
+        }
+
+        // UCD Yellow
+        for(i in 0..20){
+            val radius = 0.05
+            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            val tempLocation = LatLng(53.3065, -6.2187)
+            val tempVal1 = Random.nextFloat() % radius
+            val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
+            //randomValue1 = 0.0
+            val trinityX = tempLocation.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
+            val tempVal2 = Random.nextFloat() % radius
+            val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
+            val trinityY = tempLocation.longitude + randomValue2
+
+            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            reportArea(4, LatLng(trinityX, trinityY))
+            getDangerNearArea(trinity, 1000)
+        }
+
+        // Left of UCD Orangey Yellow
+        for(i in 0..20){
+            val radius = 0.08
+            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            val tempLocation = LatLng(53.3165, -6.2687)
+            val tempVal1 = Random.nextFloat() % radius
+            val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
+            //randomValue1 = 0.0
+            val trinityX = tempLocation.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
+            val tempVal2 = Random.nextFloat() % radius
+            val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
+            val trinityY = tempLocation.longitude + randomValue2
+
+            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            reportArea(3, LatLng(trinityX, trinityY))
+            getDangerNearArea(trinity, 1000)
+        }
+
+        // Southof Left of UCD Orangey Yellow
+        for(i in 0..20){
+            val radius = 0.08
+            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            val tempLocation = LatLng(53.2565, -6.2887)
+            val tempVal1 = Random.nextFloat() % radius
+            val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
+            //randomValue1 = 0.0
+            val trinityX = tempLocation.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
+            val tempVal2 = Random.nextFloat() % radius
+            val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
+            val trinityY = tempLocation.longitude + randomValue2
+
+            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            reportArea(1, LatLng(trinityX, trinityY))
+            getDangerNearArea(trinity, 1000)
+        }
+
+        // North of Left of UCD Orangey Red
+        for(i in 0..20){
+            val radius = 0.08
+            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            val tempLocation = LatLng(53.3065, -6.3187)
+            val tempVal1 = Random.nextFloat() % radius
+            val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
+            //randomValue1 = 0.0
+            val trinityX = tempLocation.latitude + randomValue1 // Generate a random number between -0.1 and 0.1
+            val tempVal2 = Random.nextFloat() % radius
+            val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
+            val trinityY = tempLocation.longitude + randomValue2
+
+            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            reportArea(2, LatLng(trinityX, trinityY))
+            getDangerNearArea(trinity, 1000)
+        }
+
 
     }
 
