@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+        android:icon="@drawable/baseline_home_24"
+        android:id="@+id/test_home"/>
+    <item android:title="Map"
+        android:icon="@drawable/baseline_location_on_24"
+        android:id="@+id/test_map"/>
+    <item android:title="AddItinerary"
+        android:icon="@drawable/baseline_add_24"
+        android:id="@+id/test_add"/>
+    <item android:title="Rating"
+        android:icon="@drawable/baseline_thumbs_up_down_24"
+        android:id="@+id/test_rating"/>
+    <item android:title="Profile"
+        android:icon="@drawable/baseline_account_circle_24"
+        android:id="@+id/test_profile"/>
+</menu>

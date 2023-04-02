@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.current_user_itineraries.CurrentUserItinerariesFragment"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#636363">
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:stepSize="0.5"
+            android:isIndicator="true"
+            android:rating="3.5"
+            android:scaleX="0.5"
+            android:scaleY="0.5" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text=""
+            android:paddingEnd="18.5dp" />
+
+    </LinearLayout>
+
+<!--    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:progressDrawable="@drawable/ratingstars"
+        android:rating="3.0"
+        android:stepSize="0.2"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        />-->
+
+<!--    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <RatingBar android:id="@+id/ratingBar1"
+            style="@style/foodRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </RatingBar>
+    </LinearLayout>-->
+
+    <ListView
+        android:id="@+id/list_item"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+    </ListView>
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
+
+    <!--    <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp">-->
+
+<!--        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />-->
+
+<!--        <ImageButton
+            android:id="@+id/add"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:src="@drawable/add_itinerary"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="center" />-->
+
+<!--        <LinearLayout
+            android:id="@+id/createButton"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="#4A83EE"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="center"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:textSize="25dp"
+                android:gravity="center"
+                />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/homeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:adjustViewBounds="true"
+            android:layout_marginLeft="40dp"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/home_icon_screen"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="start|center" />
+
+        <ImageButton
+            android:id="@+id/safeMap"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="105dp"
+            android:adjustViewBounds="true"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/safemap_icon"
+            app:layout_anchor="@+id/homeButton"
+            app:layout_anchorGravity="end|center" />
+
+        <ImageButton
+            android:id="@+id/heart"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginRight="105dp"
+            android:adjustViewBounds="true"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/heart_icon"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="end|center" />
+
+        <ImageButton
+            android:id="@+id/profile_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginRight="40dp"
+            android:adjustViewBounds="true"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/profile_icon"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="end|center" />-->
+
+        <!-- Subtract -->
+<!--        <View
+            android:id="@+id/subtract"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="181dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="776dp"
+            android:background="@drawable/add_button_bg" />-->
+
+<!--        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="144dp"
+            android:layout_height="35dp"
+            android:src="@drawable/add_itinerary"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="center" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="109dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="0dp"
+            android:src="@drawable/safemap_icon"
+            app:layout_anchor="@+id/imageView2"
+            app:layout_anchorGravity="end|center" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="133dp"
+            android:layout_height="35dp"
+            android:src="@drawable/home_icon_screen"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="start|center" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="87dp"
+            android:layout_height="35dp"
+            android:src="@drawable/heart_icon"
+            app:layout_anchor="@+id/imageView4"
+            app:layout_anchorGravity="end|center" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="137dp"
+            android:layout_height="35dp"
+            android:src="@drawable/profile_icon"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="end|center" />-->
+
+
+<!--    </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+
+</LinearLayout>
