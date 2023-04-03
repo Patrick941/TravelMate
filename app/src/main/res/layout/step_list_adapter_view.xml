@@ -1,86 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="20dp"
-    android:gravity="center_vertical"
-    >
+    android:orientation="vertical"
+    android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/textView_step_adapter_number"
-        android:layout_width="wrap_content"
+<!--    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="0."
-        android:textSize="40sp"
-        android:textColor="@color/black"
-        android:layout_marginRight="10dp"
-        />
+        android:orientation="horizontal"
+        android:background="#636363">
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:stepSize="0.5"
+            android:isIndicator="true"
+            android:rating="3.5"
+            android:scaleX="0.5"
+            android:scaleY="0.5" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text=""
+            android:paddingEnd="18.5dp" />
+
+    </LinearLayout>-->
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_vertical"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/textView_step_adapter_number"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/textView_step_adapter_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|center_horizontal"
             android:text="default title"
-            android:textSize="25sp"
-            />
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:padding="10dp"/>
+
+<!--        <View
+            android:id="@+id/view"
+            android:layout_width="78dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />-->
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            >
+            android:layout_width="78dp"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/baseline_location_on_16"
-                android:layout_marginRight="10dp"
-                />
+            <View
+                android:id="@+id/line"
+                android:layout_width="4dp"
+                android:layout_height="38dp"
+                android:background="@drawable/line" />
 
-            <TextView
-                android:id="@+id/textView_step_adapter_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="default location, location"
-                android:textColor="@color/red_location"
-                android:textSize="16sp"
-                />
+            <View
+                android:id="@+id/circle"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/outline_circle_16" />
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="4dp"
+                android:layout_height="38dp"
+                android:background="@drawable/line" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            >
+            android:orientation="vertical"
+            android:padding="10dp">
 
-            <ImageView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/baseline_credit_card_24"
-                android:layout_marginRight="10dp"
-                />
+                android:gravity="center">
 
-            <TextView
-                android:id="@+id/textView_step_adapter_price"
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/baseline_location_on_16" />
+
+                <TextView
+                    android:id="@+id/textView_step_adapter_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="default location"
+                    android:textColor="#636363"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 €"
-                android:textSize="20sp"
-                android:gravity="center"
-                android:textColor="@color/design_default_color_primary"
-                />
+                android:gravity="center">
+
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/baseline_credit_card_24" />
+
+                <TextView
+                    android:id="@+id/textView_step_adapter_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0 €"
+                    android:textColor="#636363"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/baseline_info_24" />
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20sp"
+                    android:text="description"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#636363" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
+
+<!--
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />-->
 
 </LinearLayout>

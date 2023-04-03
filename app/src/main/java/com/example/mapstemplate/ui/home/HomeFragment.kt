@@ -86,12 +86,12 @@ class HomeFragment : Fragment() {
             }
         }
 
-        notifications.add("There was a car crash near CollegeGreen")
-        notifications.add("There is a robbery in progress in the Lloyd institute")
-        notifications.add("A masked gunman is on a mugging spree in the arts block")
-        notifications.add("There are wanted fugitives hiding in the business building")
-        notifications.add("There was a toxic gas leak in lg12")
-        notifications.add("A fire alarm has gone off in trinity gym")
+        notifications.add("There was a car crash near College Green")
+        notifications.add("There is a robbery in progress in the Lloyd Institute")
+        notifications.add("A masked gunman is on a mugging spree in the Arts block")
+        notifications.add("There are wanted fugitives hiding in the Business Building")
+        notifications.add("There was a toxic gas leak in LG12")
+        notifications.add("A fire alarm has gone off in Trinity Gym")
         notifications.add("The pavement is cracked underneath the campanile causing increased danger of stubbed toes")
         //notificationsAdapter.notifyDataSetChanged()
 

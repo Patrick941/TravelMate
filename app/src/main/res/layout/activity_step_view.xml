@@ -10,30 +10,28 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#C82626"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:layout_height="wrap_content"
+        android:background="@color/PrimaryVariant"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:minHeight="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:theme="?attr/actionBarTheme">
 
         <ImageView
             android:id="@+id/back_arrow_display_step"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/baseline_arrow_back_ios_40"
             android:paddingStart="20dp"
-            />
+            android:src="@drawable/baseline_arrow_back_ios_40" />
 
         <TextView
             android:id="@+id/textView_title_step_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="default title"
-            android:textSize="25sp"
             android:gravity="center"
+            android:text="default title"
             android:textColor="@color/black"
-            />
+            android:textSize="25sp" />
 
     </LinearLayout>
 
@@ -56,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:text="Address:"
                 android:textSize="22sp"
-                android:textStyle="bold"
+                android:textStyle=""
                 android:layout_marginVertical="10dp" />
 
             <TextView
@@ -65,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:text="Price:"
                 android:textSize="22sp"
-                android:textStyle="bold"
+                android:textStyle=""
                 android:layout_marginVertical="10dp" />
 
             <TextView
@@ -74,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:text="Description:"
                 android:textSize="22sp"
-                android:textStyle="bold"
+                android:textStyle=""
                 android:layout_marginVertical="10dp" />
 
         </LinearLayout>
