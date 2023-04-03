@@ -11,7 +11,7 @@
         android:id="@+id/p1toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/PrimaryVariant"
+        android:background="@color/Primary"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
         android:orientation="horizontal"
