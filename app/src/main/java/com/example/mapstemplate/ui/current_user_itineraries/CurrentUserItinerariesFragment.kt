@@ -39,7 +39,7 @@ class CurrentUserItinerariesFragment : Fragment() {
 //        _binding = FragmentCurrentUserItinerariesBinding.inflate(inflater, container, false)
         _binding = NavBarHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val rb = root.findViewById<View>(R.id.ratingBar) // idk what I am doing ??!!
+        // val rb = root.findViewById<View>(R.id.ratingBar) // idk what I am doing ??!!
 
 //        add = root.findViewById(R.id.add)
         // createButton = root.findViewById(R.id.createButton)
