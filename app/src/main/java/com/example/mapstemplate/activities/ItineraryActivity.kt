@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
+import com.example.mapstemplate.databinding.ActivityHomeBinding
 import com.example.travelapp.adapters.StepListAdapter
 import com.example.travelapp.itineraries.Itinerary
 
@@ -18,12 +19,16 @@ class ItineraryActivity : AppCompatActivity() {
     lateinit var addButton: ImageView
     lateinit var backArrow: ImageView
     lateinit var stepListAdapter: StepListAdapter
+    // private lateinit var binding: ActivityHomeBinding
     var itineraryIndex: Int = 0
     var isGlobal: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_itinerary)
+        // setContentView(R.layout.activity_itinerary_constraint)
+        // binding = ActivityHomeBinding.inflate(layoutInflater)
+        // setSupportActionBar(binding.appBarHome.toolbar)
 
         // get extras
         itineraryIndex = intent.getIntExtra("itinerary_index", 0)
