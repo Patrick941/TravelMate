@@ -38,7 +38,6 @@ class AddStepActivity : AppCompatActivity() {
     }
 
     fun addStep(itinerary: Itinerary, name: String, address: String, price: Double, description: String) {
-        val step = Step(name, address, price, description)
         val itineraryHashMap = hashMapOf(
             "name" to name,
             "address" to address,
@@ -49,6 +48,7 @@ class AddStepActivity : AppCompatActivity() {
         db.collection("itineraries/${itinerary.itineraryId}/steps")
             .add(itineraryHashMap)
             .addOnSuccessListener { documentReference ->
+                val step = Step(documentReference.id, name, address, price, description)
                 itinerary.steps.add(step)
                 finish()
             }
