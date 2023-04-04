@@ -1,9 +1,6 @@
 package com.example.mapstemplate
 
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -13,33 +10,37 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.PolyUtil
 import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.HeatmapTileProvider
-import com.google.maps.android.ktx.utils.heatmaps.heatmapTileProviderWithData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
 import java.net.URL
-import java.text.ChoiceFormat.nextDouble
+//
 import kotlin.random.Random
-import kotlin.random.Random.Default.nextFloat
-
+//imports
+import com.example.mapstemplate.DirectionsApiResponse
+import com.example.mapstemplate.DirectionsApiService
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -47,14 +48,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
 
-    private lateinit var modeToIntent : Number
-
     //Polygon Variables
     private lateinit var  polygon : Polygon
     private lateinit var poly : PolygonOptions
 
     //Search stuff
     private lateinit var searchButton : Button
+    private lateinit var testButton : Button
     private lateinit var searchContent : TextView
 
     //Search results
@@ -69,18 +69,30 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var highSafetyAreas : ArrayList<Polygon>
     private lateinit var mediumSafetyAreas : ArrayList<Polygon>
     private lateinit var lowSafetyAreas : ArrayList<Polygon>
-
+    /////////////////////////////////////////////////////////////////////////////
     private val trinity = LatLng(53.343792, -6.254572)
+    private val destination = LatLng(53.3494, -6.2606)
+    //sample destination
 
+    ///////////////////////////////////////////////////////////////////////////////////
     //Variable for Log.i messages
     private val thisName = "MapsActivity"
     private lateinit var LatLngs : ArrayList<LatLng>
     private lateinit var LatLngsRed : ArrayList<LatLng>
     val tempHardCodedArray = Array(10) { Array(10) { LatLng(0.0, 0.0) } }
     private var counter : Int = 1
+    // Edited by Genevieve
+/////////////////////////////////////////////////////////////////
+// Retrofit instance configured with a base URL and a converter factory for JSON deserialisation
+//Makes instance for making API requests to the Google Maps APIs.
+    private fun createRetrofitInstance(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://maps.googleapis.com/maps/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
-
-
+    /////////////////////////////////////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i("mapsTag", "creating $thisName")
@@ -113,11 +125,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             intent.putExtra("searchText", searchData)
             startActivity(intent)
         }
-
-        modeToIntent = intent.getIntExtra("modeToIntent", 0)
-
-
-
 
         object {
             private val MAP_TYPE_KEY = "map_type"
@@ -182,7 +189,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
 
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Temporary changes made to help understanding of manipulating the camera
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -193,19 +200,78 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .zoom(11f)
             .build()
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
+        /////////////////////////Call function
+        getDirectionsAndDrawRoute(destination)
+        /////////////////////////////////////////
         mMap.setOnMapClickListener {
+            //val pointsList
             //pointsList.add(it)
-            //reportArea(1, it)
-            //getDangerNearArea(it, 0.1)
-            //searchPlace("Restaurant")
-            //heatmapDemo()
+            // reportArea(1, it)
+            // getDangerNearArea(it, 0.1)
+            // searchPlace("Restaurant")
+            // heatmapDemo()
         }
-        if(modeToIntent == 0){
+    }
 
-        } else if(modeToIntent == 1){
 
-        } else if(modeToIntent == 2){
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+
+    //Edited by Genevieve
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// defines a private function named getDirectionsAndDrawRoute,
+//which takes two LatLng parameters representing the origin and destination points.
+    private fun getDirectionsAndDrawRoute(destination: LatLng) {
+        // Use the Google Maps API key from AndroidManifest.xml
+        mMap.addMarker(MarkerOptions().position(trinity))
+        mMap.addMarker(MarkerOptions().position(destination))
+//changed api key
+        val apiKey = "AIzaSyAFNpCw7wcRqIB73JwgO7w7KcSF2M3dsF4"
+//string representation of the origin coordinates, formatted as latitude,longitude
+        val originString = "${trinity.latitude},${trinity.longitude}"
+        //For destination
+        val destinationString = "${destination.latitude},${destination.longitude}"
+// calls the previously defined createRetrofitInstance()
+//function to create a Retrofit instance for making API requests.
+        val retrofit = createRetrofitInstance()
+        val directionsApiService = retrofit.create(DirectionsApiService::class.java)
+//launches a coroutine on the Dispatchers.IO dispatcher to perform the network request asynchronously.
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = directionsApiService.getDirections(originString, destinationString, apiKey)
+                if (response.isSuccessful) {
+                    val directions = response.body()
+                    if (directions != null) {
+                        val route = directions.routes.firstOrNull()
+                        if (route != null) {
+                            val polylineString = directions.routes.firstOrNull()?.legs?.firstOrNull()?.steps
+                                ?.flatMap { it.polyline?.points?.let { PolyUtil.decode(it) } ?: emptyList() }
+                                ?.joinToString(separator = "") ?: ""
+
+                            // Switch to the main thread before adding the polyline to the map
+                            withContext(Dispatchers.Main) {
+                                val polylineOptions = PolylineOptions()
+                                    .addAll(PolyUtil.decode(polylineString))
+                                    .color(Color.BLUE)
+                                    .width(10f)
+                                mMap.addPolyline(polylineOptions)
+                            }
+
+                            Log.i("MyTag", "PolyLine string was: $polylineString")
+                        }
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@MapsActivity,
+                            "Error getting directions: ${response.message()}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MapsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
 
@@ -214,6 +280,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
     }
+    private fun drawPolyline(polylineString: String) {
+        val polylinePoints = PolyUtil.decode(polylineString)
+        Log.i("MyTag", "Decoded String is $polylinePoints")
+        val polylineOptions = PolylineOptions()
+            .addAll(polylinePoints)
+            .color(Color.BLUE)
+            .width(10f)
+
+        mMap.addPolyline(polylineOptions)
+    }
+
+
+
 
     private fun searchPlace(name: String){
         var result = ""
@@ -225,7 +304,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             StrictMode.setThreadPolicy(policy)
             //your codes here
             try{
-                var key : String = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
+                var key : String = "AIzaSyAFNpCw7wcRqIB73JwgO7w7KcSF2M3dsF4"
                 //key = getString(R.string.api_key)
                 var urlStr : String = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=$name&key=$key"
                 //https://maps.googleapis.com/maps/api/place/textsearch/json?query=Buttery&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q
@@ -264,13 +343,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 startActivity(intent)
                 true
             }
-            "Maps Themes" -> {
-                    // Handle settings click here
+            "MapsThemes" -> {
+                // Handle settings click here
                 val intent = Intent(this, MapsThemes::class.java)
                 startActivity(intent)
 
                 true
-                }
+            }
             "Safe Mode Toggle" -> {
                 // Handle settings click here
                 if(heatMap){
@@ -297,7 +376,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             StrictMode.setThreadPolicy(policy)
             //your codes here
             try{
-                var key : String = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
+                var key : String = "AIzaSyAFNpCw7wcRqIB73JwgO7w7KcSF2M3dsF4"
                 //key = getString(R.string.api_key)
                 var urlStr : String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${cords.latitude},${cords.longitude}&radius=$radius&type=$type&key=$key"
                 //var urlStr : String = https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.7749,-122.4194&radius=500&type=restaurant&key=AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q
@@ -388,7 +467,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 safetyColors[i]
             )
             val mutableList = tempHardCodedArray[i].toMutableList()
-            //val mutableList = arrayListOf<LatLng>(cords)
+            //val mutableList = arrayListOf<com.example.mapstemplate.LatLng>(cords)
             val startPoints = floatArrayOf(1f)
             val gradient = Gradient(colors, startPoints)
             provider = HeatmapTileProvider.Builder()
@@ -539,7 +618,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         //North of trinity and to the east
         for(i in 0..20){
             val radius = 0.05
-            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
             val trinity = LatLng(53.383792, -6.224572)
             val tempVal1 = Random.nextFloat() % radius
             val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
@@ -549,14 +628,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = trinity.longitude + randomValue2
 
-            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(6, LatLng(trinityX, trinityY))
             getDangerNearArea(trinity, 1000)
         }
         //Trinity Green and to the west
         for(i in 0..20){
             val radius = 0.06
-            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
             val trinity = LatLng(53.373792, -6.269572)
             val tempVal1 = Random.nextFloat() % radius
             val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
@@ -566,14 +645,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = trinity.longitude + randomValue2
 
-            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(4, LatLng(trinityX, trinityY))
             getDangerNearArea(trinity, 1000)
         }
         //Trinity Green and to the west a lot
         for(i in 0..20){
             val radius = 0.08
-            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
             val trinity = LatLng(53.373792, -6.274572)
             val tempVal1 = Random.nextFloat() % radius
             val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
@@ -583,7 +662,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = trinity.longitude + randomValue2
 
-            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(2, LatLng(trinityX, trinityY))
             getDangerNearArea(trinity, 1000)
         }
@@ -591,7 +670,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         //Trinity Green
         for(i in 0..20){
             val radius = 0.08
-            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
             val trinity = LatLng(53.343792, -6.254572)
             val tempVal1 = Random.nextFloat() % radius
             val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
@@ -601,7 +680,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = trinity.longitude + randomValue2
 
-            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(7, LatLng(trinityX, trinityY))
             getDangerNearArea(trinity, 1000)
         }
@@ -610,7 +689,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         //Trinity Green and to the a lot but a little less and a bit north
         for(i in 0..20){
             val radius = 0.04
-            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
             val trinity = LatLng(53.393792, -6.264572)
             val tempVal1 = Random.nextFloat() % radius
             val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
@@ -620,7 +699,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = trinity.longitude + randomValue2
 
-            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(1, LatLng(trinityX, trinityY))
             getDangerNearArea(trinity, 1000)
         }
@@ -628,7 +707,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // IFSC GreenyYellow
         for(i in 0..20){
             val radius = 0.06
-            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
             val tempLocation = LatLng(53.3295, -6.2155)
             val tempVal1 = Random.nextFloat() % radius
             val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
@@ -638,7 +717,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = tempLocation.longitude + randomValue2
 
-            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(6, LatLng(trinityX, trinityY))
             getDangerNearArea(trinity, 1000)
         }
@@ -646,7 +725,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // UCD Yellow
         for(i in 0..20){
             val radius = 0.05
-            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
             val tempLocation = LatLng(53.3065, -6.2187)
             val tempVal1 = Random.nextFloat() % radius
             val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
@@ -656,7 +735,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = tempLocation.longitude + randomValue2
 
-            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(4, LatLng(trinityX, trinityY))
             getDangerNearArea(trinity, 1000)
         }
@@ -664,7 +743,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Left of UCD Orangey Yellow
         for(i in 0..20){
             val radius = 0.08
-            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
             val tempLocation = LatLng(53.3165, -6.2687)
             val tempVal1 = Random.nextFloat() % radius
             val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
@@ -674,7 +753,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = tempLocation.longitude + randomValue2
 
-            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(3, LatLng(trinityX, trinityY))
             getDangerNearArea(trinity, 1000)
         }
@@ -682,7 +761,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Southof Left of UCD Orangey Yellow
         for(i in 0..20){
             val radius = 0.08
-            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
             val tempLocation = LatLng(53.2565, -6.2887)
             val tempVal1 = Random.nextFloat() % radius
             val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
@@ -692,7 +771,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = tempLocation.longitude + randomValue2
 
-            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(1, LatLng(trinityX, trinityY))
             getDangerNearArea(trinity, 1000)
         }
@@ -700,7 +779,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // North of Left of UCD Orangey Red
         for(i in 0..20){
             val radius = 0.08
-            //reportArea(1, LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextDouble(0.1) % 0), trinity.longitude + (nextDouble(0.1) % 0)))
             val tempLocation = LatLng(53.3065, -6.3187)
             val tempVal1 = Random.nextFloat() % radius
             val randomValue1 = (Random.nextFloat() % tempVal1) - (tempVal1 / 2)
@@ -710,7 +789,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val randomValue2 = (Random.nextFloat() % tempVal2) - (tempVal2 / 2)
             val trinityY = tempLocation.longitude + randomValue2
 
-            //reportArea(1, LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
+            //reportArea(1, com.example.mapstemplate.LatLng(trinity.latitude + (nextFloat() % 0.01), trinity.longitude + (nextFloat() % 0.01)))
             reportArea(2, LatLng(trinityX, trinityY))
             getDangerNearArea(trinity, 1000)
         }
