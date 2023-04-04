@@ -23,8 +23,8 @@ import com.example.mapstemplate.ui.home.HomeFragment
 import com.example.travelapp.adapters.ItineraryListAdapter
 
 class CurrentUserItinerariesFragment : Fragment() {
-    // private var _binding: FragmentCurrentUserItinerariesBinding? = null
-    private var _binding: NavBarHomeBinding? = null
+    private var _binding: FragmentCurrentUserItinerariesBinding? = null
+    // private var _binding: NavBarHomeBinding? = null
     private val binding get() = _binding!!
 
     lateinit var listViewItinerary: ListView
@@ -36,10 +36,10 @@ class CurrentUserItinerariesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        _binding = FragmentCurrentUserItinerariesBinding.inflate(inflater, container, false)
-        _binding = NavBarHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentCurrentUserItinerariesBinding.inflate(inflater, container, false)
+        // _binding = NavBarHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val rb = root.findViewById<View>(R.id.ratingBar) // idk what I am doing ??!!
+        // val rb = root.findViewById<View>(R.id.ratingBar) // idk what I am doing ??!!
 
 //        add = root.findViewById(R.id.add)
         // createButton = root.findViewById(R.id.createButton)
