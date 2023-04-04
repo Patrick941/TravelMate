@@ -11,6 +11,7 @@
         android:id="@+id/p1toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/Primary"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
         android:orientation="horizontal"
@@ -43,6 +44,33 @@
             android:layout_height="match_parent"
             android:paddingHorizontal="20dp"
             android:src="@drawable/baseline_add_location_alt_40" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#636363"
+        android:gravity="center_vertical"
+        android:minHeight="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:theme="?attr/actionBarTheme">
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:rating="3.5"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:paddingStart="0dp"/>
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:paddingEnd="20dp"/>
 
     </LinearLayout>
 
