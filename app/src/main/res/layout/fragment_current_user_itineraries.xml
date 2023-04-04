@@ -17,15 +17,16 @@
         android:id="@+id/createButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#4A83EE"
+        android:background="@color/Button"
         android:gravity="center"
         >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NEW ITINERARY"
+            android:text="Create New Itinerary"
             android:textSize="25dp"
+            android:textColor="@color/black"
             />
 
     </LinearLayout>
