@@ -235,29 +235,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val directionsApiService = retrofit.create(DirectionsApiService::class.java)
 //launches a coroutine on the Dispatchers.IO dispatcher to perform the network request asynchronously.
         CoroutineScope(Dispatchers.IO).launch {
+            //This starts a try block to catch any exceptions that may occur during the network request
             try {
+                //makes the API request to get the directions between the origin and destination points
+                //using the DirectionsApiService instance.
                 val response = directionsApiService.getDirections(originString, destinationString, apiKey)
+                //Correct
+                //https://maps.googleapis.com/maps/api/directions/json?origin=53.343792,-6.254572&destination=53.344999,-6.259663&key=AIzaSyAFNpCw7wcRqIB73JwgO7w7KcSF2M3dsF4
+
+
+                Log.i("MyTag", response.toString())
+                Log.i("MyTag", "Source string was $originString")
+                Log.i("MyTag", "Destination string was $destinationString")
+                //checks if the API request was successful
                 if (response.isSuccessful) {
                     val directions = response.body()
                     if (directions != null) {
+                        // Use the first route from the response
                         val route = directions.routes.firstOrNull()
+                        //checks if a valid route is available
                         if (route != null) {
-                            val polylineString = directions.routes.firstOrNull()?.legs?.firstOrNull()?.steps
-                                ?.flatMap { it.polyline?.points?.let { PolyUtil.decode(it) } ?: emptyList() }
-                                ?.joinToString(separator = "") ?: ""
-
-                            // Switch to the main thread before adding the polyline to the map
-                            withContext(Dispatchers.Main) {
-                                val polylineOptions = PolylineOptions()
-                                    .addAll(PolyUtil.decode(polylineString))
-                                    .color(Color.BLUE)
-                                    .width(10f)
-                                mMap.addPolyline(polylineOptions)
+                            val polyline = route.legs.firstOrNull()?.steps?.map { it.polyline.points }?.joinToString(separator = "")
+                            Log.i("MyTag", "PolyLine string was: $polyline")
+                            // checks if there is a valid polyline string
+                            if (polyline != null) {
+                                withContext(Dispatchers.Main) {
+                                    drawPolyline(polyline)
+                                }
                             }
-
-                            Log.i("MyTag", "PolyLine string was: $polylineString")
                         }
                     }
+                    //else block that will execute if the API request was not successful.
                 } else {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
@@ -267,13 +275,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         ).show()
                     }
                 }
+                //catch block to handle any exceptions that may occur during the network request
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    //displays a toast message with the exception message
                     Toast.makeText(this@MapsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    //Finish
                 }
             }
         }
-
 
 
         //Problems for future Patrick, remove this demo data
