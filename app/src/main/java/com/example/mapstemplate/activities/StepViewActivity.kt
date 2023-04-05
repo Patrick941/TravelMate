@@ -54,7 +54,7 @@ class StepViewActivity : AppCompatActivity() {
 
     fun warningDeletePopup() {
         val alertDialog = AlertDialog.Builder(this).create()
-        alertDialog.setMessage("Are you sur to delete this itinerary ?")
+        alertDialog.setMessage("Are you sur to delete this step ?")
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
             dialogInterface.dismiss()
         })

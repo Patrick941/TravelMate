@@ -1,5 +1,7 @@
 package com.example.mapstemplate.activities
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -21,6 +23,7 @@ class ItineraryActivity : AppCompatActivity() {
     lateinit var stepListAdapter: StepListAdapter
     lateinit var buttonImageActivity: Button
     lateinit var itinerary: Itinerary
+    lateinit var deleteItineraryButton: ImageView
 
     var itineraryIndex: Int = 0
     var isGlobal: Boolean = true
@@ -44,6 +47,7 @@ class ItineraryActivity : AppCompatActivity() {
         addButton = findViewById(R.id.button_add_step)
         backArrow = findViewById(R.id.back_arrow_itinerary_activity)
         buttonImageActivity = findViewById(R.id.button_image_activity)
+        deleteItineraryButton = findViewById(R.id.button_delete_itinerary)
 
         // hide add icon if is global
         if (isGlobal)
@@ -85,6 +89,23 @@ class ItineraryActivity : AppCompatActivity() {
             intent.putExtra("itinerary_name", itinerary.name)
             startActivity(intent)
         }
+
+        deleteItineraryButton.setOnClickListener {
+            warningDeletePopup()
+        }
+    }
+
+    fun warningDeletePopup() {
+        val alertDialog = AlertDialog.Builder(this).create()
+        alertDialog.setMessage("Are you sur to delete this itinerary ?")
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
+            dialogInterface.dismiss()
+        })
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Delete", DialogInterface.OnClickListener { dialogInterface, i ->
+            // delete itinerary function
+            dialogInterface.dismiss()
+        })
+        alertDialog.show()
     }
 
     override fun onResume() {

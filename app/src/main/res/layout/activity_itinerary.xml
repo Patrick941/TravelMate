@@ -42,11 +42,19 @@
             />
 
         <ImageView
+            android:id="@+id/button_delete_itinerary"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_delete_40"
+            android:paddingHorizontal="10dp"
+            />
+
+        <ImageView
             android:id="@+id/button_add_step"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/baseline_add_location_alt_40"
-            android:paddingHorizontal="20dp"
+            android:paddingHorizontal="10dp"
             />
 
     </LinearLayout>
