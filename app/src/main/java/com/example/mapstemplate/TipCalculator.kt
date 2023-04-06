@@ -1,20 +1,16 @@
-package com.example.tipcalculator
+package com.example.mapstemplate
 
-import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.content.Context
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import com.example.mapstemplate.R
 import com.example.mapstemplate.databinding.ActivityTipCalculatorBinding
 import java.text.NumberFormat
 
-/**
- * Activity that displays a tip calculator.
- */
-class TipCalculatorActivity : AppCompatActivity() {
-
+class TipCalculator : AppCompatActivity() {
     // Binding object instance with access to the views in the activity_main.xml layout
     private lateinit var binding: ActivityTipCalculatorBinding
 
@@ -38,7 +34,7 @@ class TipCalculatorActivity : AppCompatActivity() {
             )
         }
     }
-/**
+    /**
      * Calculates the tip based on the user input.
      */
     private fun calculateTip() {
