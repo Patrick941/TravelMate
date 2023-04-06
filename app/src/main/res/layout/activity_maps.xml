@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -20,49 +18,59 @@
             tools:context=".MapsActivity" />
 
 
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/SearchBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:autofillHints="Type your destination"
-            map:cardBackgroundColor="@color/Primary"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             map:layout_constraintBottom_toBottomOf="parent"
-            map:layout_constraintEnd_toStartOf="@+id/my_button"
+            map:layout_constraintEnd_toEndOf="parent"
+            map:layout_constraintHorizontal_bias="0.0"
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent"
-            map:layout_constraintVertical_bias="0.060000002">
+            map:layout_constraintVertical_bias="0.03">
 
-                <EditText
-                    android:id="@+id/searchText"
-                    android:layout_width="288dp"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="Search safe map:"
-                    android:inputType="textPersonName" />
-        </androidx.cardview.widget.CardView>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/my_button"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:text="Search"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            map:layout_constraintHorizontal_bias="1.0"
-            map:layout_constraintVertical_bias="0.050000012" />
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/SearchBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints="Type your destination"
+                            map:cardBackgroundColor="@color/Primary"
+                            map:layout_constraintBottom_toBottomOf="parent"
+                            map:layout_constraintEnd_toStartOf="@+id/my_button"
+                            map:layout_constraintStart_toStartOf="parent"
+                            map:layout_constraintTop_toTopOf="parent"
+                            map:layout_constraintVertical_bias="0.060000002">
 
-        <Button
-            android:id="@+id/testButton"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:text="test"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            map:layout_constraintHorizontal_bias="1.0"
-            map:layout_constraintVertical_bias="0.25" />
+                                <EditText
+                                    android:id="@+id/searchText"
+                                    android:layout_width="288dp"
+                                    android:layout_height="wrap_content"
+                                    android:ems="10"
+                                    android:hint="Search safe map:"
+                                    android:inputType="textPersonName" />
+                        </androidx.cardview.widget.CardView>
+
+                        <Button
+                            android:id="@+id/my_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="60dp"
+                            android:text="Search"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            map:layout_constraintHorizontal_bias="1.0"
+                            map:layout_constraintVertical_bias="0.050000012"
+                            android:layout_alignParentRight="true"/>
+
+                </RelativeLayout>
+
+        </androidx.appcompat.widget.Toolbar>
 </androidx.constraintlayout.widget.ConstraintLayout>
