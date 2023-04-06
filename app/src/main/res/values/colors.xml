@@ -10,9 +10,9 @@
     <color name="background">#EDECEC</color>
     <color name="red_location">#e50000</color>
     <color name="hint_grey">#979F99</color>
-    <color name="top_bar_red">#C82626</color>
-    <color name="Primary">#C82626</color>
+    <color name="top_bar_red">#008FA0</color>
+    <color name="Primary">#008FA0</color>
     <color name="PrimaryVariant">#F65050</color>
-    <color name="TextBox">#C82626</color>
+    <color name="TextBox">#008FA0</color>
     <color name="Button">#008FA0</color>
 </resources>
