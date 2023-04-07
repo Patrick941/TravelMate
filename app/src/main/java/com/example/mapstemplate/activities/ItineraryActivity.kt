@@ -106,6 +106,7 @@ class ItineraryActivity : AppCompatActivity() {
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Delete", DialogInterface.OnClickListener { dialogInterface, i ->
             deleteItineraryFromFirebase()
             dialogInterface.dismiss()
+            finish()
         })
         alertDialog.show()
     }
@@ -136,13 +137,14 @@ class ItineraryActivity : AppCompatActivity() {
             .delete()
             .addOnSuccessListener {
                 Log.d(TAG, "Itinerary successfully deleted!")
-                // Now remove it from the local data structure
-                HomeActivity.currentUserItineraryList.removeAt(itineraryIndex)
-                stepListAdapter.notifyDataSetChanged()
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error deleting itinerary", e)
             }
+
+
+        // Now remove it from the local data structure
+        HomeActivity.currentUserItineraryList.removeAt(itineraryIndex)
     }
 
 

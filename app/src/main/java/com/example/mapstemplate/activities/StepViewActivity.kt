@@ -62,6 +62,7 @@ class StepViewActivity : AppCompatActivity() {
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Delete", DialogInterface.OnClickListener { dialogInterface, i ->
             deleteStepFromFirebase()
             dialogInterface.dismiss()
+            finish()
         })
         alertDialog.show()
     }
@@ -91,5 +92,9 @@ class StepViewActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error deleting step", e)
+            }
+
+        // delete step in list
+        HomeActivity.currentUserItineraryList[itineraryIndex].steps.removeAt(stepIndex)
     }
-} }
+}
