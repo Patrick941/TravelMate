@@ -12,7 +12,6 @@
         android:id="@+id/p1toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Primary"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
         android:orientation="horizontal"
@@ -51,7 +50,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#636363"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
         android:orientation="horizontal"
@@ -60,6 +58,7 @@
         <RatingBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:progressTint="@color/Star"
             android:numStars="5"
             android:rating="3.5"
             android:scaleX="0.5"
