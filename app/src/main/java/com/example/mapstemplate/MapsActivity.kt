@@ -36,11 +36,25 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
 import java.net.URL
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.location.LocationManager
+import android.location.LocationRequest
+import androidx.core.app.ActivityCompat
+import androidx.core.location.LocationManagerCompat.requestLocationUpdates
 //
 import kotlin.random.Random
 //imports
 import com.example.mapstemplate.DirectionsApiResponse
 import com.example.mapstemplate.DirectionsApiService
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -56,6 +70,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var searchButton : Button
     private lateinit var testButton : Button
     private lateinit var searchContent : TextView
+    private lateinit var locateButton: Button
 
     //Search results
     private lateinit var searchResult : ArrayList<String>
@@ -73,6 +88,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val trinity = LatLng(53.343792, -6.254572)
     private val destination = LatLng(53.3494, -6.2606)
     //sample destination
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    //private var curLoc = LatLng(0.00, 0.00)
+    // 0.00 for initialisation, come up with something better later
 
     ///////////////////////////////////////////////////////////////////////////////////
     //Variable for Log.i messages
@@ -82,9 +100,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     val tempHardCodedArray = Array(10) { Array(10) { LatLng(0.0, 0.0) } }
     private var counter : Int = 1
     // Edited by Genevieve
-/////////////////////////////////////////////////////////////////
-// Retrofit instance configured with a base URL and a converter factory for JSON deserialisation
-//Makes instance for making API requests to the Google Maps APIs.
+    /////////////////////////////////////////////////////////////////
+    // Retrofit instance configured with a base URL and a converter factory for JSON deserialisation
+    //Makes instance for making API requests to the Google Maps APIs.
     private fun createRetrofitInstance(): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://maps.googleapis.com/maps/api/")
@@ -117,6 +135,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         searchButton = findViewById(R.id.my_button)
         searchContent = findViewById(R.id.searchText)
+        locateButton = findViewById(R.id.locateButton)
 
         searchButton.setOnClickListener{
             val searchData : String = searchContent.text.toString()
@@ -124,6 +143,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val intent = Intent(this, SearchResults::class.java)
             intent.putExtra("searchText", searchData)
             startActivity(intent)
+        }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        // locationtestbutton
+        locateButton.setOnClickListener {
+            //checkPermission(Context.LOCATION_SERVICE)
+            //usedLocationClient.getLastLocation(LocationManager.GPS_PROVIDER)
+            println("Click")
+            // seems to hit click and the never do the rest?
+            // okay above is just a declaration, have to call it here
+            // currently getting no permission
+            //getLastKnownLocation()
+            getLocation()
         }
 
         object {
@@ -160,6 +192,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
     override fun onResume(){
         super.onResume()
+        getLocation()
         Log.i("MyTag", "resuming $thisName")
     }
     override fun onStart(){
@@ -216,24 +249,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     //Edited by Genevieve
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// defines a private function named getDirectionsAndDrawRoute,
-//which takes two LatLng parameters representing the origin and destination points.
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // defines a private function named getDirectionsAndDrawRoute,
+    //which takes two LatLng parameters representing the origin and destination points.
     private fun getDirectionsAndDrawRoute(destination: LatLng) {
         // Use the Google Maps API key from AndroidManifest.xml
         mMap.addMarker(MarkerOptions().position(trinity))
         mMap.addMarker(MarkerOptions().position(destination))
-//changed api key
+    //changed api key
         val apiKey = "AIzaSyAFNpCw7wcRqIB73JwgO7w7KcSF2M3dsF4"
-//string representation of the origin coordinates, formatted as latitude,longitude
+    //string representation of the origin coordinates, formatted as latitude,longitude
         val originString = "${trinity.latitude},${trinity.longitude}"
         //For destination
         val destinationString = "${destination.latitude},${destination.longitude}"
-// calls the previously defined createRetrofitInstance()
-//function to create a Retrofit instance for making API requests.
+    // calls the previously defined createRetrofitInstance()
+    //function to create a Retrofit instance for making API requests.
         val retrofit = createRetrofitInstance()
         val directionsApiService = retrofit.create(DirectionsApiService::class.java)
-//launches a coroutine on the Dispatchers.IO dispatcher to perform the network request asynchronously.
+    //launches a coroutine on the Dispatchers.IO dispatcher to perform the network request asynchronously.
         CoroutineScope(Dispatchers.IO).launch {
             //This starts a try block to catch any exceptions that may occur during the network request
             try {
@@ -806,5 +839,109 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     }
+
+
+    private fun locationPermission(): Boolean{
+        // checks if Coarse or Fine are allowed
+        if (
+            ActivityCompat.checkSelfPermission(
+                this,
+                ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+           requestPermissions(
+                arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION),
+                1)
+            // then checking if got permission from request
+            if (
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                return false
+            }
+        }
+        return true;
+
+    }
+
+    // ideally this would be used if we had confidence that recent
+    // location data is good enough, need to check how to do that
+    // also getlocation also seems to use a short cache
+    // probably fine to remove this tbh
+    @SuppressLint("MissingPermission") // it gets checked in another function
+    private fun getLastKnownLocation() {
+        if (!locationPermission()) {
+            print("not granted")
+            return
+        }
+
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener {
+                if (it != null) {
+                    // use your location object
+                    // get latitude , longitude and other info from this
+                    //curLoc = LatLng(location.latitude, location.longitude)
+                    println(it.longitude)
+                } else {
+                    println("null")
+                }
+
+            }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLocation(){
+        // initialising just in case
+        if (locationPermission()) {
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                object : CancellationToken(){
+                    override fun onCanceledRequested(listener: OnTokenCanceledListener) = CancellationTokenSource().token
+
+                    override fun isCancellationRequested() = false
+                }).addOnSuccessListener {
+                if (it == null)
+                    Toast.makeText(this, "Cannot get location.", Toast.LENGTH_SHORT).show()
+                else {
+                    val lat = it.latitude
+                    val lon = it.longitude
+                    print(lon)
+                    println(lat)
+                    val currentLocation = LatLng(lat, lon)
+                    val temp = CameraPosition.Builder()
+                        .target(currentLocation)
+                        .zoom(5f)
+                        .build()
+                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
+                }
+            }
+        }
+
+    }
+
+    //@SuppressLint("MissingPermission")
+    //private fun newLocation(){
+        //if (!locationPermission()) return;
+        //val currentLocation: LatLng = getLocation()
+        //val temp = CameraPosition.Builder()
+            //.target(currentLocation)
+            //.zoom(5f)
+            //.build()
+        //mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
+    //}
+
 
 }
