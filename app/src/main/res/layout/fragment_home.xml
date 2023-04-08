@@ -13,21 +13,24 @@
         android:layout_height="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Notifications"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.064" />
 
     <TextView
         android:id="@+id/Notifications"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Placeholder"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.469" />
+        app:layout_constraintVertical_bias="0.538" />
 
     <TextView
         android:id="@+id/BasedOnLocation"
@@ -37,6 +40,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Placeholder"
+        android:textColor="@color/black"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,10 +52,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/LocationsRecycler"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         app:layout_constraintBottom_toTopOf="@+id/Notifications"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/BasedOnLocation" />
+        app:layout_constraintTop_toBottomOf="@+id/BasedOnLocation"
+        app:layout_constraintVertical_bias="0.171" />
 </androidx.constraintlayout.widget.ConstraintLayout>

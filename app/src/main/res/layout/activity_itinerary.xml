@@ -10,36 +10,33 @@
     <LinearLayout
         android:id="@+id/p1toolbar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#C82626"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:layout_height="wrap_content"
+        android:background="@color/Primary"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:minHeight="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:theme="?attr/actionBarTheme">
 
         <ImageView
             android:id="@+id/back_arrow_itinerary_activity"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/baseline_arrow_back_ios_40"
             android:paddingStart="20dp"
-            />
+            android:src="@drawable/baseline_arrow_back_ios_40" />
 
         <TextView
             android:id="@+id/textView_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="default title"
-            android:textSize="25sp"
             android:gravity="center"
+            android:text="default title"
             android:textColor="@color/black"
-            />
+            android:textSize="25sp" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/button_delete_itinerary"
@@ -53,9 +50,35 @@
             android:id="@+id/button_add_step"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/baseline_add_location_alt_40"
-            android:paddingHorizontal="10dp"
-            />
+            android:paddingHorizontal="20dp"
+            android:src="@drawable/baseline_add_location_alt_40" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#636363"
+        android:gravity="center_vertical"
+        android:minHeight="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:theme="?attr/actionBarTheme">
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:rating="3.5"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:paddingStart="0dp"/>
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:paddingEnd="20dp"/>
 
     </LinearLayout>
 

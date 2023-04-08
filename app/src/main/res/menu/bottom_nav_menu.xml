@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/test_home"
+            android:icon="@drawable/baseline_home_24"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/test_map"
+            android:icon="@drawable/baseline_location_on_24"
+            android:title="SafeMap" />
+        <item
+            android:id="@+id/test_add"
+            android:icon="@drawable/baseline_add_box_24"
+            android:title="Add itinerary" />
+        <item
+            android:id="@+id/test_rating"
+            android:icon="@drawable/baseline_thumbs_up_down_24"
+            android:title="Ratings" />
+        <item
+            android:id="@+id/test_profile"
+            android:icon="@drawable/baseline_account_circle_24"
+            android:title="Profile" />
+    </group>
+</menu>
