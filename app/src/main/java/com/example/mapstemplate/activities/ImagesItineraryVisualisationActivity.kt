@@ -2,21 +2,21 @@ package com.example.mapstemplate.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
+import android.database.Cursor
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.R
+import com.example.mapstemplate.adapters.ImageRecyclerViewAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -24,6 +24,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.component1
 import java.io.File
 import java.io.IOException
+import java.util.UUID
 
 
 class ImagesItineraryVisualisationActivity : AppCompatActivity() {
@@ -31,8 +32,9 @@ class ImagesItineraryVisualisationActivity : AppCompatActivity() {
     private val storageRef = storage.reference
     private var mAuth = FirebaseAuth.getInstance()
 
-    lateinit var imageView: ImageView
     lateinit var addImageButton: FloatingActionButton
+    lateinit var recyclerView: RecyclerView
+    lateinit var backButton: ImageView
 
     lateinit var itineraryName: String
     private val imagesList = ArrayList<File>()
@@ -43,7 +45,8 @@ class ImagesItineraryVisualisationActivity : AppCompatActivity() {
             ActivityResultContracts.StartActivityForResult()
         ) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                saveImageInFirebase(it.data!!.data!!)
+                val uri: Uri = it.data!!.data!!
+                saveImageInFirebase(uri)
             }
         }
 
@@ -53,8 +56,18 @@ class ImagesItineraryVisualisationActivity : AppCompatActivity() {
 
         itineraryName = intent.getStringExtra("itinerary_name")!!
 
-        imageView = findViewById(R.id.display_image)
         addImageButton = findViewById(R.id.button_add_image)
+        recyclerView = findViewById(R.id.images_displayer)
+        backButton = findViewById(R.id.back_arrow_image_activity)
+
+        // Finish the activity on click
+        backButton.setOnClickListener {
+            finish()
+        }
+
+        // setup recycler view
+        recyclerView.adapter = ImageRecyclerViewAdapter(imagesList)
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
         Log.d("DEBUG", "START VISUAL")
         fetchTestImages()
@@ -82,9 +95,7 @@ class ImagesItineraryVisualisationActivity : AppCompatActivity() {
             storageRef.getFile(localfile).addOnSuccessListener {
                 imagesList.add(localfile)
 
-                // set an image to the imageView
-                val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
-                imageView.setImageBitmap(bitmap)
+                recyclerView.adapter?.notifyItemInserted(imagesList.size-1)
             }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -96,12 +107,16 @@ class ImagesItineraryVisualisationActivity : AppCompatActivity() {
      * THE FILE NAME MUST BE UNIQUE
      */
     fun saveImageInFirebase(uri: Uri) {
-        val imageRef = storageRef.root.child("images_itineraries/${mAuth.currentUser!!.uid}/${itineraryName}" )
+        val imageRef = storageRef.root.child("images_itineraries/${mAuth.currentUser!!.uid}/${itineraryName}/${UUID.randomUUID()}" )
 
         imageRef.putFile(uri)
             .addOnSuccessListener{
-            imageView.setImageURI(uri)
             Toast.makeText(this, "Upload successful :)", Toast.LENGTH_SHORT).show()
+                val localfile = File.createTempFile(it.storage.name, ".jpg")
+                it.storage.getFile(localfile).addOnSuccessListener {
+                    imagesList.add(localfile)
+                    recyclerView.adapter?.notifyItemInserted(imagesList.size-1)
+                }
         }
             .addOnFailureListener{
             Toast.makeText(this, "Upload failed...", Toast.LENGTH_SHORT).show()
