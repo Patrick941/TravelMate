@@ -23,6 +23,8 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+            android:name=".profile"
+            android:exported="false" />
         <activity
             android:name=".MapsThemes"
             android:exported="false">
@@ -103,6 +105,7 @@
         <activity android:name=".activities.ItineraryActivity" />
         <activity android:name=".activities.StepViewActivity" />
         <activity android:name=".activities.AddItineraryActivity" />
+        <activity android:name=".LikesPage"/>
     </application>
 
 </manifest>

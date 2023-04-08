@@ -7,7 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background">#FFFFFF</color>
+    <color name="background">#EDECEC</color>
     <color name="red_location">#e50000</color>
     <color name="hint_grey">#979F99</color>
     <color name="top_bar_red">#008FA0</color>
@@ -21,4 +21,5 @@
     <color name="blue">#0288D1</color>
     <color name="blue_dark">#005B9F</color>
     <color name="blue_light">#81D4FA</color>
+    <color name="Star">#E1D800</color>
 </resources>

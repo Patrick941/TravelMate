@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.databinding.ActivityHomeBinding
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
@@ -30,6 +31,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+
 
 class HomeActivity : AppCompatActivity() {
 
