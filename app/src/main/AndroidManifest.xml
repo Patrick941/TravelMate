@@ -97,6 +97,7 @@
         <activity android:name=".activities.ItineraryActivity" />
         <activity android:name=".activities.StepViewActivity" />
         <activity android:name=".activities.AddItineraryActivity" />
+        <activity android:name=".LikesPage"/>
     </application>
 
 </manifest>
