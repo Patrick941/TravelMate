@@ -40,6 +40,14 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/button_delete_itinerary"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_delete_40"
+            android:paddingHorizontal="10dp"
+            />
+
+        <ImageView
             android:id="@+id/button_add_step"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -74,6 +82,13 @@
             android:paddingEnd="20dp"/>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button_image_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="IMAGE ACTIVITY"
+        />
 
     <ListView
         android:id="@+id/listView_steps"

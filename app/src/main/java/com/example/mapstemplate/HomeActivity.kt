@@ -133,6 +133,7 @@ class HomeActivity : AppCompatActivity() {
                 .addOnSuccessListener { steps ->
                     for (stepDocument in steps) {
                         val step = Step(
+                            stepDocument.id,
                             stepDocument.data.get("name") as String,
                             stepDocument.data.get("address") as String,
                             stepDocument.data.get("price") as Double,
