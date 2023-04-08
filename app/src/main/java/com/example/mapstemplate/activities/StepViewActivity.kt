@@ -13,7 +13,7 @@ import com.example.travelapp.itineraries.Step
 import com.google.firebase.firestore.FirebaseFirestore
 
 class StepViewActivity : AppCompatActivity() {
-    private var isLiked = false;
+    private var isLiked = false
     lateinit var back_arrow: ImageView
     lateinit var deleteButton: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,14 +58,15 @@ class StepViewActivity : AppCompatActivity() {
             back_arrow.setOnClickListener {
                 finish()
             }
-        }
 
-        deleteButton.setOnClickListener {
+            deleteButton.setOnClickListener {
             warningDeletePopup()
+            }
         }
 
 
-    }
+
+
 
     fun warningDeletePopup() {
         val alertDialog = AlertDialog.Builder(this).create()
