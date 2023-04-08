@@ -12,10 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mapstemplate.NotificationsAdapter
+import com.example.mapstemplate.*
 import com.example.mapstemplate.R
-import com.example.mapstemplate.RecommendationsAdapter
-import com.example.mapstemplate.User
+import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.databinding.FragmentHomeBinding
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
@@ -25,6 +24,13 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import android.app.Activity
+import android.content.Intent
+import com.example.mapstemplate.HomeActivity
+import com.example.mapstemplate.MapsActivity
+import com.example.mapstemplate.profile
+import com.example.mapstemplate.LikesPage
+
 
 
 class HomeFragment : Fragment() {
@@ -140,9 +146,27 @@ class HomeFragment : Fragment() {
             }
 
         })
-
+        setupNewButtons()
 
         return root
+    }
+    private fun replaceActivity(activity: Activity) {
+        val intent = Intent(context, activity::class.java)
+        startActivity(intent)
+    }
+    private fun setupNewButtons() {
+        binding.bottomNavView.setOnItemReselectedListener {
+            when(it.itemId) {
+                R.id.test_home -> replaceActivity(HomeActivity())
+                R.id.test_map -> replaceActivity(MapsActivity())
+                R.id.test_add -> replaceActivity(AddItineraryActivity())
+                R.id.test_rating -> replaceActivity(LikesPage())
+                R.id.test_profile -> replaceActivity(profile())
+                else -> {
+                }
+            }
+            true
+        }
     }
 
     private fun parseJson(jsonString: String) {

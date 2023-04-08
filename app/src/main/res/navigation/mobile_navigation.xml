@@ -34,4 +34,5 @@
         android:name="com.example.mapstemplate.ui.global_itineraries.GlobalItinerariesFragment"
         android:label="Global Itineraries"
         tools:layout="@layout/fragment_global_itineraries" />
+
 </navigation>

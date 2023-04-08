@@ -8,8 +8,8 @@ import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
 import com.example.travelapp.itineraries.Step
 
-// when you press the step in the itinerary should display this activity:
 class StepViewActivity : AppCompatActivity() {
+    private var isLiked = false;
     lateinit var back_arrow: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,23 +21,37 @@ class StepViewActivity : AppCompatActivity() {
 
         back_arrow = findViewById(R.id.back_arrow_display_step)
 
-        // want to find the itinerary activity and pull the information from that itinerary object
-        // to fill in the fields. Tring to add to the TextView string
-        val name = findViewById<TextView>(R.id.textView_title_step_display) as TextView
+        val name = findViewById<TextView>(R.id.textView_title_step_display)
         name.text = step.name
 
-        val address = findViewById<TextView>(R.id.address) as TextView
-        address.text = "Address : " + step.address
+        val mainName = findViewById<TextView>(R.id.main_name) as TextView
+        mainName.text = step.name
 
-        val price = findViewById<TextView>(R.id.price) as TextView
-        price.text = "Price : ${step.price} €"
+        val address = findViewById<TextView>(R.id.address)
+        address.text = step.address
 
-        val description = findViewById<TextView>(R.id.description) as TextView
-        description.text = "Description : " + step.description
+        val price = findViewById<TextView>(R.id.price)
+        price.text = "${step.price} €"
+
+        val description = findViewById<TextView>(R.id.description)
+        description.text = step.description
+
+        val likeButton = findViewById<ImageView>(R.id.heart)
+        likeButton.setOnClickListener {
+            isLiked = !isLiked
+            if (isLiked) {
+                likeButton.setImageResource(R.drawable.filled_heart)
+            } else {
+                likeButton.setImageResource(R.drawable.heart)
+            }
 
 
-        back_arrow.setOnClickListener {
-            finish()
+            // You should also set up the ImageViews for your new XML layout here
+            // I'm not doing this here because it depends on your implementation
+        }
+            back_arrow.setOnClickListener {
+                finish()
+            }
         }
     }
-}
+

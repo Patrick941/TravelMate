@@ -18,9 +18,11 @@ import com.example.mapstemplate.R
 import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.activities.ItineraryActivity
 import com.example.mapstemplate.databinding.FragmentCurrentUserItinerariesBinding
+import com.example.mapstemplate.profile
 import com.example.mapstemplate.databinding.NavBarHomeBinding
 import com.example.mapstemplate.ui.home.HomeFragment
 import com.example.travelapp.adapters.ItineraryListAdapter
+import com.example.mapstemplate.LikesPage
 
 class CurrentUserItinerariesFragment : Fragment() {
     private var _binding: FragmentCurrentUserItinerariesBinding? = null
@@ -79,8 +81,8 @@ class CurrentUserItinerariesFragment : Fragment() {
                 R.id.test_home -> replaceActivity(HomeActivity())
                 R.id.test_map -> replaceActivity(MapsActivity())
                 R.id.test_add -> replaceActivity(AddItineraryActivity())
-                // R.id.test_rating -> replaceFragment()
-                // R.id.test_profile -> replaceFragment()
+                R.id.test_rating -> replaceActivity(LikesPage())
+                R.id.test_profile -> replaceActivity(profile())
                 else -> {
                 }
             }
