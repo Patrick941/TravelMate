@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
 import com.example.travelapp.itineraries.Step
+import com.google.firebase.firestore.FirebaseFirestore
 
 // when you press the step in the itinerary should display this activity:
 class StepViewActivity : AppCompatActivity() {
@@ -54,18 +55,46 @@ class StepViewActivity : AppCompatActivity() {
 
     fun warningDeletePopup() {
         val alertDialog = AlertDialog.Builder(this).create()
-        alertDialog.setMessage("Are you sur to delete this step ?")
+        alertDialog.setMessage("Are you sure you want to delete this step ?")
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
             dialogInterface.dismiss()
         })
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Delete", DialogInterface.OnClickListener { dialogInterface, i ->
             deleteStepFromFirebase()
             dialogInterface.dismiss()
+            finish()
         })
         alertDialog.show()
     }
 
     fun deleteStepFromFirebase() {
         Log.d("DEBUG", "deleteStepFromFirebase")
+        val itineraryIndex: Int = intent.getIntExtra("itinerary_index", 0)
+        val stepIndex: Int = intent.getIntExtra("step_index", 0)
+        val step: Step = HomeActivity.currentUserItineraryList[itineraryIndex].steps[stepIndex]
+
+        val itineraryId = HomeActivity.currentUserItineraryList[itineraryIndex].id
+        val stepId = HomeActivity.currentUserItineraryList[itineraryIndex].steps[stepIndex].id
+
+
+
+        val TAG = "StepViewActivity"
+        val db = FirebaseFirestore.getInstance()
+
+
+        db.collection("itineraries")
+            .document(itineraryId)
+            .collection("steps")
+            .document(stepId)
+            .delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "Step successfully deleted!")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error deleting step", e)
+            }
+
+        // delete step in list
+        HomeActivity.currentUserItineraryList[itineraryIndex].steps.removeAt(stepIndex)
     }
 }
