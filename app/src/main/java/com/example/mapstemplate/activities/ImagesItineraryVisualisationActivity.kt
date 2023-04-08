@@ -60,14 +60,14 @@ class ImagesItineraryVisualisationActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.images_displayer)
         backButton = findViewById(R.id.back_arrow_image_activity)
 
+        // setup recycler view
+        recyclerView.adapter = ImageRecyclerViewAdapter(imagesList)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
         // Finish the activity on click
         backButton.setOnClickListener {
             finish()
         }
-
-        // setup recycler view
-        recyclerView.adapter = ImageRecyclerViewAdapter(imagesList)
-        recyclerView.layoutManager = LinearLayoutManager(this)
 
         Log.d("DEBUG", "START VISUAL")
         fetchTestImages()
@@ -75,7 +75,7 @@ class ImagesItineraryVisualisationActivity : AppCompatActivity() {
     }
 
     fun fetchTestImages() {
-        val imagesRef = storageRef.root.child("images_itineraries")
+        val imagesRef = storageRef.root.child("images_itineraries/${mAuth.currentUser!!.uid}/${itineraryName}")
 
         imagesRef.listAll()
             .addOnSuccessListener { (items) ->
