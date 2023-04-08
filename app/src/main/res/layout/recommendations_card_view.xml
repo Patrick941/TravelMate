@@ -5,6 +5,7 @@
     android:layout_height="50dp"
     android:layout_margin="10dp"
     android:fadeScrollbars="false"
+    android:background="@color/background"
     app:cardElevation="6dp">
 
     <LinearLayout
