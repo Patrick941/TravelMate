@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     tools:context=".activities.AddItineraryActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:id="@+id/p1toolbar"

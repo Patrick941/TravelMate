@@ -15,7 +15,11 @@
     <color name="PrimaryVariant">#F65050</color>
     <color name="TextBox">#008FA0</color>
     <color name="Button">#008FA0</color>
-    <color name="ToolBar">#008FA0</color>
+    <color name="green">#1B5E20</color>
+    <color name="green_dark">#003300</color>
+    <color name="green_light">#A5D6A7</color>
+    <color name="blue">#0288D1</color>
+    <color name="blue_dark">#005B9F</color>
+    <color name="blue_light">#81D4FA</color>
     <color name="Star">#E1D800</color>
-    <color name="icon">#636363</color>
 </resources>
