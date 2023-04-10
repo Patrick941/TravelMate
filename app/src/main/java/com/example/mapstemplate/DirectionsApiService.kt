@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface DirectionsApiService {
 // HTTP GET request
     
-    @GET("directions/json")
+    @GET("maps/api/directions/json")
     suspend fun getDirections(
     //origin and destination parameters
         @Query("origin") origin: String,
