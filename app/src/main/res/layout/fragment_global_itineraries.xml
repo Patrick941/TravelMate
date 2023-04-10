@@ -7,6 +7,33 @@
     tools:context=".ui.global_itineraries.GlobalItinerariesFragment"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:background="@color/ToolBar"
+        android:theme="?attr/actionBarTheme">
+
+        <ImageView
+            android:id="@+id/back_arrow_display_step"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="20dp"
+            android:src="@drawable/baseline_arrow_back_ios_40" />
+
+        <TextView
+            android:id="@+id/textView_title_step_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Search All Itineraries"
+            android:textColor="@color/black"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:ems="10"
-            android:hint="Search itinerary name: "
+            android:hint="Search Itineraries"
+            android:textColorHint="@color/hint_grey"
             android:inputType="textPersonName" />
 
         <Button
@@ -41,7 +69,10 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Submit"
-            android:backgroundTint="@color/Button"/>
+            android:backgroundTint="@color/Button"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"/>
     </LinearLayout>
 
 

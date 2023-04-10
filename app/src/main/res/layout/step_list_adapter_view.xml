@@ -6,32 +6,6 @@
     android:orientation="vertical"
     android:gravity="center_vertical">
 
-<!--    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#636363">
-
-        <RatingBar
-            android:id="@+id/ratingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:stepSize="0.5"
-            android:isIndicator="true"
-            android:rating="3.5"
-            android:scaleX="0.5"
-            android:scaleY="0.5" />
-
-        <Switch
-            android:id="@+id/switch1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text=""
-            android:paddingEnd="18.5dp" />
-
-    </LinearLayout>-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="96dp"
@@ -106,7 +80,8 @@
                     android:layout_width="16dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/baseline_location_on_16" />
+                    android:background="@drawable/baseline_location_on_16"
+                    android:backgroundTint="@color/icon"/>
 
                 <TextView
                     android:id="@+id/textView_step_adapter_address"
@@ -129,7 +104,8 @@
                     android:layout_width="16dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/baseline_credit_card_24" />
+                    android:background="@drawable/baseline_credit_card_24"
+                    android:backgroundTint="@color/icon"/>
 
                 <TextView
                     android:id="@+id/textView_step_adapter_price"
@@ -152,7 +128,8 @@
                     android:layout_width="16dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/baseline_info_24" />
+                    android:background="@drawable/baseline_info_24"
+                    android:backgroundTint="@color/icon"/>
 
                 <TextView
                     android:id="@+id/description"
