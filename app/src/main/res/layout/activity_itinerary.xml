@@ -65,11 +65,11 @@
         android:theme="?attr/actionBarTheme">
 
         <RatingBar
+            android:id="@+id/itinerary_rating_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:progressTint="@color/Star"
             android:numStars="5"
-            android:rating="3.5"
             android:scaleX="0.5"
             android:scaleY="0.5"
             android:paddingStart="0dp"/>

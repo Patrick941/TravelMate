@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.databinding.ActivityHomeBinding
+import com.example.mapstemplate.itineraries.UserRate
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
 import org.json.JSONObject
@@ -51,6 +52,7 @@ class HomeActivity : AppCompatActivity() {
     companion object {
         val currentUserItineraryList = ArrayList<Itinerary>();
         val globalItineraryList = ArrayList<Itinerary>();
+        val userRateList = ArrayList<UserRate>()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +89,7 @@ class HomeActivity : AppCompatActivity() {
 
         fetchCurrentUserItineraries()
         fetchGlobalItineraries()
+        fetchUserRate()
     }
 
     // get current user itineraries from firestore
@@ -121,11 +124,41 @@ class HomeActivity : AppCompatActivity() {
             }
     }
 
+    // get all rating of the current user
+    private fun fetchUserRate() {
+        db.collection("user/${mAuth.uid}/itineraryRates")
+            .get()
+            .addOnSuccessListener { userRateDocuments ->
+                for (doc in userRateDocuments) {
+                    userRateList.add(UserRate(doc.id, (doc.data.get("rate") as Double).toFloat()))
+                }
+            }
+    }
+
     private fun storeFetchedItinerariesInList(list: ArrayList<Itinerary>, querySnapshot: QuerySnapshot) {
         for (itineraryDocument in querySnapshot) {
+            // Assure that both variables are Double due to firestore issue
+            var rating: Double
+            var numberOfRates: Double
+
+            val tmpRating = itineraryDocument.data.getOrDefault("rating", 0.0)
+            val tmpNumberOfRates = itineraryDocument.data.getOrDefault("number_of_rates", 0.0)
+
+            if (tmpRating is Long)
+                rating = tmpRating.toDouble()
+            else
+                rating = tmpRating as Double
+
+            if (tmpNumberOfRates is Long)
+                numberOfRates = tmpNumberOfRates.toDouble()
+            else
+                numberOfRates = tmpNumberOfRates as Double
+
             val itinerary = Itinerary(
                 itineraryDocument.data.get("title") as String,
-                itineraryDocument.id
+                itineraryDocument.id,
+                rating.toFloat(),
+                numberOfRates.toInt()
             )
 
             db.collection("itineraries/${itineraryDocument.id}/steps")
