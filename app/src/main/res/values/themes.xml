@@ -13,8 +13,8 @@
         <item name="android:statusBarColor">@color/Primary</item>
         <!-- Customize your theme here. -->
         <!-- Customize your theme here. -->
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
@@ -59,4 +59,5 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
+
 </resources>
