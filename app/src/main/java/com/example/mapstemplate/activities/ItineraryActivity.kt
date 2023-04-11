@@ -6,7 +6,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button=
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.RatingBar
@@ -37,7 +37,9 @@ class ItineraryActivity : AppCompatActivity() {
     // private lateinit var binding: ActivityHomeBinding
     var itineraryIndex: Int = 0
     var isGlobal: Boolean = true
-    var originRating: Float = 0f;
+    var originBarRating: Float = 0f
+    var userRating: Float = 0f
+    var userHasRate: Boolean = false
 
     private val db = Firebase.firestore
     private val mAuth = FirebaseAuth.getInstance()
@@ -78,8 +80,8 @@ class ItineraryActivity : AppCompatActivity() {
     }
 
     fun setupRatingBar() {
-        originRating = fetchUserRate()
-        ratingBar.rating = originRating
+        userRating = getUserRate()
+        ratingBar.rating = itinerary.rating
 
         ratingBar.setOnRatingBarChangeListener { ratingBar, rate, b ->
             Log.d("DEBUG", "setupRatingBar: ${ratingBar}, ${rate}, ${b}")
@@ -90,14 +92,12 @@ class ItineraryActivity : AppCompatActivity() {
     /**
      * Get the last stored value of the rate that the current user give for a specific itinerary, or 0
      */
-    private fun fetchUserRate(): Float {
-        // tmp value waiting for group-itinerary-benoit branch merging
-        val itineraryId = "TMP_ID"
-        val docItineraryUserRateRef = db.collection("user/${mAuth.uid}/itineraryRates")
-        val rateDocs = docItineraryUserRateRef.get().result
-        for (doc in rateDocs) {
-            if (doc.id == itineraryId && doc.data.containsValue("rate"))
-                return doc.data.get("rate") as Float
+    private fun getUserRate(): Float {
+        for (userRate in HomeActivity.userRateList) {
+            if (userRate.itineraryId == itinerary.id) {
+                userHasRate = true
+                return userRate.userRate
+            }
         }
 
         return 0f;
@@ -107,24 +107,32 @@ class ItineraryActivity : AppCompatActivity() {
      * Update the rating of the itinerary in firestore and update user rates in firestore
      */
     private fun updateRatingBar(rate: Float) {
-        // tmp value waiting for group-itinerary-benoit branch merging
-        val itineraryId = "TMP_ID"
-        val originalRateNumber = 2
+        var numberOfRateAfterUpdate: Int = itinerary.numberOfRate
+        var ratingAfterUpdate: Float
 
-        val afterUpdateRating = (originalRateNumber * originRating + rate) / originalRateNumber+1
+        if (userHasRate) {
+            ratingAfterUpdate =
+                (itinerary.numberOfRate * itinerary.rating + rate - userRating) / itinerary.numberOfRate
+        } else {
+            ratingAfterUpdate =
+                (itinerary.numberOfRate * itinerary.rating + rate) / itinerary.numberOfRate + 1
+            numberOfRateAfterUpdate = itinerary.numberOfRate+1
+        }
 
         // update fields in a specific itinerary
-        val docItineraryRef = db.collection("itineraries").document(itineraryId)
-        docItineraryRef.update("rating", afterUpdateRating, "number_of_rates", originalRateNumber+1)
+        val docItineraryRef = db.collection("itineraries").document(itinerary.id)
+        docItineraryRef.update("rating", ratingAfterUpdate, "number_of_rates", numberOfRateAfterUpdate)
+
 
         // update his profile information with this change
         val userRateHashMap = hashMapOf(
             "rate" to rate
         )
-        val docItineraryUserRateRef = db.collection("user/${mAuth.uid}/itineraryRates").document(itineraryId)
+        val docItineraryUserRateRef = db.collection("user/${mAuth.uid}/itineraryRates").document(itinerary.id)
         docItineraryUserRateRef.set(userRateHashMap)
 
-        originRating = afterUpdateRating
+        itinerary.rating = ratingAfterUpdate
+        itinerary.numberOfRate = numberOfRateAfterUpdate
     }
 
     fun setupListView(itinerary: Itinerary) {

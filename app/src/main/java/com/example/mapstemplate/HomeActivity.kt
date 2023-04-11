@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.databinding.ActivityHomeBinding
+import com.example.mapstemplate.itineraries.UserRate
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
 import org.json.JSONObject
@@ -51,6 +52,7 @@ class HomeActivity : AppCompatActivity() {
     companion object {
         val currentUserItineraryList = ArrayList<Itinerary>();
         val globalItineraryList = ArrayList<Itinerary>();
+        val userRateList = ArrayList<UserRate>()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +89,7 @@ class HomeActivity : AppCompatActivity() {
 
         fetchCurrentUserItineraries()
         fetchGlobalItineraries()
+        fetchUserRate()
     }
 
     // get current user itineraries from firestore
@@ -118,6 +121,17 @@ class HomeActivity : AppCompatActivity() {
             }
             .addOnFailureListener { exception ->
                 Log.w("DEBUG", "Error getting documents.", exception)
+            }
+    }
+
+    // get all rating of the current user
+    private fun fetchUserRate() {
+        db.collection("user/${mAuth.uid}/itineraryRates")
+            .get()
+            .addOnSuccessListener { userRateDocuments ->
+                for (doc in userRateDocuments) {
+                    userRateList.add(UserRate(doc.id, doc.data.get("rate") as Float))
+                }
             }
     }
 
