@@ -130,16 +130,35 @@ class HomeActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { userRateDocuments ->
                 for (doc in userRateDocuments) {
-                    userRateList.add(UserRate(doc.id, doc.data.get("rate") as Float))
+                    userRateList.add(UserRate(doc.id, (doc.data.get("rate") as Double).toFloat()))
                 }
             }
     }
 
     private fun storeFetchedItinerariesInList(list: ArrayList<Itinerary>, querySnapshot: QuerySnapshot) {
         for (itineraryDocument in querySnapshot) {
+            // Assure that both variables are Double due to firestore issue
+            var rating: Double
+            var numberOfRates: Double
+
+            val tmpRating = itineraryDocument.data.getOrDefault("rating", 0.0)
+            val tmpNumberOfRates = itineraryDocument.data.getOrDefault("number_of_rates", 0.0)
+
+            if (tmpRating is Long)
+                rating = tmpRating.toDouble()
+            else
+                rating = tmpRating as Double
+
+            if (tmpNumberOfRates is Long)
+                numberOfRates = tmpNumberOfRates.toDouble()
+            else
+                numberOfRates = tmpNumberOfRates as Double
+
             val itinerary = Itinerary(
                 itineraryDocument.data.get("title") as String,
-                itineraryDocument.id
+                itineraryDocument.id,
+                rating.toFloat(),
+                numberOfRates.toInt()
             )
 
             db.collection("itineraries/${itineraryDocument.id}/steps")

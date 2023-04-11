@@ -14,7 +14,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
-import com.example.mapstemplate.databinding.ActivityHomeBinding
+import com.example.mapstemplate.itineraries.UserRate
 import com.example.travelapp.adapters.StepListAdapter
 import com.example.travelapp.itineraries.Itinerary
 import com.google.firebase.auth.FirebaseAuth
@@ -37,8 +37,7 @@ class ItineraryActivity : AppCompatActivity() {
     // private lateinit var binding: ActivityHomeBinding
     var itineraryIndex: Int = 0
     var isGlobal: Boolean = true
-    var originBarRating: Float = 0f
-    var userRating: Float = 0f
+    lateinit var userRate: UserRate;
     var userHasRate: Boolean = false
 
     private val db = Firebase.firestore
@@ -80,11 +79,12 @@ class ItineraryActivity : AppCompatActivity() {
     }
 
     fun setupRatingBar() {
-        userRating = getUserRate()
-        ratingBar.rating = itinerary.rating
+        getUserRate()
+        ratingBar.rating = userRate.rate
+        Log.d("DEBUG", "User rate : ${userRate.rate}")
+        Log.d("DEBUG", "Rate : ${itinerary.rating}")
 
         ratingBar.setOnRatingBarChangeListener { ratingBar, rate, b ->
-            Log.d("DEBUG", "setupRatingBar: ${ratingBar}, ${rate}, ${b}")
             updateRatingBar(rate)
         }
     }
@@ -92,15 +92,16 @@ class ItineraryActivity : AppCompatActivity() {
     /**
      * Get the last stored value of the rate that the current user give for a specific itinerary, or 0
      */
-    private fun getUserRate(): Float {
-        for (userRate in HomeActivity.userRateList) {
-            if (userRate.itineraryId == itinerary.id) {
+    private fun getUserRate() {
+        for (userRateInList in HomeActivity.userRateList) {
+            if (userRateInList.itineraryId.equals(itinerary.id)) {
                 userHasRate = true
-                return userRate.userRate
+                userRate = userRateInList
+                return
             }
         }
 
-        return 0f;
+        userRate = UserRate(itinerary.id, 0f)
     }
 
     /**
@@ -110,14 +111,18 @@ class ItineraryActivity : AppCompatActivity() {
         var numberOfRateAfterUpdate: Int = itinerary.numberOfRate
         var ratingAfterUpdate: Float
 
-        if (userHasRate) {
+        if (userHasRate && itinerary.numberOfRate != 0) {
             ratingAfterUpdate =
-                (itinerary.numberOfRate * itinerary.rating + rate - userRating) / itinerary.numberOfRate
+                (itinerary.numberOfRate * itinerary.rating + rate - userRate.rate) / itinerary.numberOfRate
         } else {
+            HomeActivity.userRateList.add(userRate)
+            userHasRate = true
+            numberOfRateAfterUpdate = itinerary.numberOfRate + 1
             ratingAfterUpdate =
-                (itinerary.numberOfRate * itinerary.rating + rate) / itinerary.numberOfRate + 1
-            numberOfRateAfterUpdate = itinerary.numberOfRate+1
+                (itinerary.numberOfRate * itinerary.rating + rate) / numberOfRateAfterUpdate
         }
+
+        Log.d("DEBUG", "After update : ${ratingAfterUpdate}")
 
         // update fields in a specific itinerary
         val docItineraryRef = db.collection("itineraries").document(itinerary.id)
@@ -131,6 +136,7 @@ class ItineraryActivity : AppCompatActivity() {
         val docItineraryUserRateRef = db.collection("user/${mAuth.uid}/itineraryRates").document(itinerary.id)
         docItineraryUserRateRef.set(userRateHashMap)
 
+        userRate.rate = rate
         itinerary.rating = ratingAfterUpdate
         itinerary.numberOfRate = numberOfRateAfterUpdate
     }
