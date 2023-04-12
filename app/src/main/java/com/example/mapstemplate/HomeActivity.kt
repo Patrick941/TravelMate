@@ -107,9 +107,9 @@ class HomeActivity : AppCompatActivity() {
             var fragment: Fragment? = null
             when (item.itemId) {
                 R.id.nav_home -> fragment = homeFragment
-                R.id.nav_map -> fragment = contactsFragment
+                R.id.nav_map -> fragment = globalItinerariesFragment
                 R.id.nav_add -> fragment = addItineraryFragment
-                R.id.nav_rating -> fragment = globalItinerariesFragment
+                R.id.nav_rating -> fragment = contactsFragment
                 R.id.nav_profile -> fragment = currentUserItinerariesFragment
             }
             if (fragment == null) return@OnItemSelectedListener false
