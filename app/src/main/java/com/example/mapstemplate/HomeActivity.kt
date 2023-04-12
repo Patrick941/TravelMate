@@ -7,37 +7,45 @@ import android.os.StrictMode
 import android.util.Log
 import android.view.Menu
 import android.widget.Button
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.databinding.ActivityHomeBinding
 import com.example.mapstemplate.itineraries.UserRate
-import com.google.android.gms.maps.model.LatLng
-import org.json.JSONArray
-import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
+import com.example.mapstemplate.ui.contacts.ContactsFragment
+import com.example.mapstemplate.ui.current_user_itineraries.CurrentUserItinerariesFragment
+import com.example.mapstemplate.ui.global_itineraries.GlobalItinerariesFragment
+import com.example.mapstemplate.ui.history.HistoryFragment
+import com.example.mapstemplate.ui.home.HomeFragment
 import com.example.travelapp.itineraries.Itinerary
 import com.example.travelapp.itineraries.Step
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     private var tempString : String? = null
 
@@ -48,6 +56,13 @@ class HomeActivity : AppCompatActivity() {
 
     private val db = Firebase.firestore
     private lateinit var mAuth : FirebaseAuth
+
+    // Initialize fragments
+    private val homeFragment: HomeFragment = HomeFragment()
+    private val historyFragment: HistoryFragment = HistoryFragment()
+    private val currentUserItinerariesFragment: CurrentUserItinerariesFragment = CurrentUserItinerariesFragment()
+    private val globalItinerariesFragment: GlobalItinerariesFragment = GlobalItinerariesFragment()
+    private val contactsFragment: ContactsFragment = ContactsFragment()
 
     companion object {
         val currentUserItineraryList = ArrayList<Itinerary>();
@@ -62,24 +77,10 @@ class HomeActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        Log.i("MyTag", "creating $thisName")
-        setSupportActionBar(binding.appBarHome.toolbar)
-
-        //variables assigned to different aspects of the view
-        val drawerLayout: DrawerLayout = binding.drawerLayout
-        val navView: NavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_content_home)
+        bottomNavigationView = findViewById(R.id.bottom_navigation_bar)
         mapButton = findViewById(R.id.mapButton)
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home, R.id.nav_history, R.id.nav_Contacts, R.id.nav_my_itineraries, R.id.nav_global_itineraries
-            ), drawerLayout
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        setupBottomNavigationBarLogic()
 
         //Detect when map button is pressed and follow intent to map
         mapButton.setOnClickListener{
@@ -90,6 +91,31 @@ class HomeActivity : AppCompatActivity() {
         fetchCurrentUserItineraries()
         fetchGlobalItineraries()
         fetchUserRate()
+    }
+
+    /**
+     * Setup the logic of the fragment view change when we select an item on the navigation bar
+     */
+    fun setupBottomNavigationBarLogic() {
+        // Set default fragment view in the frame layout
+        supportFragmentManager.beginTransaction().replace(R.id.main_container, homeFragment)
+            .commit()
+        bottomNavigationView.selectedItemId = R.id.nav_home
+
+        bottomNavigationView.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item ->
+            var fragment: Fragment? = null
+            when (item.itemId) {
+                R.id.nav_home -> fragment = homeFragment
+                R.id.nav_map -> fragment = historyFragment
+                R.id.nav_add -> fragment = contactsFragment
+                R.id.nav_rating -> fragment = globalItinerariesFragment
+                R.id.nav_profile -> fragment = currentUserItinerariesFragment
+            }
+            if (fragment == null) return@OnItemSelectedListener false
+            supportFragmentManager.beginTransaction().replace(R.id.main_container, fragment)
+                .commit()
+            true
+        })
     }
 
     // get current user itineraries from firestore
