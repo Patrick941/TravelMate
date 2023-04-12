@@ -20,6 +20,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.mapstemplate.databinding.ActivityHomeBinding
 import com.example.mapstemplate.itineraries.UserRate
+import com.example.mapstemplate.ui.add_itinerary.AddItineraryFragment
 import com.example.mapstemplate.ui.contacts.ContactsFragment
 import com.example.mapstemplate.ui.current_user_itineraries.CurrentUserItinerariesFragment
 import com.example.mapstemplate.ui.global_itineraries.GlobalItinerariesFragment
@@ -59,7 +60,7 @@ class HomeActivity : AppCompatActivity() {
 
     // Initialize fragments
     private val homeFragment: HomeFragment = HomeFragment()
-    private val historyFragment: HistoryFragment = HistoryFragment()
+    private val addItineraryFragment: AddItineraryFragment = AddItineraryFragment()
     private val currentUserItinerariesFragment: CurrentUserItinerariesFragment = CurrentUserItinerariesFragment()
     private val globalItinerariesFragment: GlobalItinerariesFragment = GlobalItinerariesFragment()
     private val contactsFragment: ContactsFragment = ContactsFragment()
@@ -106,8 +107,8 @@ class HomeActivity : AppCompatActivity() {
             var fragment: Fragment? = null
             when (item.itemId) {
                 R.id.nav_home -> fragment = homeFragment
-                R.id.nav_map -> fragment = historyFragment
-                R.id.nav_add -> fragment = contactsFragment
+                R.id.nav_map -> fragment = contactsFragment
+                R.id.nav_add -> fragment = addItineraryFragment
                 R.id.nav_rating -> fragment = globalItinerariesFragment
                 R.id.nav_profile -> fragment = currentUserItinerariesFragment
             }
