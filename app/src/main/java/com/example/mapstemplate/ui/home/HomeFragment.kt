@@ -146,7 +146,7 @@ class HomeFragment : Fragment() {
             }
 
         })
-        setupNewButtons()
+//        setupNewButtons()
 
         return root
     }
@@ -154,20 +154,20 @@ class HomeFragment : Fragment() {
         val intent = Intent(context, activity::class.java)
         startActivity(intent)
     }
-    private fun setupNewButtons() {
-        binding.bottomNavView.setOnItemReselectedListener {
-            when(it.itemId) {
-                R.id.test_home -> replaceActivity(HomeActivity())
-                R.id.test_map -> replaceActivity(MapsActivity())
-                R.id.test_add -> replaceActivity(AddItineraryActivity())
-                R.id.test_rating -> replaceActivity(LikesPage())
-                R.id.test_profile -> replaceActivity(profile())
-                else -> {
-                }
-            }
-            true
-        }
-    }
+//    private fun setupNewButtons() {
+//        binding.bottomNavView.setOnItemReselectedListener {
+//            when(it.itemId) {
+//                R.id.test_home -> replaceActivity(HomeActivity())
+//                R.id.test_map -> replaceActivity(MapsActivity())
+//                R.id.test_add -> replaceActivity(AddItineraryActivity())
+//                R.id.test_rating -> replaceActivity(LikesPage())
+//                R.id.test_profile -> replaceActivity(profile())
+//                else -> {
+//                }
+//            }
+//            true
+//        }
+//    }
 
     private fun parseJson(jsonString: String) {
         val jsonObject = JSONObject(jsonString)
