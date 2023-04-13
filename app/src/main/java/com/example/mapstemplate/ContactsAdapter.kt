@@ -1,9 +1,11 @@
 package com.example.mapstemplate
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 
 class ContactsAdapter(private val friends: ArrayList<String>) :
@@ -22,6 +24,10 @@ class ContactsAdapter(private val friends: ArrayList<String>) :
         } else {
             holder.textName.text = "Error in contacts list length"
         }
+        holder.cardView.setOnClickListener{
+            val intent = Intent(holder.itemView.context, ProfileItineraries::class.java)
+            holder.itemView.context.startActivity(intent)
+        }
     }
 
     //Placeholder number to be changed (should not be a constant, should be size of list)
@@ -33,6 +39,7 @@ class ContactsAdapter(private val friends: ArrayList<String>) :
     //View items to be attached to each view
     class UserViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val textName: TextView = itemView.findViewById(R.id.source)
+        val cardView: CardView = itemView.findViewById(R.id.card_view)
     }
 
 }
