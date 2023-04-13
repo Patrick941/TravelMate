@@ -81,20 +81,22 @@ class ProfileItineraries : AppCompatActivity() {
     private fun logItineraryEmails() {
         val db = FirebaseFirestore.getInstance()
 
+        Log.i("ProfileItineraries", "Beggining logging")
         for (itinerary in itineraryList) {
+            Log.i("ProfileItineraries", "Checking new itinerary")
             db.collection("itineraries")
                 .document(itinerary.itineraryId)
                 .get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
                         val userEmail = document.getString("user_email") ?: "No email found"
-                        Log.d("ProfileItineraries", "Itinerary ID: ${itinerary.itineraryId}, User Email: $userEmail")
+                        Log.i("ProfileItineraries", "Itinerary ID: ${itinerary.itineraryId}, User Email: $userEmail")
                     } else {
-                        Log.d("ProfileItineraries", "No such document for Itinerary ID: ${itinerary.itineraryId}")
+                        Log.i("ProfileItineraries", "No such document for Itinerary ID: ${itinerary.itineraryId}")
                     }
                 }
                 .addOnFailureListener { exception ->
-                    Log.w("ProfileItineraries", "Error getting documents.", exception)
+                    Log.i("ProfileItineraries", "Error getting documents.", exception)
                 }
         }
     }
