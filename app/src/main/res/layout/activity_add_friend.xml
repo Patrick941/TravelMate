@@ -9,10 +9,11 @@
     android:clipToPadding="false">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="14dp"
         android:padding="50dp"
@@ -51,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@null"
-            android:hint="Enter your friend's email:"
+            android:hint="Follow someone new"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
@@ -70,5 +71,21 @@
         app:layout_constraintStart_toStartOf="@id/editTextCard"
         app:layout_constraintEnd_toEndOf="@id/editTextCard"
         app:layout_constraintTop_toBottomOf="@id/editTextCard"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="170dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="184dp"
+        android:layout_marginBottom="10dp"
+        android:text="Following"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextCard" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
