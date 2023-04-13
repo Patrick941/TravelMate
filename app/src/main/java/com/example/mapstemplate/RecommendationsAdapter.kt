@@ -22,7 +22,8 @@ class RecommendationsAdapter(private val locations: ArrayList<String>, private v
     override fun onBindViewHolder(holder: UserViewHolder, position: Int){
         Log.i("PlacesAPI", "Adding Item to recommendations")
         if(position < locations.size) {
-            holder.textName.text = "${locations[position]}       Rating:${rating[position]}"
+            holder.textName.text = "${locations[position]}"
+            holder.rating.text = "Rating:${rating[position]}"
         } else {
             holder.textName.text = "Placeholder"
         }
@@ -36,7 +37,9 @@ class RecommendationsAdapter(private val locations: ArrayList<String>, private v
 
     // Objects from view assigned to vals
     class UserViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        val textName: TextView = itemView.findViewById(R.id.recommendationsTextView)
+        // These are inverted, not bothered changing
+        val rating: TextView = itemView.findViewById(R.id.recommendationsTextView)
+        val textName: TextView = itemView.findViewById(R.id.ratingTextView)
     }
 
 }

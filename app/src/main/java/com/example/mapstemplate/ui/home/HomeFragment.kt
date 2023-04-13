@@ -26,6 +26,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import android.app.Activity
 import android.content.Intent
+import android.media.Image
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.MapsActivity
 import com.example.mapstemplate.profile
@@ -43,6 +44,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var nearbyLocations : ArrayList<String>
     private lateinit var nearbyRatings : ArrayList<Number>
+    private lateinit var nearbyImages : ArrayList<Image>
     private val trinity = LatLng(53.343792, -6.254572)
 
     private lateinit var notifications : ArrayList<String>
