@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.ArraySet
 import android.util.Log
 import android.view.Menu
 import android.widget.Button
@@ -11,33 +12,30 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.example.mapstemplate.databinding.ActivityHomeBinding
 import com.example.mapstemplate.itineraries.UserRate
 import com.example.mapstemplate.ui.add_itinerary.AddItineraryFragment
 import com.example.mapstemplate.ui.contacts.ContactsFragment
 import com.example.mapstemplate.ui.current_user_itineraries.CurrentUserItinerariesFragment
 import com.example.mapstemplate.ui.global_itineraries.GlobalItinerariesFragment
-import com.example.mapstemplate.ui.history.HistoryFragment
 import com.example.mapstemplate.ui.home.HomeFragment
 import com.example.travelapp.itineraries.Itinerary
 import com.example.travelapp.itineraries.Step
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -57,6 +55,9 @@ class HomeActivity : AppCompatActivity() {
 
     private val db = Firebase.firestore
     private lateinit var mAuth : FirebaseAuth
+    private val storage = FirebaseStorage.getInstance()
+    private val storageRef = storage.reference
+
 
     // Initialize fragments
     private val homeFragment: HomeFragment = HomeFragment()
@@ -69,6 +70,8 @@ class HomeActivity : AppCompatActivity() {
         val currentUserItineraryList = ArrayList<Itinerary>();
         val globalItineraryList = ArrayList<Itinerary>();
         val userRateList = ArrayList<UserRate>()
+        val mainImageItineraryMap = HashMap<String, File>()
+        val userLikeList = ArraySet<String>()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +95,8 @@ class HomeActivity : AppCompatActivity() {
         fetchCurrentUserItineraries()
         fetchGlobalItineraries()
         fetchUserRate()
+        fetchItineraryMainImage()
+        fetchUserLikes()
     }
 
     /**
@@ -119,16 +124,39 @@ class HomeActivity : AppCompatActivity() {
         })
     }
 
-    // get current user itineraries from firestore
+    /**
+     * Fetch the current user likes
+     */
     fun fetchCurrentUserItineraries() {
         // clear previous data to prevent bug
-        currentUserItineraryList.clear()
+        userLikeList.clear()
 
         db.collection("itineraries")
             .whereEqualTo("user_email", mAuth.currentUser!!.email)
             .get()
             .addOnSuccessListener { itineraries ->
                 storeFetchedItinerariesInList(currentUserItineraryList, itineraries)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("DEBUG", "Error getting documents.", exception)
+            }
+    }
+
+    // get current user itineraries from firestore
+    fun fetchUserLikes() {
+        // clear previous data to prevent bug
+        currentUserItineraryList.clear()
+
+        val collectionLikeRef = db.collection("user/${mAuth.uid}/itineraryLikes")
+        collectionLikeRef.get()
+            .addOnSuccessListener { likes ->
+                for (doc in likes) {
+                    try {
+                        userLikeList.add(doc.data.get("itinerary_id") as String)
+                    } catch (e: Exception) {
+                        Log.d("DEBUG", "Dublicate like itinerary in Firestore")
+                    }
+                }
             }
             .addOnFailureListener { exception ->
                 Log.w("DEBUG", "Error getting documents.", exception)
@@ -162,6 +190,33 @@ class HomeActivity : AppCompatActivity() {
             }
     }
 
+    /**
+     * Fetch the main image of an itinerary if existing
+     */
+    fun fetchItineraryMainImage() {
+        // clear previous data to prevent bug
+        mainImageItineraryMap.clear()
+
+        Log.d("DEBUG", "START")
+        val documentsRef = storageRef.root.child("images_itineraries")
+        documentsRef.listAll().addOnSuccessListener {
+            it.prefixes.forEach { prefix ->
+
+                prefix.listAll().addOnSuccessListener {
+                    it.items.forEach {item ->
+                        // Create temp image file
+                        val localfile = File.createTempFile("${prefix.name}_${item.name}", ".jpg")
+                        item.getFile(localfile).addOnSuccessListener {
+                            mainImageItineraryMap.put(prefix.name, localfile)
+                            Log.d("DEBUG", "Add main image in list : ${item.path}")
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     private fun storeFetchedItinerariesInList(list: ArrayList<Itinerary>, querySnapshot: QuerySnapshot) {
         for (itineraryDocument in querySnapshot) {
             // Assure that both variables are Double due to firestore issue
@@ -187,6 +242,9 @@ class HomeActivity : AppCompatActivity() {
                 rating.toFloat(),
                 numberOfRates.toInt()
             )
+
+            // try to get the main image of each itinerary
+            //fetchItineraryMainImage(itinerary)
 
             db.collection("itineraries/${itineraryDocument.id}/steps")
                 .get()

@@ -2,7 +2,6 @@ package com.example.mapstemplate.ui.add_itinerary
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +13,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
@@ -23,8 +23,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import java.io.File
-import java.util.*
 
 
 class AddItineraryFragment : Fragment() {
@@ -41,18 +39,21 @@ class AddItineraryFragment : Fragment() {
     private var uriImage: Uri? = null
 
     // Receiver
-    private val getResult =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                uriImage = it.data!!.data!!
-                imageView.setImageURI(uriImage)
-            }
-        }
+    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // setup the receiver
+        getResult =
+            registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ) {
+                if (it.resultCode == Activity.RESULT_OK && it.data != null) {
+                    uriImage = it.data!!.data!!
+                    imageView.setImageURI(uriImage)
+                }
+            }
     }
 
     override fun onCreateView(
@@ -88,6 +89,7 @@ class AddItineraryFragment : Fragment() {
             getResult.launch(intent)
         } catch (e: Exception) {
             Toast.makeText(context, "Problem to load storage images", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
         }
     }
 
@@ -112,7 +114,7 @@ class AddItineraryFragment : Fragment() {
         if (uriImage == null)
             return
 
-        val imageRef = storageRef.root.child("images_itineraries/${mAuth.currentUser!!.uid}/${itineraryId}/main_image" )
+        val imageRef = storageRef.root.child("images_itineraries/${itineraryId}/main_image" )
 
         imageRef.putFile(uriImage!!)
             .addOnSuccessListener{
