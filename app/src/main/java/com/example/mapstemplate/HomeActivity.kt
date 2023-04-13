@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.ArraySet
 import android.util.Log
 import android.view.Menu
 import android.widget.Button
@@ -70,7 +71,7 @@ class HomeActivity : AppCompatActivity() {
         val globalItineraryList = ArrayList<Itinerary>();
         val userRateList = ArrayList<UserRate>()
         val mainImageItineraryMap = HashMap<String, File>()
-        val userLikeList = ArrayList<String>()
+        val userLikeList = ArraySet<String>()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,7 +151,11 @@ class HomeActivity : AppCompatActivity() {
         collectionLikeRef.get()
             .addOnSuccessListener { likes ->
                 for (doc in likes) {
-                    userLikeList.add(doc.data.get("itinerary_id") as String)
+                    try {
+                        userLikeList.add(doc.data.get("itinerary_id") as String)
+                    } catch (e: Exception) {
+                        Log.d("DEBUG", "Dublicate like itinerary in Firestore")
+                    }
                 }
             }
             .addOnFailureListener { exception ->

@@ -93,7 +93,7 @@ class ItineraryActivity : AppCompatActivity() {
     }
 
     /**
-     * Store in firestore the information that the current user like a specific itinerary.
+     * Store in firestore the information that the current user like the current itinerary.
      * User like list is also updated.
      */
     private fun likeItinerary() {
@@ -104,7 +104,26 @@ class ItineraryActivity : AppCompatActivity() {
         val likeCollectionRef = db.collection("user/${mAuth.uid}/itineraryLikes")
         likeCollectionRef.add(likeHashMap).addOnSuccessListener {
             HomeActivity.userLikeList.add(itinerary.id)
+            Log.d("DEBUG", "Like : ${itinerary.id}")
         }
+    }
+
+    /**
+     * Delete a like itinerary for the current user
+     * User like list is also updated.
+     */
+    private fun unlikeItinerary() {
+        val likeCollectionRef = db.collection("user/${mAuth.uid}/itineraryLikes")
+        likeCollectionRef.whereEqualTo("itinerary_id", itinerary.id)
+            .get()
+            .addOnSuccessListener {
+                for (doc in it) {
+                    doc.reference.delete().addOnSuccessListener {
+                        HomeActivity.userLikeList.removeIf { it.equals(itinerary.id) }
+                        Log.d("DEBUG", "Unlike : ${itinerary.id}")
+                    }
+                }
+            }
     }
 
     /**
