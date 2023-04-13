@@ -8,15 +8,16 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Explore"
-        android:textSize="40dp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp"/>
+        android:text="Explore"
+        android:textColor="@color/black"
+        android:textSize="40dp"
+        android:textStyle="bold" />
 
 
     <LinearLayout

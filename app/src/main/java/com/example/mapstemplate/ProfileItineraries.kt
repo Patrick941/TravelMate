@@ -3,16 +3,16 @@ package com.example.mapstemplate
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
 import com.example.mapstemplate.activities.ItineraryActivity
 import com.example.travelapp.adapters.ItineraryListAdapter
 import com.example.travelapp.itineraries.Itinerary
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 
 class ProfileItineraries : AppCompatActivity() {
 
@@ -28,6 +28,23 @@ class ProfileItineraries : AppCompatActivity() {
         itineraryList.addAll(HomeActivity.globalItineraryList)
 
         listViewItinerary = findViewById(R.id.global_itineraries_list_item)
+
+        val friendJson = intent.getStringExtra("friend")
+        if (friendJson != null) {
+            try {
+                val friend = Gson().fromJson<User>(friendJson, User::class.java)
+                val titleTextView = findViewById<TextView>(R.id.title)
+                titleTextView.text = friend.nick
+            } catch (e: Exception) {
+                Log.i("ProfilesTag", "Error deserializing friend: ${e.message}")
+            }
+        }
+        else {
+            // Handle the case where the friendJson variable is null or empty
+            Toast.makeText(this, "No friend data found", Toast.LENGTH_SHORT).show()
+        }
+
+
 
         setupItineraryListView()
 
