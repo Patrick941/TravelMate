@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:id="@+id/rectangle_8"
+    android:layout_width="342dp"
+    android:layout_height="102dp"
+    android:layout_gravity="center|top"
+    android:background="@drawable/rectangle_8"
     android:gravity="center"
     android:orientation="horizontal"
-    android:background="@color/background"
-    android:paddingVertical="10dp"
-    >
-
+    android:paddingVertical="10dp">
+    <View
+        android:id="@+id/rectangle_7"
+        android:layout_width="141dp"
+        android:layout_height="90dp"
+        android:background="@drawable/rectangle_7"
+        android:elevation="4dp"
+        />
     <TextView
         android:id="@+id/textView_itinerary_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
         android:text="Default element"
-        android:textSize="20sp"
         android:textColor="@color/black"
-        android:layout_marginLeft="20dp"
-        />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        />
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/textView_itinerary_price"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0 €"
-        android:textSize="20sp"
+        android:layout_height="20dp"
         android:layout_margin="30dp"
-        />
+        android:text="0 €"
+        android:textSize="15sp" />
 
 </LinearLayout>
