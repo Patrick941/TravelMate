@@ -70,6 +70,7 @@ class HomeActivity : AppCompatActivity() {
         val globalItineraryList = ArrayList<Itinerary>();
         val userRateList = ArrayList<UserRate>()
         val mainImageItineraryMap = HashMap<String, File>()
+        val userLikeList = ArrayList<String>()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +95,7 @@ class HomeActivity : AppCompatActivity() {
         fetchGlobalItineraries()
         fetchUserRate()
         fetchItineraryMainImage()
+        fetchUserLikes()
     }
 
     /**
@@ -121,16 +123,35 @@ class HomeActivity : AppCompatActivity() {
         })
     }
 
-    // get current user itineraries from firestore
+    /**
+     * Fetch the current user likes
+     */
     fun fetchCurrentUserItineraries() {
         // clear previous data to prevent bug
-        currentUserItineraryList.clear()
+        userLikeList.clear()
 
         db.collection("itineraries")
             .whereEqualTo("user_email", mAuth.currentUser!!.email)
             .get()
             .addOnSuccessListener { itineraries ->
                 storeFetchedItinerariesInList(currentUserItineraryList, itineraries)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("DEBUG", "Error getting documents.", exception)
+            }
+    }
+
+    // get current user itineraries from firestore
+    fun fetchUserLikes() {
+        // clear previous data to prevent bug
+        currentUserItineraryList.clear()
+
+        val collectionLikeRef = db.collection("user/${mAuth.uid}/itineraryLikes")
+        collectionLikeRef.get()
+            .addOnSuccessListener { likes ->
+                for (doc in likes) {
+                    userLikeList.add(doc.data.get("itinerary_id") as String)
+                }
             }
             .addOnFailureListener { exception ->
                 Log.w("DEBUG", "Error getting documents.", exception)
@@ -168,6 +189,9 @@ class HomeActivity : AppCompatActivity() {
      * Fetch the main image of an itinerary if existing
      */
     fun fetchItineraryMainImage() {
+        // clear previous data to prevent bug
+        mainImageItineraryMap.clear()
+
         Log.d("DEBUG", "START")
         val documentsRef = storageRef.root.child("images_itineraries")
         documentsRef.listAll().addOnSuccessListener {

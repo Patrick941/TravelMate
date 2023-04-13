@@ -93,6 +93,21 @@ class ItineraryActivity : AppCompatActivity() {
     }
 
     /**
+     * Store in firestore the information that the current user like a specific itinerary.
+     * User like list is also updated.
+     */
+    private fun likeItinerary() {
+        val likeHashMap = hashMapOf(
+            "itinerary_id" to itinerary.id
+        )
+
+        val likeCollectionRef = db.collection("user/${mAuth.uid}/itineraryLikes")
+        likeCollectionRef.add(likeHashMap).addOnSuccessListener {
+            HomeActivity.userLikeList.add(itinerary.id)
+        }
+    }
+
+    /**
      * Get the last stored value of the rate that the current user give for a specific itinerary, or 0
      */
     private fun getUserRate() {
