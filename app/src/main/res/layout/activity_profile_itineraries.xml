@@ -1,97 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".activities.ItineraryActivity"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    tools:context=".ui.global_itineraries.GlobalItinerariesFragment"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/p1toolbar"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="?attr/actionBarSize"
-        android:orientation="horizontal"
-        android:theme="?attr/actionBarTheme">
+        android:text="Explore"
+        android:textSize="40dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"/>
 
-        <ImageView
-            android:id="@+id/back_arrow_itinerary_activity"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="20dp"
-            android:src="@drawable/baseline_arrow_back_ios_40" />
 
-        <TextView
-            android:id="@+id/textView_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="default title"
-            android:textColor="@color/black"
-            android:textSize="25sp" />
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_height="80dp">
 
-        <View
+        <EditText
+            android:id="@+id/itineraryName"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:id="@+id/button_delete_itinerary"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/baseline_delete_40"
-            android:paddingHorizontal="10dp"
-            />
-
-        <ImageView
-            android:id="@+id/button_add_step"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingHorizontal="10dp"
-            android:src="@drawable/baseline_add_location_alt_40" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="?attr/actionBarSize"
-        android:orientation="horizontal"
-        android:theme="?attr/actionBarTheme">
-
-        <RatingBar
-            android:id="@+id/itinerary_rating_bar"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:progressTint="@color/Star"
-            android:numStars="5"
-            android:scaleX="0.5"
-            android:scaleY="0.5"
-            android:paddingStart="0dp"/>
+            android:layout_weight="2"
+            android:ems="10"
+            android:hint="Search itinerary name: "
+            android:inputType="textPersonName" />
 
-        <Switch
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:text=""
-            android:paddingEnd="20dp"/>
-
+            android:text="Submit"
+            android:backgroundTint="@color/Button"/>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button_image_activity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="IMAGE ACTIVITY"
-        />
 
     <ListView
-        android:id="@+id/listView_steps"
+        android:id="@+id/global_itineraries_list_item"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
