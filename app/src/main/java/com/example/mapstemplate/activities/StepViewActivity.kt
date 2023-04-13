@@ -1,22 +1,60 @@
 package com.example.mapstemplate.activities
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
+import com.example.travelapp.itineraries.Itinerary
 import com.example.travelapp.itineraries.Step
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.component1
+import java.io.File
+import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 class StepViewActivity : AppCompatActivity() {
     private var isLiked = false
     lateinit var back_arrow: ImageView
     lateinit var deleteButton: ImageView
+    lateinit var addImageButton: FloatingActionButton
+    lateinit var recyclerView: RecyclerView
+
+    private val storage = FirebaseStorage.getInstance()
+    private val storageRef = storage.reference
+    private var mAuth = FirebaseAuth.getInstance()
+
+    private lateinit var itinerary: Itinerary
+    private lateinit var step: Step
+    private val imageList = ArrayList<File>()
+
+    // Receiver
+    private val getResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK && it.data != null) {
+                val uri: Uri = it.data!!.data!!
+                saveImageInFirebase(uri)
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_step_view)
@@ -25,18 +63,26 @@ class StepViewActivity : AppCompatActivity() {
         val stepIndex: Int = intent.getIntExtra("step_index", 0)
         val isGlobal: Boolean = intent.getBooleanExtra("is_global", true)
 
-        var step: Step
+        // Fetch itinerary and step from companion list
         if (isGlobal)
-            step = HomeActivity.globalItineraryList[itineraryIndex].steps[stepIndex]
+            itinerary = HomeActivity.globalItineraryList[itineraryIndex]
         else
-            step = HomeActivity.currentUserItineraryList[itineraryIndex].steps[stepIndex]
+            itinerary = HomeActivity.currentUserItineraryList[itineraryIndex]
+
+        step = itinerary.steps[stepIndex]
 
         back_arrow = findViewById(R.id.back_arrow_display_step)
         deleteButton = findViewById(R.id.button_delete_step)
+        addImageButton = findViewById(R.id.button_add_step_image)
 
         // Remove delete icone if it's a global itinerary
-        if (isGlobal)
+        if (isGlobal) {
             deleteButton.isVisible = false
+            addImageButton.isVisible = false
+        }
+
+        // Fetch images from firebase
+        fetchStepImages()
 
         val name = findViewById<TextView>(R.id.textView_title_step_display)
         name.text = step.name
@@ -66,20 +112,82 @@ class StepViewActivity : AppCompatActivity() {
             // You should also set up the ImageViews for your new XML layout here
             // I'm not doing this here because it depends on your implementation
         }
-            back_arrow.setOnClickListener {
-                finish()
-            }
 
-            // allow deletion if it's a user itinerary step
-            if (!isGlobal) {
-                deleteButton.setOnClickListener {
-                    warningDeletePopup()
-                }
-            }
+        back_arrow.setOnClickListener {
+            finish()
         }
 
+        // allow deletion if it's a user itinerary step
+        if (!isGlobal) {
+            deleteButton.setOnClickListener {
+                warningDeletePopup()
+            }
 
+            setupAddImageButton()
+        }
+    }
 
+    fun fetchStepImages() {
+        val imagesRef = storageRef.root.child("images_itineraries/${itinerary.id}/${step.id}")
+
+        imagesRef.listAll()
+            .addOnSuccessListener { (items) ->
+                items.forEach { item ->
+                    fetchSpecificImage(item)
+                }
+            }
+            .addOnFailureListener {
+                Log.d("DEBUG", "FAIL")
+            }
+    }
+
+    fun fetchSpecificImage(imageRef: StorageReference) {
+        try {
+            val localfile = File.createTempFile("${step.id}_${imageRef.name}", ".jpg")
+            imageRef.getFile(localfile).addOnSuccessListener {
+                // Add image in local list and notify recyclerView for update
+                imageList.add(localfile)
+                recyclerView.adapter?.notifyItemInserted(imageList.size-1)
+                Log.d("DEBUG", "Fetch step image : ${imageRef.name}")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * Save a new image in cloud storage.
+     * THE FILE NAME MUST BE UNIQUE
+     */
+    fun saveImageInFirebase(uri: Uri) {
+        val imageRef = storageRef.root.child("images_itineraries/${itinerary.id}/${step.id}/${UUID.randomUUID()}")
+
+        imageRef.putFile(uri)
+            .addOnSuccessListener{
+                Toast.makeText(this, "Upload successful :)", Toast.LENGTH_SHORT).show()
+                val localfile = File.createTempFile(it.storage.name, ".jpg")
+                it.storage.getFile(localfile).addOnSuccessListener {
+                    imageList.add(localfile)
+                    recyclerView.adapter?.notifyItemInserted(imageList.size-1)
+                }
+            }
+            .addOnFailureListener{
+                Toast.makeText(this, "Upload failed...", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    fun setupAddImageButton() {
+        addImageButton.setOnClickListener {
+            selectImageFromPhone()
+        }
+    }
+
+    fun selectImageFromPhone() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        getResult.launch(intent)
+    }
 
 
     fun warningDeletePopup() {

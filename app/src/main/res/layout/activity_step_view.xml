@@ -1,217 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
     tools:context=".activities.StepViewActivity"
-    android:orientation="vertical"
     android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="?attr/actionBarSize"
-        android:orientation="horizontal"
-        android:theme="?attr/actionBarTheme">
-
-
-        <ImageView
-            android:id="@+id/back_arrow_display_step"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="20dp"
-            android:src="@drawable/baseline_arrow_back_ios_40" />
-
-        <TextView
-            android:id="@+id/textView_title_step_display"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Paris Trip"
-            android:textColor="@color/black"
-            android:textSize="25sp" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
-
-        <ImageView
-            android:id="@+id/button_delete_step"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/baseline_delete_40"
-            android:padding="10dp"
-            />
-
-    </LinearLayout>
-
-    <HorizontalScrollView
-        android:id="@+id/xml_full_img_hor_below_view"
-        android:layout_width="match_parent"
-        android:layout_height="310dp"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:orientation="horizontal" >
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
 
         <LinearLayout
-            android:id="@+id/xml_full_img_linear_below_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="?attr/actionBarSize"
+            android:orientation="horizontal"
+            android:theme="?attr/actionBarTheme">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:elevation="20dp"
-                app:cardCornerRadius="20dp">
-
-                <ImageView
-                    android:id="@+id/eiffel1"
-                    android:layout_width="300dp"
-                    android:layout_height="300dp"
-                    android:layout_gravity="center"
-                    android:foreground="@mipmap/eiffel1"/>
-            </androidx.cardview.widget.CardView>
-
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:elevation="20dp"
-                app:cardCornerRadius="20dp">
-
-                <ImageView
-                    android:id="@+id/eiffel2"
-                    android:layout_width="300dp"
-                    android:layout_height="300dp"
-                    android:layout_gravity="center"
-                    android:foreground="@mipmap/eiffel2" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:elevation="10dp"
-                app:cardCornerRadius="20dp">
 
             <ImageView
-                android:id="@+id/eiffel3"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:layout_gravity="center"
-                android:foreground="@mipmap/eiffel3" />
-            </androidx.cardview.widget.CardView>
+                android:id="@+id/back_arrow_display_step"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingStart="20dp"
+                android:src="@drawable/baseline_arrow_back_ios_40" />
 
+            <TextView
+                android:id="@+id/textView_title_step_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Paris Trip"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                />
+
+            <ImageView
+                android:id="@+id/button_delete_step"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/baseline_delete_40"
+                android:padding="10dp"
+                />
 
         </LinearLayout>
-    </HorizontalScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="20dp"
-        android:layout_weight="3"
-        >
-        <TextView
-            android:id="@+id/main_name"
+        <HorizontalScrollView
+            android:id="@+id/xml_full_img_hor_below_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Eiffel Tower"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="310dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:orientation="horizontal"
-            >
+            android:layout_gravity="center"
+            android:orientation="horizontal" >
 
-            <ImageView
-                android:id="@+id/address_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@drawable/baseline_location_on_16"
-                android:layout_alignParentLeft="true"
-                android:backgroundTint="#636363"
-                />
+            <LinearLayout
+                android:id="@+id/xml_full_img_linear_below_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" Paris"
-                android:textSize="20sp"
-                android:layout_toRightOf="@+id/address_icon"
-                android:layout_gravity="center"/>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:elevation="20dp"
+                    app:cardCornerRadius="20dp">
 
-
-
-            <ImageView
-                android:id="@+id/price_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="15dp"
-                android:background="@drawable/baseline_credit_card_24"
-                android:layout_toRightOf="@+id/address"
-                android:backgroundTint="#636363"
-                />
-
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" €25"
-                android:textSize="20sp"
-                android:layout_toRightOf="@+id/price_icon"
-                android:layout_gravity="center"/>
+                    <ImageView
+                        android:id="@+id/eiffel1"
+                        android:layout_width="300dp"
+                        android:layout_height="300dp"
+                        android:layout_gravity="center"
+                        android:foreground="@mipmap/eiffel1"/>
+                </androidx.cardview.widget.CardView>
 
 
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:elevation="20dp"
+                    app:cardCornerRadius="20dp">
 
-            <ImageView
-                android:id="@+id/heart"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/heart"
-                android:layout_alignParentRight="true"
-                android:backgroundTint="#636363"/>
+                    <ImageView
+                        android:id="@+id/eiffel2"
+                        android:layout_width="300dp"
+                        android:layout_height="300dp"
+                        android:layout_gravity="center"
+                        android:foreground="@mipmap/eiffel2" />
+                </androidx.cardview.widget.CardView>
 
-        </RelativeLayout>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:elevation="10dp"
+                    app:cardCornerRadius="20dp">
 
-        <ScrollView
+                    <ImageView
+                        android:id="@+id/eiffel3"
+                        android:layout_width="300dp"
+                        android:layout_height="300dp"
+                        android:layout_gravity="center"
+                        android:foreground="@mipmap/eiffel3" />
+                </androidx.cardview.widget.CardView>
+
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:layout_weight="3"
+            >
             <TextView
-                android:id="@+id/description"
+                android:id="@+id/main_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="The Eiffel Tower is a wrought-iron lattice tower
+                android:text="Eiffel Tower"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="30dp"
+                android:orientation="horizontal"
+                >
+
+                <ImageView
+                    android:id="@+id/address_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/baseline_location_on_16"
+                    android:layout_alignParentLeft="true"
+                    android:backgroundTint="#636363"
+                    />
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Paris"
+                    android:textSize="20sp"
+                    android:layout_toRightOf="@+id/address_icon"
+                    android:layout_gravity="center"/>
+
+
+
+                <ImageView
+                    android:id="@+id/price_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/baseline_credit_card_24"
+                    android:layout_toRightOf="@+id/address"
+                    android:backgroundTint="#636363"
+                    />
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" €25"
+                    android:textSize="20sp"
+                    android:layout_toRightOf="@+id/price_icon"
+                    android:layout_gravity="center"/>
+
+
+
+                <ImageView
+                    android:id="@+id/heart"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/heart"
+                    android:layout_alignParentRight="true"
+                    android:backgroundTint="#636363"/>
+
+            </RelativeLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="The Eiffel Tower is a wrought-iron lattice tower
                  on the Champ de Mars in Paris, France. It
                  is named after the engineer Gustave Eiffel,
                  whose company designed and built the tower.
                  it was constructed from 1887 to 1889 as the
                  centerpiece of the 1889 World's Fair."/>
 
-        </ScrollView>
+            </ScrollView>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_add_step_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/baseline_add_photo_alternate_24"
+        android:layout_margin="20dp"
+        />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
