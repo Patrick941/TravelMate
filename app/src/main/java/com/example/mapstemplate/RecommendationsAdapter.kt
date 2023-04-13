@@ -1,13 +1,16 @@
 package com.example.mapstemplate
 
+import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class RecommendationsAdapter(private val locations: ArrayList<String>, private val rating: ArrayList<Number>) :
+class RecommendationsAdapter(private val locations: ArrayList<String>, private val rating: ArrayList<Number>,
+private val images : ArrayList<Bitmap> ) :
     RecyclerView.Adapter<RecommendationsAdapter.UserViewHolder>(){
 
     // Assigned the recommendations_box_recycler to act as the view, it will be updated, currently just
@@ -24,10 +27,17 @@ class RecommendationsAdapter(private val locations: ArrayList<String>, private v
         if(position < locations.size) {
             holder.textName.text = "${locations[position]}"
             holder.rating.text = "Rating:${rating[position]}"
+            if (images.size > position && images[position] != null) {
+                holder.image.setImageBitmap(images[position])
+            } else {
+                holder.image.setImageResource(R.drawable.baseline_add_to_photos_40)
+            }
         } else {
             holder.textName.text = "Placeholder"
         }
     }
+
+
 
     // Temporary number, must be changed, may cause crashes and segmentation faults when other
     // aspects of code are changed
@@ -40,6 +50,7 @@ class RecommendationsAdapter(private val locations: ArrayList<String>, private v
         // These are inverted, not bothered changing
         val rating: TextView = itemView.findViewById(R.id.recommendationsTextView)
         val textName: TextView = itemView.findViewById(R.id.ratingTextView)
+        val image : ImageView = itemView.findViewById(R.id.imageView)
     }
 
 }

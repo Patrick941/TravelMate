@@ -1,6 +1,5 @@
 package com.example.mapstemplate.ui.home
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
@@ -15,12 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.*
 import com.example.mapstemplate.R
-import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.databinding.FragmentHomeBinding
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.getValue
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -31,11 +28,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.Image
 import android.os.AsyncTask
-import android.widget.ImageView
-import com.example.mapstemplate.HomeActivity
-import com.example.mapstemplate.MapsActivity
-import com.example.mapstemplate.profile
-import com.example.mapstemplate.LikesPage
 import okhttp3.*
 import java.io.IOException
 
@@ -51,7 +43,6 @@ class HomeFragment : Fragment() {
     private lateinit var nearbyLocations : ArrayList<String>
     private lateinit var nearbyRatings : ArrayList<Number>
     private lateinit var nearbyVicinity : ArrayList<String>
-    private lateinit var nearbyImages : ArrayList<Image>
     private val trinity = LatLng(53.343792, -6.254572)
 
     private lateinit var notifications : ArrayList<String>
@@ -76,6 +67,8 @@ class HomeFragment : Fragment() {
     ): View {
         nearbyLocations = ArrayList()
         nearbyRatings = ArrayList()
+        nearbyVicinity = ArrayList()
+        nearbyImages = ArrayList()
         notifications = ArrayList()
 
         mDbRef = FirebaseDatabase.getInstance().getReference()
@@ -117,7 +110,9 @@ class HomeFragment : Fragment() {
         // point to the correct recycler view in the correct LinearLayoutManager, finally attach the
         // recycler view to the adapter
         nearbyPlaces(trinity, 1000, "restaurant")
-        recommendationsAdapter = RecommendationsAdapter(nearbyLocations, nearbyRatings)
+        recommendationsAdapter = RecommendationsAdapter(nearbyLocations, nearbyRatings,
+            nearbyImages
+        )
         recommendationsRecycler = root.findViewById(R.id.LocationsRecycler)
         recommendationsRecycler.layoutManager = LinearLayoutManager(context)
         recommendationsRecycler.adapter = recommendationsAdapter
@@ -181,7 +176,7 @@ class HomeFragment : Fragment() {
 //        }
 //    }
 
-    private val imageArray = ArrayList<Bitmap>()
+    private var nearbyImages = ArrayList<Bitmap>()
 
     private fun parseJson(jsonString: String) {
         val jsonObject = JSONObject(jsonString)
@@ -193,55 +188,7 @@ class HomeFragment : Fragment() {
             val rating = resultObject.getDouble("rating")
             val vicinity = resultObject.getString("vicinity")
 
-            if (resultObject.has("photos")) {
-                val photoArray = resultObject.getJSONArray("photos")
 
-                if (photoArray.length() > 0) {
-                    val photoObject = photoArray.getJSONObject(0)
-                    val photoReference = photoObject.getString("photo_reference")
-                    val photoWidth = 800 // the desired width of the photo
-                    val apiKey = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
-
-                    val photoRequestUrl = "https://maps.googleapis.com/maps/api/place/photo" +
-                            "?maxwidth=$photoWidth" +
-                            "&photoreference=$photoReference" +
-                            "&key=$apiKey"
-
-                    //@SuppressLint("StaticFieldLeak")
-                    object : AsyncTask<Void, Void, Bitmap?>() {
-                        override fun doInBackground(vararg params: Void?): Bitmap? {
-                            val httpClient = OkHttpClient()
-                            val request = Request.Builder().url(photoRequestUrl).build()
-
-                            try {
-                                val response = httpClient.newCall(request).execute()
-                                if (!response.isSuccessful) {
-                                    // handle unsuccessful response
-                                    return null
-                                }
-                                val responseBody = response.body()
-                                val photoBytes = responseBody?.bytes()
-                                responseBody?.close() // Close the response body to avoid resource leak
-                                if (photoBytes != null) {
-                                    return BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
-                                }
-                            } catch (e: IOException) {
-                                // handle IO exception
-                            }
-
-                            return null
-                        }
-
-
-                        override fun onPostExecute(bitmap: Bitmap?) {
-                            if (bitmap != null) {
-                                // display the photo in an ImageView
-                                imageArray.add(bitmap)
-                            }
-                        }
-                    }.execute()
-                }
-            }
 
             Log.i("PlacesAPI", "====================================================")
             nearbyLocations.add(name)
@@ -250,8 +197,68 @@ class HomeFragment : Fragment() {
             Log.i("PlacesAPI", "Name: $name")
             Log.i("PlacesAPI", "Rating: $rating")
             Log.i("PlacesAPI", "Vicinity: $vicinity")
+            //Log.i("PlacesAPI", "Nearby Locations is of size ${nearbyLocations.size}")
+            //Log.i("PlacesAPI", "Nearby Vicinity is of size ${nearbyVicinity.size}")
+            //Log.i("PlacesAPI", "Nearby Rating is of size ${nearbyRatings.size}")
+        }
+
+        for (i in 0 until resultsArray.length()) {
+            val resultObject = resultsArray.getJSONObject(i)
+            if (resultObject.has("photos")) {
+                val photoArray = resultObject.getJSONArray("photos")
+                if (photoArray.length() > 0) {
+                    fetchImage(photoArray)
+                }
+            }
         }
     }
+
+
+    private fun fetchImage(photoArray: JSONArray) {
+        val photoObject = photoArray.getJSONObject(0)
+        val photoReference = photoObject.getString("photo_reference")
+        val photoWidth = 300 // the desired width of the photo
+        val apiKey = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
+
+        val photoRequestUrl = "https://maps.googleapis.com/maps/api/place/photo" +
+                "?maxwidth=$photoWidth" +
+                "&photoreference=$photoReference" +
+                "&key=$apiKey"
+
+        object : AsyncTask<Void, Void, Bitmap?>() {
+            override fun doInBackground(vararg params: Void?): Bitmap? {
+                val httpClient = OkHttpClient()
+                val request = Request.Builder().url(photoRequestUrl).build()
+
+                try {
+                    val response = httpClient.newCall(request).execute()
+                    if (!response.isSuccessful) {
+                        // handle unsuccessful response
+                        return null
+                    }
+                    val responseBody = response.body()
+                    val photoBytes = responseBody?.bytes()
+                    responseBody?.close() // Close the response body to avoid resource leak
+                    if (photoBytes != null) {
+                        return BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+                    }
+                } catch (e: IOException) {
+                    // handle IO exception
+                }
+
+                return null
+            }
+
+            override fun onPostExecute(bitmap: Bitmap?) {
+                if (bitmap != null) {
+                    // Add the Bitmap to the imageArray
+                    Log.i("PlacesAPI", "Was able to add image")
+                    this@HomeFragment.nearbyImages.add(bitmap)
+                }
+            }
+        }.execute()
+    }
+
 
 
 
