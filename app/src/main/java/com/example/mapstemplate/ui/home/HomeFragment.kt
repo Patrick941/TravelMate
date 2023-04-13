@@ -111,10 +111,10 @@ class HomeFragment : Fragment() {
         recommendationsRecycler.adapter = recommendationsAdapter
 
         //The same process as above
-        notificationsAdapter = NotificationsAdapter(notifications)
-        notificationsRecycler = root.findViewById(R.id.NotificationsRecycler)
-        notificationsRecycler.layoutManager = LinearLayoutManager(context)
-        notificationsRecycler.adapter = notificationsAdapter
+        //notificationsAdapter = NotificationsAdapter(notifications)
+        //notificationsRecycler = root.findViewById(R.id.NotificationsRecycler)
+        //notificationsRecycler.layoutManager = LinearLayoutManager(context)
+        //notificationsRecycler.adapter = notificationsAdapter
 
         //Attach variable to correct textView
         val locationView: TextView = binding.BasedOnLocation
@@ -123,10 +123,10 @@ class HomeFragment : Fragment() {
         }
 
         //Attach variable to correct textView
-        val notificationsView: TextView = binding.Notifications
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            notificationsView.text = "Recent Notifications"
-        }
+        //val notificationsView: TextView = binding.Notifications
+        //homeViewModel.text.observe(viewLifecycleOwner) {
+        //    notificationsView.text = "Recent Notifications"
+        //}
 
 
 
