@@ -49,6 +49,8 @@ class AddFriend : AppCompatActivity() {
         addButton = findViewById(R.id.addButton)
         email = findViewById(R.id.editText)
 
+        val userId = mAuth.currentUser?.uid
+
         email.setOnFocusChangeListener { _, hasFocus ->
             addButton.visibility = if (hasFocus) Button.VISIBLE else Button.GONE
         }
@@ -57,34 +59,33 @@ class AddFriend : AppCompatActivity() {
 
         mDbRef = FirebaseDatabase.getInstance().reference
 
-        mDbRef.child("user").addListenerForSingleValueEvent(object: ValueEventListener {
+        mDbRef.child("user").child(userId!!).child("Friends").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                //friendsList.clear()
-                for(postSnapshot in snapshot.children){
-                    val currentUser = postSnapshot.getValue(User::class.java)
-
-                    if(mAuth.currentUser?.uid == currentUser?.uid) {
-                        currentUser?.nick = "you"
-                    }
-                    friendsList.add(currentUser!!)
-                    currentUser.nick?.let { friendsNames.add(it) }
-                    Log.i("MyTag", "Adding user with email ${currentUser.email} to contacts")
+                for (friendSnapshot in snapshot.children) {
+                    val friendEmail = friendSnapshot.getValue(String::class.java)
+                    friendsNames.add(friendEmail!!)
+                    Log.i("MyTag", "Adding friend with email $friendEmail to contacts")
                 }
+                contactsAdapter.notifyDataSetChanged() // Notify the adapter that the data has changed
             }
 
             override fun onCancelled(error: DatabaseError) {
-
+                Log.w("MyTag", "Failed to read value.", error.toException())
             }
-
         })
+
 
         contactsAdapter = ContactsAdapter(actualFriendsNames)
         contactsRecycler = findViewById(R.id.friendsRecycler)
         contactsRecycler.layoutManager = LinearLayoutManager(this@AddFriend)
         contactsRecycler.adapter = contactsAdapter
 
-        addButton.setOnClickListener{
-            //Log.i("FriendsTag", "Adding new friend with email ${email.text}")
+        addButton.setOnClickListener{ // Get the current user ID
+            val friendEmail = email.text.toString()  // Replace with the email you want to add
+
+            val friendRef = mDbRef.child("user").child(userId!!).child("Friends").push()
+            friendRef.setValue(friendEmail)
+
 
             finish()
         }
