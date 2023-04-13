@@ -146,7 +146,7 @@ class HomeFragment : Fragment() {
                     //val notification = snapshot.getValue<String>()
                     //notifications.add("test")
                 }
-                notificationsAdapter.notifyDataSetChanged()
+                //notificationsAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
