@@ -42,6 +42,7 @@
         android:layout_weight="1.5"
         android:src="@drawable/placeholder_image"
         android:layout_marginHorizontal="20dp"
+        android:elevation="3dp"
         />
 
     <Button
