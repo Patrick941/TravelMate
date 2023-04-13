@@ -14,6 +14,8 @@ import com.example.travelapp.adapters.ItineraryListAdapter
 import com.example.travelapp.itineraries.Itinerary
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.google.firebase.firestore.FirebaseFirestore
+
 
 class ProfileItineraries : AppCompatActivity() {
 
@@ -47,7 +49,10 @@ class ProfileItineraries : AppCompatActivity() {
 
 
 
+
+
         setupItineraryListView()
+        logItineraryEmails()
 
         val searchButton = findViewById<Button>(R.id.btnSearch)
         val inputField = findViewById<EditText>(R.id.itineraryName)
@@ -72,6 +77,28 @@ class ProfileItineraries : AppCompatActivity() {
 
         }
     }
+
+    private fun logItineraryEmails() {
+        val db = FirebaseFirestore.getInstance()
+
+        for (itinerary in itineraryList) {
+            db.collection("itineraries")
+                .document(itinerary.itineraryId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val userEmail = document.getString("user_email") ?: "No email found"
+                        Log.d("ProfileItineraries", "Itinerary ID: ${itinerary.itineraryId}, User Email: $userEmail")
+                    } else {
+                        Log.d("ProfileItineraries", "No such document for Itinerary ID: ${itinerary.itineraryId}")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w("ProfileItineraries", "Error getting documents.", exception)
+                }
+        }
+    }
+
 
     fun setupItineraryListView() {
         itineraryListAdapter = ItineraryListAdapter(this@ProfileItineraries, itineraryList) { position ->
