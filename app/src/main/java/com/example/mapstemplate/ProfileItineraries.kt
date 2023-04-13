@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.mapstemplate.activities.ItineraryActivity
 import com.example.travelapp.adapters.ItineraryListAdapter
 import com.example.travelapp.itineraries.Itinerary
@@ -73,18 +74,16 @@ class ProfileItineraries : AppCompatActivity() {
     }
 
     fun setupItineraryListView() {
-        itineraryListAdapter = ItineraryListAdapter(this, itineraryList)
-        listViewItinerary.isClickable = true
-        listViewItinerary.adapter = itineraryListAdapter
-
-        listViewItinerary.setOnItemClickListener { parent, view, position, id ->
-            val intent = Intent(this, ItineraryActivity::class.java)
+        itineraryListAdapter = ItineraryListAdapter(this@ProfileItineraries, itineraryList) { position ->
+            val intent = Intent(this@ProfileItineraries, ItineraryActivity::class.java)
             intent.putExtra("itinerary_index", position)
             intent.putExtra("is_global", true)
             startActivity(intent)
         }
-    }
 
+        listViewItinerary.isClickable = true
+        listViewItinerary.adapter = itineraryListAdapter
+    }
     override fun onResume() {
         super.onResume()
         // update the data in the listView

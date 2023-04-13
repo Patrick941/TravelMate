@@ -13,14 +13,16 @@
     android:orientation="horizontal"
     android:paddingVertical="10dp">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/rootCard"
         android:layout_width="match_parent"
         android:layout_height="110dp"
         android:layout_gravity="center_vertical"
         android:layout_marginHorizontal="10dp"
         app:cardCornerRadius="10dp">
 
-        <TextView
+
+    <TextView
             android:id="@+id/textView_itinerary_price"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
@@ -54,6 +56,6 @@
             android:elevation="4dp"
             android:scaleType="centerCrop"
             android:src="@drawable/placeholder_image" />
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

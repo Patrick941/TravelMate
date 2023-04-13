@@ -56,16 +56,15 @@ class  CurrentUserItinerariesFragment : Fragment() {
     }
 
     fun setupItineraryListView() {
-        itineraryListAdapter = ItineraryListAdapter(requireContext(), HomeActivity.currentUserItineraryList)
-        listViewItinerary.isClickable = true
-        listViewItinerary.adapter = itineraryListAdapter
-
-        listViewItinerary.setOnItemClickListener { parent, view, position, id ->
-            val intent = Intent(context, ItineraryActivity::class.java)
+        itineraryListAdapter = ItineraryListAdapter(requireContext(), HomeActivity.currentUserItineraryList) { position ->
+            val intent = Intent(requireContext(), ItineraryActivity::class.java)
             intent.putExtra("itinerary_index", position)
             intent.putExtra("is_global", false)
             startActivity(intent)
         }
+
+        listViewItinerary.isClickable = true
+        listViewItinerary.adapter = itineraryListAdapter
     }
 
 /*    fun setupButtons() {
