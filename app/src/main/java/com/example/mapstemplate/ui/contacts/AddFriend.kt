@@ -97,9 +97,7 @@ class AddFriend : AppCompatActivity() {
                             }
                         }
                         contactsAdapter.notifyDataSetChanged() // Notify the adapter that the data has changed
-                        for (friend in actualFriends) {
-                            friendsToPrint.add(friend.nick!!)
-                        }
+
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -117,7 +115,7 @@ class AddFriend : AppCompatActivity() {
 
 
 
-        contactsAdapter = ContactsAdapter(friendsToPrint)
+        contactsAdapter = ContactsAdapter(actualFriends)
         contactsRecycler = findViewById(R.id.friendsRecycler)
         contactsRecycler.layoutManager = LinearLayoutManager(this@AddFriend)
         contactsRecycler.adapter = contactsAdapter
