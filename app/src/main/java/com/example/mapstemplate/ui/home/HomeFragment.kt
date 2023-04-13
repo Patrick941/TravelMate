@@ -26,7 +26,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.Image
 import android.os.AsyncTask
 import okhttp3.*
 import java.io.IOException
@@ -42,6 +41,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var nearbyLocations : ArrayList<String>
     private lateinit var nearbyRatings : ArrayList<Number>
+    private lateinit var nearbyCordinates : ArrayList<LatLng>
     private lateinit var nearbyVicinity : ArrayList<String>
     private val trinity = LatLng(53.343792, -6.254572)
 
@@ -69,6 +69,7 @@ class HomeFragment : Fragment() {
         nearbyRatings = ArrayList()
         nearbyVicinity = ArrayList()
         nearbyImages = ArrayList()
+        nearbyCordinates = ArrayList()
         notifications = ArrayList()
 
         mDbRef = FirebaseDatabase.getInstance().getReference()
@@ -111,7 +112,7 @@ class HomeFragment : Fragment() {
         // recycler view to the adapter
         nearbyPlaces(trinity, 1000, "restaurant")
         recommendationsAdapter = RecommendationsAdapter(nearbyLocations, nearbyRatings,
-            nearbyImages, nearbyVicinity
+            nearbyImages, nearbyVicinity, nearbyCordinates
         )
         recommendationsRecycler = root.findViewById(R.id.LocationsRecycler)
         recommendationsRecycler.layoutManager = LinearLayoutManager(context)
@@ -187,20 +188,21 @@ class HomeFragment : Fragment() {
             val name = resultObject.getString("name")
             val rating = resultObject.getDouble("rating")
             val vicinity = resultObject.getString("vicinity")
-
-
+            val lat = resultObject.getJSONObject("geometry").getJSONObject("location").getDouble("lat")
+            val lng = resultObject.getJSONObject("geometry").getJSONObject("location").getDouble("lng")
 
             Log.i("PlacesAPI", "====================================================")
             nearbyLocations.add(name)
             nearbyRatings.add(rating)
             nearbyVicinity.add(vicinity)
+            nearbyCordinates.add(LatLng(lat,lng))
             Log.i("PlacesAPI", "Name: $name")
             Log.i("PlacesAPI", "Rating: $rating")
             Log.i("PlacesAPI", "Vicinity: $vicinity")
-            //Log.i("PlacesAPI", "Nearby Locations is of size ${nearbyLocations.size}")
-            //Log.i("PlacesAPI", "Nearby Vicinity is of size ${nearbyVicinity.size}")
-            //Log.i("PlacesAPI", "Nearby Rating is of size ${nearbyRatings.size}")
+            Log.i("PlacesAPI", "Latitude: $lat")
+            Log.i("PlacesAPI", "Longitude: $lng")
         }
+
 
         for (i in 0 until resultsArray.length()) {
             val resultObject = resultsArray.getJSONObject(i)
