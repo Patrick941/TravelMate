@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class RecommendationsAdapter(private val locations: ArrayList<String>, private val rating: ArrayList<Number>,
-private val images : ArrayList<Bitmap> ) :
+private val images : ArrayList<Bitmap>, private val vicinity: ArrayList<String>) :
     RecyclerView.Adapter<RecommendationsAdapter.UserViewHolder>(){
 
     // Assigned the recommendations_box_recycler to act as the view, it will be updated, currently just
@@ -27,6 +27,7 @@ private val images : ArrayList<Bitmap> ) :
         if(position < locations.size) {
             holder.textName.text = "${locations[position]}"
             holder.rating.text = "Rating:${rating[position]}"
+            holder.address.text = "${vicinity[position]}"
             if (images.size > position && images[position] != null) {
                 holder.image.setImageBitmap(images[position])
             } else {
@@ -50,6 +51,7 @@ private val images : ArrayList<Bitmap> ) :
         // These are inverted, not bothered changing
         val rating: TextView = itemView.findViewById(R.id.recommendationsTextView)
         val textName: TextView = itemView.findViewById(R.id.ratingTextView)
+        val address: TextView = itemView.findViewById(R.id.address)
         val image : ImageView = itemView.findViewById(R.id.imageView)
     }
 

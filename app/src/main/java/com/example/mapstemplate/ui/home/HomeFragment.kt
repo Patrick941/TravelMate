@@ -111,7 +111,7 @@ class HomeFragment : Fragment() {
         // recycler view to the adapter
         nearbyPlaces(trinity, 1000, "restaurant")
         recommendationsAdapter = RecommendationsAdapter(nearbyLocations, nearbyRatings,
-            nearbyImages
+            nearbyImages, nearbyVicinity
         )
         recommendationsRecycler = root.findViewById(R.id.LocationsRecycler)
         recommendationsRecycler.layoutManager = LinearLayoutManager(context)
