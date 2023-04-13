@@ -1,3 +1,4 @@
+
 package com.example.mapstemplate.ui.contacts
 
 import android.content.Intent
@@ -86,37 +87,33 @@ class ContactsFragment : Fragment() {
         testUser = User()
         testUser.email = "patrickfarmer09@outlook.ie"
         testUser.nick = "Patrick"
+        friendsList.add(testUser)
         /*if (tempString != null) {
             friendsNames.add(tempString)
             Log.i("FriendsTag", "Patrick testing the string: $tempString")
         }*/
+
+
 
         contactsAdapter = ContactsAdapter(friendsNames)
         contactsRecycler = root.findViewById(R.id.contactsRecycler)
         contactsRecycler.layoutManager = LinearLayoutManager(context)
         contactsRecycler.adapter = contactsAdapter
 
-        mDbRef = FirebaseDatabase.getInstance().getReference()
+        mDbRef = FirebaseDatabase.getInstance().reference
 
-        mDbRef.child("user").addValueEventListener(object: ValueEventListener {
+        mDbRef.child("user").addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                friendsList.clear()
+                //friendsList.clear()
                 for(postSnapshot in snapshot.children){
                     val currentUser = postSnapshot.getValue(User::class.java)
 
                     if(mAuth.currentUser?.uid == currentUser?.uid) {
                         currentUser?.nick = "you"
                     }
-                    //friendsList.add(currentUser!!)
-                    friendsList.forEach{
-
-                    }
-                    if (currentUser != null) {
-                        currentUser.nick?.let { friendsNames.add(it) }
-                    }
-                    if (currentUser != null) {
-                        Log.i("MyTag", "Adding user with email ${currentUser.email} to contacts")
-                    }
+                    friendsList.add(currentUser!!)
+                    currentUser.nick?.let { friendsNames.add(it) }
+                    Log.i("MyTag", "Adding user with email ${currentUser.email} to contacts")
                 }
                 contactsAdapter.notifyDataSetChanged()
             }
@@ -126,6 +123,7 @@ class ContactsFragment : Fragment() {
             }
 
         })
+
 
         //Attach variable to correct textView
         val textView: TextView = binding.textSlideshow

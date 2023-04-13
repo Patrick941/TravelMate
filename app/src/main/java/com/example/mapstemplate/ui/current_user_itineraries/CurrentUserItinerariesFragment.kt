@@ -49,7 +49,7 @@ class CurrentUserItinerariesFragment : Fragment() {
         listViewItinerary = root.findViewById(R.id.list_item)
 
         // setupButtons()
-        setupNewButtons()
+//        setupNewButtons()
         setupItineraryListView()
 
         return root
@@ -75,20 +75,20 @@ class CurrentUserItinerariesFragment : Fragment() {
         }
     }*/
 
-    private fun setupNewButtons() {
-        binding.bottomNavView.setOnItemReselectedListener {
-            when(it.itemId) {
-                R.id.test_home -> replaceActivity(HomeActivity())
-                R.id.test_map -> replaceActivity(MapsActivity())
-                R.id.test_add -> replaceActivity(AddItineraryActivity())
-                R.id.test_rating -> replaceActivity(LikesPage())
-                R.id.test_profile -> replaceActivity(profile())
-                else -> {
-                }
-            }
-            true
-        }
-    }
+//    private fun setupNewButtons() {
+//        binding.bottomNavView.setOnItemReselectedListener {
+//            when(it.itemId) {
+//                R.id.test_home -> replaceActivity(HomeActivity())
+//                R.id.test_map -> replaceActivity(MapsActivity())
+//                R.id.test_add -> replaceActivity(AddItineraryActivity())
+//                R.id.test_rating -> replaceActivity(LikesPage())
+//                R.id.test_profile -> replaceActivity(profile())
+//                else -> {
+//                }
+//            }
+//            true
+//        }
+//    }
     override fun onResume() {
         super.onResume()
         // update the data in the listView

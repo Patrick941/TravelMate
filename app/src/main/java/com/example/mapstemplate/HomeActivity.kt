@@ -4,40 +4,47 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.ArraySet
 import android.util.Log
 import android.view.Menu
 import android.widget.Button
-import com.google.android.material.navigation.NavigationView
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.example.mapstemplate.activities.AddItineraryActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import com.example.mapstemplate.databinding.ActivityHomeBinding
 import com.example.mapstemplate.itineraries.UserRate
-import com.google.android.gms.maps.model.LatLng
-import org.json.JSONArray
-import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
+import com.example.mapstemplate.ui.add_itinerary.AddItineraryFragment
+import com.example.mapstemplate.ui.contacts.ContactsFragment
+import com.example.mapstemplate.ui.current_user_itineraries.CurrentUserItinerariesFragment
+import com.example.mapstemplate.ui.global_itineraries.GlobalItinerariesFragment
+import com.example.mapstemplate.ui.home.HomeFragment
 import com.example.travelapp.itineraries.Itinerary
 import com.example.travelapp.itineraries.Step
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     private var tempString : String? = null
 
@@ -48,11 +55,23 @@ class HomeActivity : AppCompatActivity() {
 
     private val db = Firebase.firestore
     private lateinit var mAuth : FirebaseAuth
+    private val storage = FirebaseStorage.getInstance()
+    private val storageRef = storage.reference
+
+
+    // Initialize fragments
+    private val homeFragment: HomeFragment = HomeFragment()
+    private val addItineraryFragment: AddItineraryFragment = AddItineraryFragment()
+    private val currentUserItinerariesFragment: CurrentUserItinerariesFragment = CurrentUserItinerariesFragment()
+    private val globalItinerariesFragment: GlobalItinerariesFragment = GlobalItinerariesFragment()
+    private val contactsFragment: ContactsFragment = ContactsFragment()
 
     companion object {
         val currentUserItineraryList = ArrayList<Itinerary>();
         val globalItineraryList = ArrayList<Itinerary>();
         val userRateList = ArrayList<UserRate>()
+        val mainImageItineraryMap = HashMap<String, File>()
+        val userLikeList = ArraySet<String>()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,24 +81,10 @@ class HomeActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        Log.i("MyTag", "creating $thisName")
-        setSupportActionBar(binding.appBarHome.toolbar)
-
-        //variables assigned to different aspects of the view
-        val drawerLayout: DrawerLayout = binding.drawerLayout
-        val navView: NavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_content_home)
+        bottomNavigationView = findViewById(R.id.bottom_navigation_bar)
         mapButton = findViewById(R.id.mapButton)
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home, R.id.nav_history, R.id.nav_Contacts, R.id.nav_my_itineraries, R.id.nav_global_itineraries
-            ), drawerLayout
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        setupBottomNavigationBarLogic()
 
         //Detect when map button is pressed and follow intent to map
         mapButton.setOnClickListener{
@@ -90,18 +95,68 @@ class HomeActivity : AppCompatActivity() {
         fetchCurrentUserItineraries()
         fetchGlobalItineraries()
         fetchUserRate()
+        fetchItineraryMainImage()
+        fetchUserLikes()
     }
 
-    // get current user itineraries from firestore
+    /**
+     * Setup the logic of the fragment view change when we select an item on the navigation bar
+     */
+    fun setupBottomNavigationBarLogic() {
+        // Set default fragment view in the frame layout
+        supportFragmentManager.beginTransaction().replace(R.id.main_container, homeFragment)
+            .commit()
+        bottomNavigationView.selectedItemId = R.id.nav_home
+
+        bottomNavigationView.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item ->
+            var fragment: Fragment? = null
+            when (item.itemId) {
+                R.id.nav_home -> fragment = homeFragment
+                R.id.nav_map -> fragment = globalItinerariesFragment
+                R.id.nav_add -> fragment = addItineraryFragment
+                R.id.nav_rating -> fragment = contactsFragment
+                R.id.nav_profile -> fragment = currentUserItinerariesFragment
+            }
+            if (fragment == null) return@OnItemSelectedListener false
+            supportFragmentManager.beginTransaction().replace(R.id.main_container, fragment)
+                .commit()
+            true
+        })
+    }
+
+    /**
+     * Fetch the current user likes
+     */
     fun fetchCurrentUserItineraries() {
         // clear previous data to prevent bug
-        currentUserItineraryList.clear()
+        userLikeList.clear()
 
         db.collection("itineraries")
             .whereEqualTo("user_email", mAuth.currentUser!!.email)
             .get()
             .addOnSuccessListener { itineraries ->
                 storeFetchedItinerariesInList(currentUserItineraryList, itineraries)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("DEBUG", "Error getting documents.", exception)
+            }
+    }
+
+    // get current user itineraries from firestore
+    fun fetchUserLikes() {
+        // clear previous data to prevent bug
+        currentUserItineraryList.clear()
+
+        val collectionLikeRef = db.collection("user/${mAuth.uid}/itineraryLikes")
+        collectionLikeRef.get()
+            .addOnSuccessListener { likes ->
+                for (doc in likes) {
+                    try {
+                        userLikeList.add(doc.data.get("itinerary_id") as String)
+                    } catch (e: Exception) {
+                        Log.d("DEBUG", "Dublicate like itinerary in Firestore")
+                    }
+                }
             }
             .addOnFailureListener { exception ->
                 Log.w("DEBUG", "Error getting documents.", exception)
@@ -135,6 +190,33 @@ class HomeActivity : AppCompatActivity() {
             }
     }
 
+    /**
+     * Fetch the main image of an itinerary if existing
+     */
+    fun fetchItineraryMainImage() {
+        // clear previous data to prevent bug
+        mainImageItineraryMap.clear()
+
+        Log.d("DEBUG", "START")
+        val documentsRef = storageRef.root.child("images_itineraries")
+        documentsRef.listAll().addOnSuccessListener {
+            it.prefixes.forEach { prefix ->
+
+                prefix.listAll().addOnSuccessListener {
+                    it.items.forEach {item ->
+                        // Create temp image file
+                        val localfile = File.createTempFile("${prefix.name}_${item.name}", ".jpg")
+                        item.getFile(localfile).addOnSuccessListener {
+                            mainImageItineraryMap.put(prefix.name, localfile)
+                            Log.d("DEBUG", "Add main image in list : ${item.path}")
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     private fun storeFetchedItinerariesInList(list: ArrayList<Itinerary>, querySnapshot: QuerySnapshot) {
         for (itineraryDocument in querySnapshot) {
             // Assure that both variables are Double due to firestore issue
@@ -160,6 +242,9 @@ class HomeActivity : AppCompatActivity() {
                 rating.toFloat(),
                 numberOfRates.toInt()
             )
+
+            // try to get the main image of each itinerary
+            //fetchItineraryMainImage(itinerary)
 
             db.collection("itineraries/${itineraryDocument.id}/steps")
                 .get()

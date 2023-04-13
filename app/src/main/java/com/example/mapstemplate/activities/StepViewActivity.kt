@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
 import com.example.travelapp.itineraries.Step
@@ -22,10 +23,20 @@ class StepViewActivity : AppCompatActivity() {
 
         val itineraryIndex: Int = intent.getIntExtra("itinerary_index", 0)
         val stepIndex: Int = intent.getIntExtra("step_index", 0)
-        val step: Step = HomeActivity.currentUserItineraryList[itineraryIndex].steps[stepIndex]
+        val isGlobal: Boolean = intent.getBooleanExtra("is_global", true)
+
+        var step: Step
+        if (isGlobal)
+            step = HomeActivity.globalItineraryList[itineraryIndex].steps[stepIndex]
+        else
+            step = HomeActivity.currentUserItineraryList[itineraryIndex].steps[stepIndex]
 
         back_arrow = findViewById(R.id.back_arrow_display_step)
         deleteButton = findViewById(R.id.button_delete_step)
+
+        // Remove delete icone if it's a global itinerary
+        if (isGlobal)
+            deleteButton.isVisible = false
 
         val name = findViewById<TextView>(R.id.textView_title_step_display)
         name.text = step.name
@@ -59,8 +70,11 @@ class StepViewActivity : AppCompatActivity() {
                 finish()
             }
 
-            deleteButton.setOnClickListener {
-            warningDeletePopup()
+            // allow deletion if it's a user itinerary step
+            if (!isGlobal) {
+                deleteButton.setOnClickListener {
+                    warningDeletePopup()
+                }
             }
         }
 

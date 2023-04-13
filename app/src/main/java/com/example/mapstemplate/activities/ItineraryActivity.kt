@@ -68,8 +68,11 @@ class ItineraryActivity : AppCompatActivity() {
         deleteItineraryButton = findViewById(R.id.button_delete_itinerary)
 
         // hide add icon if is global
-        if (isGlobal)
+        if (isGlobal) {
             addButton.isVisible = false
+            deleteItineraryButton.isVisible = false
+        }
+
 
         textViewTitle.text = itinerary.name
 
@@ -87,6 +90,40 @@ class ItineraryActivity : AppCompatActivity() {
         ratingBar.setOnRatingBarChangeListener { ratingBar, rate, b ->
             updateRatingBar(rate)
         }
+    }
+
+    /**
+     * Store in firestore the information that the current user like the current itinerary.
+     * User like list is also updated.
+     */
+    private fun likeItinerary() {
+        val likeHashMap = hashMapOf(
+            "itinerary_id" to itinerary.id
+        )
+
+        val likeCollectionRef = db.collection("user/${mAuth.uid}/itineraryLikes")
+        likeCollectionRef.add(likeHashMap).addOnSuccessListener {
+            HomeActivity.userLikeList.add(itinerary.id)
+            Log.d("DEBUG", "Like : ${itinerary.id}")
+        }
+    }
+
+    /**
+     * Delete a like itinerary for the current user
+     * User like list is also updated.
+     */
+    private fun unlikeItinerary() {
+        val likeCollectionRef = db.collection("user/${mAuth.uid}/itineraryLikes")
+        likeCollectionRef.whereEqualTo("itinerary_id", itinerary.id)
+            .get()
+            .addOnSuccessListener {
+                for (doc in it) {
+                    doc.reference.delete().addOnSuccessListener {
+                        HomeActivity.userLikeList.removeIf { it.equals(itinerary.id) }
+                        Log.d("DEBUG", "Unlike : ${itinerary.id}")
+                    }
+                }
+            }
     }
 
     /**
@@ -150,16 +187,22 @@ class ItineraryActivity : AppCompatActivity() {
             val intent = Intent(this, StepViewActivity::class.java)
             intent.putExtra("itinerary_index", itineraryIndex)
             intent.putExtra("step_index", position)
+            intent.putExtra("is_global", isGlobal)
             startActivity(intent)
         }
     }
 
     fun setupButtons() {
+        // only add button and add functionality for the user itineraries
         if (!isGlobal) {
             addButton.setOnClickListener {
                 val intent = Intent(this, AddStepActivity::class.java)
                 intent.putExtra("itinerary_index", itineraryIndex)
                 startActivity(intent)
+            }
+
+            deleteItineraryButton.setOnClickListener {
+                warningDeletePopup()
             }
         }
 
@@ -171,10 +214,6 @@ class ItineraryActivity : AppCompatActivity() {
             val intent = Intent(this, ImagesItineraryVisualisationActivity::class.java)
             intent.putExtra("itinerary_name", itinerary.name)
             startActivity(intent)
-        }
-
-        deleteItineraryButton.setOnClickListener {
-            warningDeletePopup()
         }
     }
 

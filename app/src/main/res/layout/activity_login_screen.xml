@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#008FA0"
-    tools:context=".LoginScreen">
+    tools:context=".LoginScreen"
+    android:orientation="vertical"
+    >
 
     <TextView
         android:id="@+id/welcome_back"
@@ -20,27 +22,20 @@
         android:text="Let's start planning your trip safely together!"
         android:textColor="#FFFFFF"
         android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/rectangle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/rectangle"
-        android:layout_width="342dp"
-        android:layout_height="609dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/login_page_rectangle"
-        android:weightSum="6"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.77">
+        android:layout_weight="1"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="30dp"
+        >
 
         <View
             android:layout_width="match_parent"
@@ -146,4 +141,4 @@
             android:textSize="15sp" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
