@@ -134,13 +134,7 @@
                 android:elevation="10dp"
                 app:cardCornerRadius="20dp">
 
-                <ImageView
-                    android:id="@+id/roundedImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/redfish_lake" />
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView

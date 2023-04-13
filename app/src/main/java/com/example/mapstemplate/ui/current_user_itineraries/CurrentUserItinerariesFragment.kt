@@ -24,7 +24,7 @@ import com.example.mapstemplate.ui.home.HomeFragment
 import com.example.travelapp.adapters.ItineraryListAdapter
 import com.example.mapstemplate.LikesPage
 
-class CurrentUserItinerariesFragment : Fragment() {
+class  CurrentUserItinerariesFragment : Fragment() {
     private var _binding: FragmentCurrentUserItinerariesBinding? = null
     // private var _binding: NavBarHomeBinding? = null
     private val binding get() = _binding!!
