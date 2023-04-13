@@ -95,6 +95,7 @@ class ContactsFragment : Fragment() {
 
 
 
+
         contactsAdapter = ContactsAdapter(friendsList)
         contactsRecycler = root.findViewById(R.id.contactsRecycler)
         contactsRecycler.layoutManager = LinearLayoutManager(context)
