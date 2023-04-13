@@ -34,7 +34,7 @@ class ItineraryListAdapter(private val context: Context, dataArray: List<Itinera
             val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
             imageView.setImageBitmap(bitmap)
         }
-
+        imageView.clipToOutline = true
         return view
     }
 }

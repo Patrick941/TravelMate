@@ -18,8 +18,10 @@
         android:layout_width="141dp"
         android:layout_height="90dp"
         android:elevation="4dp"
+        android:background="@drawable/rectangle_7"
         android:src="@drawable/placeholder_image"
         android:layout_marginHorizontal="20dp"
+        android:scaleType="centerCrop"
         />
     <TextView
         android:id="@+id/textView_itinerary_title"
