@@ -74,6 +74,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val destination = LatLng(53.3494, -6.2606)
     //sample destination
 
+    private var intentedLatitude : Double = trinity.latitude
+    private var intentedLongitude : Double = trinity.longitude
+
     ///////////////////////////////////////////////////////////////////////////////////
     //Variable for Log.i messages
     private val thisName = "MapsActivity"
@@ -81,16 +84,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var LatLngsRed : ArrayList<LatLng>
     val tempHardCodedArray = Array(10) { Array(10) { LatLng(0.0, 0.0) } }
     private var counter : Int = 1
-    // Edited by Genevieve
-/////////////////////////////////////////////////////////////////
-// Retrofit instance configured with a base URL and a converter factory for JSON deserialisation
-//Makes instance for making API requests to the Google Maps APIs.
-    private fun createRetrofitInstance(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://maps.googleapis.com/maps/api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
+
+
 
     /////////////////////////////////////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,6 +94,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val intent = intent
+        // Check if the intent has extra data
+        if (intent.hasExtra("lat") && intent.hasExtra("lng")) {
+            // Retrieve the extra data from the intent
+            intentedLatitude = intent.getDoubleExtra("lat", 0.0)
+            intentedLongitude = intent.getDoubleExtra("lng", 0.0)
+            // Do something with the coordinates
+            Log.d("mapsTag", "Retrieved coordinates: $intentedLatitude and $intentedLongitude")
+        } else {
+            intentedLongitude = trinity.longitude
+            intentedLatitude = trinity.latitude
+        }
 
         searchResult = ArrayList()
         tileOverlays = ArrayList()
@@ -161,6 +169,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onResume(){
         super.onResume()
         Log.i("MyTag", "resuming $thisName")
+
+
     }
     override fun onStart(){
         super.onStart()
@@ -194,10 +204,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Marker is added to trinity college, camera is zoomed in and map click listener is created
+        // Marker is added to the intented location, camera is zoomed in and map click listener is created
+        val location = LatLng(intentedLatitude, intentedLongitude)
+        mMap.addMarker(MarkerOptions().position(location))
         val temp = CameraPosition.Builder()
-            .target(trinity)
-            .zoom(11f)
+            .target(location)
+            .zoom(18f)
             .build()
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
         /////////////////////////Call function
@@ -215,9 +227,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
+
     //Edited by Genevieve
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // defines a private function named getDirectionsAndDrawRoute,
+
+    private fun createRetrofitInstance(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://maps.googleapis.com/maps/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 //which takes two LatLng parameters representing the origin and destination points.
     private fun getDirectionsAndDrawRoute(destination: LatLng) {
         // Use the Google Maps API key from AndroidManifest.xml

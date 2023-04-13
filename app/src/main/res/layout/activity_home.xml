@@ -39,10 +39,9 @@
             android:id="@+id/mapButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Map"
-            android:backgroundTint="@color/PrimaryVariant"
             android:layout_marginHorizontal="5dp"
-            />
+            android:backgroundTint="@color/background"
+            android:text="Map" />
     </LinearLayout>
 
     <FrameLayout
