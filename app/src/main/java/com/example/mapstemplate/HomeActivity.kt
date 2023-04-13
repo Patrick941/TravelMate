@@ -11,38 +11,30 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.example.mapstemplate.databinding.ActivityHomeBinding
 import com.example.mapstemplate.itineraries.UserRate
 import com.example.mapstemplate.ui.add_itinerary.AddItineraryFragment
 import com.example.mapstemplate.ui.contacts.ContactsFragment
 import com.example.mapstemplate.ui.current_user_itineraries.CurrentUserItinerariesFragment
 import com.example.mapstemplate.ui.global_itineraries.GlobalItinerariesFragment
-import com.example.mapstemplate.ui.history.HistoryFragment
 import com.example.mapstemplate.ui.home.HomeFragment
 import com.example.travelapp.itineraries.Itinerary
 import com.example.travelapp.itineraries.Step
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageException
-import com.google.firebase.storage.StorageReference
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
-import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -77,6 +69,7 @@ class HomeActivity : AppCompatActivity() {
         val currentUserItineraryList = ArrayList<Itinerary>();
         val globalItineraryList = ArrayList<Itinerary>();
         val userRateList = ArrayList<UserRate>()
+        val mainImageItineraryMap = HashMap<String, File>()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +93,7 @@ class HomeActivity : AppCompatActivity() {
         fetchCurrentUserItineraries()
         fetchGlobalItineraries()
         fetchUserRate()
+        fetchItineraryMainImage()
     }
 
     /**
@@ -170,19 +164,27 @@ class HomeActivity : AppCompatActivity() {
             }
     }
 
-    fun fetchSpecificImage(storageRef: StorageReference) {
-        try {
-            //val aeaze = storageRef.name
-            Log.d("DEBUG", "FETCH")
-            //val localfile = File.createTempFile(storageRef.name, ".jpg")
-            //storageRef.getFile(localfile).addOnSuccessListener {
-                //Log.d("DEBUG", "FETCH ${storageRef.name}")
-//                imagesList.add(localfile)
-//                recyclerView.adapter?.notifyItemInserted(imagesList.size-1)
-            //}
-        } catch (e: StorageException) {
-            Log.d("DEBUG", "CATCH")
-            //e.printStackTrace()
+    /**
+     * Fetch the main image of an itinerary if existing
+     */
+    fun fetchItineraryMainImage() {
+        Log.d("DEBUG", "START")
+        val documentsRef = storageRef.root.child("images_itineraries")
+        documentsRef.listAll().addOnSuccessListener {
+            it.prefixes.forEach { prefix ->
+
+                prefix.listAll().addOnSuccessListener {
+                    it.items.forEach {item ->
+                        // Create temp image file
+                        val localfile = File.createTempFile("${prefix.name}_${item.name}", ".jpg")
+                        item.getFile(localfile).addOnSuccessListener {
+                            mainImageItineraryMap.put(prefix.name, localfile)
+                            Log.d("DEBUG", "Add main image in list : ${item.path}")
+                        }
+                    }
+                }
+
+            }
         }
     }
 
@@ -212,8 +214,8 @@ class HomeActivity : AppCompatActivity() {
                 numberOfRates.toInt()
             )
 
-            val imagesRef = storageRef.root.child("images_itineraries/${mAuth.currentUser!!.uid}/${itineraryDocument.id}/main_image")
-            fetchSpecificImage(imagesRef)
+            // try to get the main image of each itinerary
+            //fetchItineraryMainImage(itinerary)
 
             db.collection("itineraries/${itineraryDocument.id}/steps")
                 .get()

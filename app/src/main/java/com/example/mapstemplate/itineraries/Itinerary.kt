@@ -1,6 +1,13 @@
 package com.example.travelapp.itineraries
 
-class Itinerary(var name: String, var id: String, var rating: Float = 0f, var numberOfRate: Int = 0) : java.io.Serializable  {
+import java.io.File
+
+class Itinerary(
+    var name: String,
+    var id: String,
+    var rating: Float = 0f,
+    var numberOfRate: Int = 0
+    ) : java.io.Serializable  {
     val steps: ArrayList<Step> = ArrayList()
     val itineraryId: String = id
 
