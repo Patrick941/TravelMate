@@ -1,5 +1,6 @@
 package com.example.mapstemplate.ui.home
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
@@ -26,12 +27,17 @@ import java.net.HttpURLConnection
 import java.net.URL
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.Image
+import android.os.AsyncTask
+import android.widget.ImageView
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.MapsActivity
 import com.example.mapstemplate.profile
 import com.example.mapstemplate.LikesPage
-
+import okhttp3.*
+import java.io.IOException
 
 
 class HomeFragment : Fragment() {
@@ -44,6 +50,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var nearbyLocations : ArrayList<String>
     private lateinit var nearbyRatings : ArrayList<Number>
+    private lateinit var nearbyVicinity : ArrayList<String>
     private lateinit var nearbyImages : ArrayList<Image>
     private val trinity = LatLng(53.343792, -6.254572)
 
@@ -74,6 +81,8 @@ class HomeFragment : Fragment() {
         mDbRef = FirebaseDatabase.getInstance().getReference()
         mAuth = FirebaseAuth.getInstance()
 
+
+
         //sendNotification("testing")
 
         //declaration of view model variable and assignment to viewmodel
@@ -84,6 +93,7 @@ class HomeFragment : Fragment() {
         //set root variable to fragment view
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
 
         //nearbyLocations.add("Test string")
 
@@ -171,6 +181,8 @@ class HomeFragment : Fragment() {
 //        }
 //    }
 
+    private val imageArray = ArrayList<Bitmap>()
+
     private fun parseJson(jsonString: String) {
         val jsonObject = JSONObject(jsonString)
         val resultsArray: JSONArray = jsonObject.getJSONArray("results")
@@ -181,9 +193,60 @@ class HomeFragment : Fragment() {
             val rating = resultObject.getDouble("rating")
             val vicinity = resultObject.getString("vicinity")
 
+            if (resultObject.has("photos")) {
+                val photoArray = resultObject.getJSONArray("photos")
+
+                if (photoArray.length() > 0) {
+                    val photoObject = photoArray.getJSONObject(0)
+                    val photoReference = photoObject.getString("photo_reference")
+                    val photoWidth = 800 // the desired width of the photo
+                    val apiKey = "AIzaSyBn1QAii8KpmxExEE2WoN_89XMGhEhfx9Q"
+
+                    val photoRequestUrl = "https://maps.googleapis.com/maps/api/place/photo" +
+                            "?maxwidth=$photoWidth" +
+                            "&photoreference=$photoReference" +
+                            "&key=$apiKey"
+
+                    //@SuppressLint("StaticFieldLeak")
+                    object : AsyncTask<Void, Void, Bitmap?>() {
+                        override fun doInBackground(vararg params: Void?): Bitmap? {
+                            val httpClient = OkHttpClient()
+                            val request = Request.Builder().url(photoRequestUrl).build()
+
+                            try {
+                                val response = httpClient.newCall(request).execute()
+                                if (!response.isSuccessful) {
+                                    // handle unsuccessful response
+                                    return null
+                                }
+                                val responseBody = response.body()
+                                val photoBytes = responseBody?.bytes()
+                                responseBody?.close() // Close the response body to avoid resource leak
+                                if (photoBytes != null) {
+                                    return BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+                                }
+                            } catch (e: IOException) {
+                                // handle IO exception
+                            }
+
+                            return null
+                        }
+
+
+                        override fun onPostExecute(bitmap: Bitmap?) {
+                            if (bitmap != null) {
+                                // display the photo in an ImageView
+                                imageArray.add(bitmap)
+                            }
+                        }
+                    }.execute()
+                }
+            }
+
             Log.i("PlacesAPI", "====================================================")
             nearbyLocations.add(name)
             nearbyRatings.add(rating)
+            nearbyVicinity.add(vicinity)
             Log.i("PlacesAPI", "Name: $name")
             Log.i("PlacesAPI", "Rating: $rating")
             Log.i("PlacesAPI", "Vicinity: $vicinity")
@@ -191,7 +254,8 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun nearbyPlaces(cords: LatLng, radius: Number, type : String){
+
+    fun nearbyPlaces(cords: LatLng, radius: Number, type : String){
         var result = ""
 
         val SDK_INT = Build.VERSION.SDK_INT
