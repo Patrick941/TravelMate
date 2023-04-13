@@ -55,80 +55,88 @@
 
         </LinearLayout>
 
-        <HorizontalScrollView
-            android:id="@+id/xml_full_img_hor_below_view"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_image_step"
             android:layout_width="match_parent"
-            android:layout_height="310dp"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            android:orientation="horizontal" >
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="horizontal"
+            />
 
-            <LinearLayout
-                android:id="@+id/xml_full_img_linear_below_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+<!--        <HorizontalScrollView-->
+<!--            android:id="@+id/xml_full_img_hor_below_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="310dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:orientation="horizontal" >-->
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:elevation="20dp"
-                    app:cardCornerRadius="20dp">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/xml_full_img_linear_below_view"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:orientation="horizontal">-->
 
-                    <ImageView
-                        android:id="@+id/eiffel1"
-                        android:layout_width="300dp"
-                        android:layout_height="300dp"
-                        android:layout_gravity="center"
-                        android:foreground="@mipmap/eiffel1"/>
-                </androidx.cardview.widget.CardView>
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginLeft="8dp"-->
+<!--                    android:layout_marginTop="5dp"-->
+<!--                    android:layout_marginBottom="5dp"-->
+<!--                    android:elevation="20dp"-->
+<!--                    app:cardCornerRadius="20dp">-->
 
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:elevation="20dp"
-                    app:cardCornerRadius="20dp">
-
-                    <ImageView
-                        android:id="@+id/eiffel2"
-                        android:layout_width="300dp"
-                        android:layout_height="300dp"
-                        android:layout_gravity="center"
-                        android:foreground="@mipmap/eiffel2" />
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:elevation="10dp"
-                    app:cardCornerRadius="20dp">
-
-                    <ImageView
-                        android:id="@+id/eiffel3"
-                        android:layout_width="300dp"
-                        android:layout_height="300dp"
-                        android:layout_gravity="center"
-                        android:foreground="@mipmap/eiffel3" />
-                </androidx.cardview.widget.CardView>
+<!--                    <ImageView-->
+<!--                        android:id="@+id/eiffel1"-->
+<!--                        android:layout_width="300dp"-->
+<!--                        android:layout_height="300dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:foreground="@mipmap/eiffel1"/>-->
+<!--                </androidx.cardview.widget.CardView>-->
 
 
-            </LinearLayout>
-        </HorizontalScrollView>
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_margin="5dp"-->
+<!--                    android:elevation="20dp"-->
+<!--                    app:cardCornerRadius="20dp">-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/eiffel2"-->
+<!--                        android:layout_width="300dp"-->
+<!--                        android:layout_height="300dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:foreground="@mipmap/eiffel2" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:layout_marginTop="5dp"-->
+<!--                    android:layout_marginBottom="5dp"-->
+<!--                    android:elevation="10dp"-->
+<!--                    app:cardCornerRadius="20dp">-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/eiffel3"-->
+<!--                        android:layout_width="300dp"-->
+<!--                        android:layout_height="300dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:foreground="@mipmap/eiffel3" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+
+
+<!--            </LinearLayout>-->
+<!--        </HorizontalScrollView>-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_margin="20dp"
-            android:layout_weight="3"
+            android:layout_weight="1"
             >
             <TextView
                 android:id="@+id/main_name"

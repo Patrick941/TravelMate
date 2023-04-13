@@ -13,9 +13,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
+import com.example.mapstemplate.adapters.ImageRecyclerViewAdapter
 import com.example.travelapp.itineraries.Itinerary
 import com.example.travelapp.itineraries.Step
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -74,12 +76,16 @@ class StepViewActivity : AppCompatActivity() {
         back_arrow = findViewById(R.id.back_arrow_display_step)
         deleteButton = findViewById(R.id.button_delete_step)
         addImageButton = findViewById(R.id.button_add_step_image)
+        recyclerView = findViewById(R.id.recycler_view_image_step)
 
         // Remove delete icone if it's a global itinerary
         if (isGlobal) {
             deleteButton.isVisible = false
-            addImageButton.isVisible = false
         }
+
+        // setup recycler view
+        recyclerView.adapter = ImageRecyclerViewAdapter(imageList)
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Fetch images from firebase
         fetchStepImages()
@@ -122,9 +128,9 @@ class StepViewActivity : AppCompatActivity() {
             deleteButton.setOnClickListener {
                 warningDeletePopup()
             }
-
-            setupAddImageButton()
         }
+
+        setupAddImageButton()
     }
 
     fun fetchStepImages() {
