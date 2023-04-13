@@ -30,6 +30,12 @@ class AddFriend : AppCompatActivity() {
     private lateinit var friendsList : ArrayList<User>
     private lateinit var friendsNames : ArrayList<String>
 
+    private lateinit var contactsRecycler : RecyclerView
+    private lateinit var contactsAdapter : ContactsAdapter
+
+    private lateinit var actualFriends : ArrayList<User>
+    private lateinit var actualFriendsNames : ArrayList<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i("MyTag", "Program Created")
@@ -37,12 +43,11 @@ class AddFriend : AppCompatActivity() {
 
         friendsList = ArrayList()
         friendsNames = ArrayList()
+        actualFriendsNames = ArrayList()
+        actualFriends = ArrayList()
 
         addButton = findViewById(R.id.addButton)
         email = findViewById(R.id.editText)
-
-        private lateinit var contactsRecycler : RecyclerView
-        private lateinit var contactsAdapter : ContactsAdapter
 
         email.setOnFocusChangeListener { _, hasFocus ->
             addButton.visibility = if (hasFocus) Button.VISIBLE else Button.GONE
@@ -73,9 +78,9 @@ class AddFriend : AppCompatActivity() {
 
         })
 
-        contactsAdapter = ContactsAdapter(friendsNames)
-        contactsRecycler = root.findViewById(R.id.contactsRecycler)
-        contactsRecycler.layoutManager = LinearLayoutManager(context)
+        contactsAdapter = ContactsAdapter(actualFriendsNames)
+        contactsRecycler = findViewById(R.id.friendsRecycler)
+        contactsRecycler.layoutManager = LinearLayoutManager(this@AddFriend)
         contactsRecycler.adapter = contactsAdapter
 
         addButton.setOnClickListener{
