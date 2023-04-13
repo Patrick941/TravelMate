@@ -30,7 +30,6 @@ class ItineraryActivity : AppCompatActivity() {
     lateinit var stepListAdapter: StepListAdapter
     lateinit var ratingBar: RatingBar
 
-    lateinit var buttonImageActivity: Button
     lateinit var itinerary: Itinerary
     lateinit var deleteItineraryButton: ImageView
 
@@ -64,7 +63,6 @@ class ItineraryActivity : AppCompatActivity() {
         addButton = findViewById(R.id.button_add_step)
         backArrow = findViewById(R.id.back_arrow_itinerary_activity)
         ratingBar = findViewById(R.id.itinerary_rating_bar)
-        buttonImageActivity = findViewById(R.id.button_image_activity)
         deleteItineraryButton = findViewById(R.id.button_delete_itinerary)
 
         // hide add icon if is global
@@ -208,12 +206,6 @@ class ItineraryActivity : AppCompatActivity() {
 
         backArrow.setOnClickListener {
             finish()
-        }
-
-        buttonImageActivity.setOnClickListener {
-            val intent = Intent(this, ImagesItineraryVisualisationActivity::class.java)
-            intent.putExtra("itinerary_name", itinerary.name)
-            startActivity(intent)
         }
     }
 
