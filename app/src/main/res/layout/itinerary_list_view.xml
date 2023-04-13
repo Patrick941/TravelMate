@@ -8,13 +8,11 @@
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingVertical="10dp">
-    <View
-        android:id="@+id/rectangle_7"
+    <ImageView
+        android:id="@+id/imageView_photo"
         android:layout_width="141dp"
         android:layout_height="90dp"
-        android:background="@drawable/rectangle_7"
-        android:elevation="4dp"
-        />
+        android:elevation="4dp" />
     <TextView
         android:id="@+id/textView_itinerary_title"
         android:layout_width="wrap_content"
@@ -26,7 +24,6 @@
         android:text="Default element"
         android:textColor="@color/black"
         android:textSize="15sp" />
-
     <TextView
         android:id="@+id/textView_itinerary_price"
         android:layout_width="wrap_content"
@@ -34,5 +31,4 @@
         android:layout_margin="30dp"
         android:text="0 €"
         android:textSize="15sp" />
-
 </LinearLayout>
