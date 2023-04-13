@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
@@ -38,18 +39,21 @@ class AddItineraryFragment : Fragment() {
     private var uriImage: Uri? = null
 
     // Receiver
-    private val getResult =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                uriImage = it.data!!.data!!
-                imageView.setImageURI(uriImage)
-            }
-        }
+    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // setup the receiver
+        getResult =
+            registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ) {
+                if (it.resultCode == Activity.RESULT_OK && it.data != null) {
+                    uriImage = it.data!!.data!!
+                    imageView.setImageURI(uriImage)
+                }
+            }
     }
 
     override fun onCreateView(
@@ -85,6 +89,7 @@ class AddItineraryFragment : Fragment() {
             getResult.launch(intent)
         } catch (e: Exception) {
             Toast.makeText(context, "Problem to load storage images", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
         }
     }
 
