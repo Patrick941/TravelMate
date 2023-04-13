@@ -36,8 +36,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
+import com.google.firebase.storage.StorageReference
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -57,6 +62,9 @@ class HomeActivity : AppCompatActivity() {
 
     private val db = Firebase.firestore
     private lateinit var mAuth : FirebaseAuth
+    private val storage = FirebaseStorage.getInstance()
+    private val storageRef = storage.reference
+
 
     // Initialize fragments
     private val homeFragment: HomeFragment = HomeFragment()
@@ -162,6 +170,22 @@ class HomeActivity : AppCompatActivity() {
             }
     }
 
+    fun fetchSpecificImage(storageRef: StorageReference) {
+        try {
+            //val aeaze = storageRef.name
+            Log.d("DEBUG", "FETCH")
+            //val localfile = File.createTempFile(storageRef.name, ".jpg")
+            //storageRef.getFile(localfile).addOnSuccessListener {
+                //Log.d("DEBUG", "FETCH ${storageRef.name}")
+//                imagesList.add(localfile)
+//                recyclerView.adapter?.notifyItemInserted(imagesList.size-1)
+            //}
+        } catch (e: StorageException) {
+            Log.d("DEBUG", "CATCH")
+            //e.printStackTrace()
+        }
+    }
+
     private fun storeFetchedItinerariesInList(list: ArrayList<Itinerary>, querySnapshot: QuerySnapshot) {
         for (itineraryDocument in querySnapshot) {
             // Assure that both variables are Double due to firestore issue
@@ -187,6 +211,9 @@ class HomeActivity : AppCompatActivity() {
                 rating.toFloat(),
                 numberOfRates.toInt()
             )
+
+            val imagesRef = storageRef.root.child("images_itineraries/${mAuth.currentUser!!.uid}/${itineraryDocument.id}/main_image")
+            fetchSpecificImage(imagesRef)
 
             db.collection("itineraries/${itineraryDocument.id}/steps")
                 .get()
