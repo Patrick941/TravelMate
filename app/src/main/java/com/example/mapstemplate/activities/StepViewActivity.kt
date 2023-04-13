@@ -5,13 +5,13 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,9 +27,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.component1
 import java.io.File
-import java.io.IOException
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class StepViewActivity : AppCompatActivity() {
     private var isLiked = false
@@ -85,7 +84,6 @@ class StepViewActivity : AppCompatActivity() {
 
         // setup recycler view
         recyclerView.adapter = ImageRecyclerViewAdapter(imageList)
-        recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Fetch images from firebase
         fetchStepImages()
