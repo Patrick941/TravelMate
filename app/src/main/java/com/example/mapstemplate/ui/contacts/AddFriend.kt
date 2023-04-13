@@ -29,6 +29,7 @@ class AddFriend : AppCompatActivity() {
 
     private lateinit var friendsList : ArrayList<User>
     private lateinit var friendsNames : ArrayList<String>
+    private lateinit var friendsToPrint : ArrayList<String>
 
     private lateinit var contactsRecycler : RecyclerView
     private lateinit var contactsAdapter : ContactsAdapter
@@ -45,11 +46,12 @@ class AddFriend : AppCompatActivity() {
         friendsNames = ArrayList()
         actualFriendsNames = ArrayList()
         actualFriends = ArrayList()
+        friendsToPrint = ArrayList()
 
         addButton = findViewById(R.id.addButton)
         email = findViewById(R.id.editText)
 
-        val userId = mAuth.currentUser?.uid
+
 
         email.setOnFocusChangeListener { _, hasFocus ->
             addButton.visibility = if (hasFocus) Button.VISIBLE else Button.GONE
@@ -59,23 +61,63 @@ class AddFriend : AppCompatActivity() {
 
         mDbRef = FirebaseDatabase.getInstance().reference
 
-        mDbRef.child("user").child(userId!!).child("Friends").addListenerForSingleValueEvent(object : ValueEventListener {
+        val userId = mAuth.currentUser?.uid
+
+
+
+        mDbRef.child("user").addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                for (friendSnapshot in snapshot.children) {
-                    val friendEmail = friendSnapshot.getValue(String::class.java)
-                    friendsNames.add(friendEmail!!)
-                    Log.i("MyTag", "Adding friend with email $friendEmail to contacts")
+                for(postSnapshot in snapshot.children){
+                    val currentUser = postSnapshot.getValue(User::class.java)
+
+                    if(mAuth.currentUser?.uid == currentUser?.uid) {
+                        currentUser?.nick = "you"
+                    }
+                    friendsList.add(currentUser!!)
+                    currentUser.nick?.let { friendsNames.add(it) }
+                    Log.i("MyTag", "Adding user with email ${currentUser.email} to contacts")
                 }
-                contactsAdapter.notifyDataSetChanged() // Notify the adapter that the data has changed
+                // Move the second query here, inside the onDataChange callback of the first query
+                mDbRef.child("user").child(userId!!).child("Friends").addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (friendSnapshot in snapshot.children) {
+                            val friendEmail = friendSnapshot.getValue(String::class.java)
+                            actualFriendsNames.add(friendEmail!!)
+                            Log.i("MyTag", "Adding friend with email $friendEmail to contacts")
+
+                            // Check if the email is in the friends list
+                            for (friend in friendsList) {
+                                Log.i("MyTag", "Testing for ${friend.nick}")
+                                if (friend.email == friendEmail) {
+                                    // Add the friend's nickname to a new array
+                                    actualFriends.add(friend)
+                                    Log.i("MyTag", "Adding friend with nickname ${friend.nick} to actualFriends")
+                                    break
+                                }
+                            }
+                        }
+                        contactsAdapter.notifyDataSetChanged() // Notify the adapter that the data has changed
+                        for (friend in actualFriends) {
+                            friendsToPrint.add(friend.nick!!)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w("MyTag", "Failed to read value.", error.toException())
+                    }
+                })
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.w("MyTag", "Failed to read value.", error.toException())
+
             }
+
         })
 
 
-        contactsAdapter = ContactsAdapter(actualFriendsNames)
+
+
+        contactsAdapter = ContactsAdapter(friendsToPrint)
         contactsRecycler = findViewById(R.id.friendsRecycler)
         contactsRecycler.layoutManager = LinearLayoutManager(this@AddFriend)
         contactsRecycler.adapter = contactsAdapter
