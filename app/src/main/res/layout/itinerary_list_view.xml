@@ -7,12 +7,15 @@
     android:background="@drawable/rectangle_8"
     android:gravity="center"
     android:orientation="horizontal"
-    android:paddingVertical="10dp">
+    android:paddingVertical="10dp"
+    >
     <ImageView
         android:id="@+id/imageView_photo"
         android:layout_width="141dp"
         android:layout_height="90dp"
-        android:elevation="4dp" />
+        android:elevation="4dp"
+        android:src="@drawable/placeholder_image"
+        />
     <TextView
         android:id="@+id/textView_itinerary_title"
         android:layout_width="wrap_content"

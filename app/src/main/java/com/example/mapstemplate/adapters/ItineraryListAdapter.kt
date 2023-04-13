@@ -1,6 +1,8 @@
 package com.example.travelapp.adapters
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +11,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.mapstemplate.R
 import com.example.travelapp.itineraries.Itinerary
-import com.bumptech.glide.Glide
+import com.example.mapstemplate.HomeActivity
 import com.google.firebase.storage.FirebaseStorage
+import java.io.File
 
 class ItineraryListAdapter(private val context: Context, dataArray: List<Itinerary>) : ArrayAdapter<Itinerary>(context,
     R.layout.itinerary_list_view, dataArray) {
@@ -26,14 +29,10 @@ class ItineraryListAdapter(private val context: Context, dataArray: List<Itinera
         title.text = itinerary!!.name
         price.text = "${itinerary.calculateItineraryPrice()} €"
 
-        val storageReference = FirebaseStorage.getInstance().getReference("images_itineraries/itinerary id/main_image")
-
-        storageReference.downloadUrl.addOnSuccessListener { uri ->
-            Glide.with(context)
-                .load(uri)
-                .into(imageView)
-        }.addOnFailureListener {
-            // Handle any errors
+        if (HomeActivity.mainImageItineraryMap.containsKey(itinerary.itineraryId)) {
+            val localfile: File = HomeActivity.mainImageItineraryMap.get(itinerary.itineraryId)!!
+            val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
+            imageView.setImageBitmap(bitmap)
         }
 
         return view
