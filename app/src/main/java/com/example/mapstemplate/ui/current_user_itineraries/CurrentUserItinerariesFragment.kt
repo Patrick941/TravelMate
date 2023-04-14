@@ -55,6 +55,8 @@ class  CurrentUserItinerariesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        amountOfFriends = 0
+
         _binding = FragmentCurrentUserItinerariesBinding.inflate(inflater, container, false)
         // _binding = NavBarHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root

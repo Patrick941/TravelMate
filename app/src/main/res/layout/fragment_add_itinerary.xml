@@ -52,16 +52,17 @@
             android:src="@drawable/placeholder_image"
             android:layout_marginHorizontal="20dp"
             android:elevation="3dp"
+
             />
 
         <Button
             android:id="@+id/button_add_itinerary_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search image"
+            android:text="Upload image"
             android:layout_marginHorizontal="30dp"
             android:layout_marginVertical="5dp"
-            android:backgroundTint="@color/PrimaryVariant"
+            android:backgroundTint="@color/Button"
             android:textColor="@color/white"
             />
 
