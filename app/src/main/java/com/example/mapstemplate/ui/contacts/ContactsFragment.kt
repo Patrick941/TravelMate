@@ -154,14 +154,17 @@ class ContactsFragment : Fragment() {
     }
 
     private fun getRatings(){
-        val userId = mAuth.currentUser?.uid
-        val itineraryId = "HOtae1v88r3kFRmAwxQ4"
+        for (itinerary in itineraryList) {
+            val userId = mAuth.currentUser?.uid
+            val itineraryId = itinerary.id
 
 
 
-        getItineraryRating(userId!!, itineraryId) { receivedRating ->
-            // Do something with the received rating
-            Log.i("ItineraryRating", "Received itinerary rating: $receivedRating")
+            getItineraryRating(userId!!, itineraryId) { receivedRating ->
+                // Do something with the received rating
+                Log.i("ItineraryRating", "Received itinerary rating: $receivedRating")
+                likedItineraries.add(itinerary)
+            }
         }
     }
 
