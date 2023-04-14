@@ -3,26 +3,20 @@ package com.example.mapstemplate.ui.current_user_itineraries
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.support.v4.app.*
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.support.v4.app.*
-import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.ListView
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.fragment.app.Fragment
 import com.example.mapstemplate.HomeActivity
-import com.example.mapstemplate.MapsActivity
 import com.example.mapstemplate.R
-import com.example.mapstemplate.activities.AddItineraryActivity
 import com.example.mapstemplate.activities.ItineraryActivity
 import com.example.mapstemplate.databinding.FragmentCurrentUserItinerariesBinding
-import com.example.mapstemplate.profile
-import com.example.mapstemplate.databinding.NavBarHomeBinding
-import com.example.mapstemplate.ui.home.HomeFragment
+import com.example.mapstemplate.ui.contacts.AddFriend
 import com.example.travelapp.adapters.ItineraryListAdapter
-import com.example.mapstemplate.LikesPage
+
 
 class  CurrentUserItinerariesFragment : Fragment() {
     private var _binding: FragmentCurrentUserItinerariesBinding? = null
@@ -47,6 +41,26 @@ class  CurrentUserItinerariesFragment : Fragment() {
         // createButton = root.findViewById(R.id.createButton)
 
         listViewItinerary = root.findViewById(R.id.list_item)
+
+        //val view = inflater.inflate(R.layout.fragment_current_user_itineraries, container, false)
+        val view = binding.root
+
+        val followingText = binding.followingLabel
+        val followingCount = binding.followingCount
+
+
+        followingText.setOnClickListener {
+            Log.i("ProfileTag", "Followers Clicked")
+            val intent = Intent(context, AddFriend::class.java)
+            startActivity(intent)
+        }
+
+        followingCount.setOnClickListener {
+            Log.i("ProfileTag", "Followers Clicked")
+            val intent = Intent(context, AddFriend::class.java)
+            startActivity(intent)
+        }
+
 
         // setupButtons()
 //        setupNewButtons()

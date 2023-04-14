@@ -56,13 +56,18 @@
             android:layout_weight="1"/>
 
         <TextView
+            android:id="@+id/followingCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="20"
             android:textSize="17dp"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/button_background" />
+
 
     </LinearLayout>
 
@@ -86,11 +91,15 @@
             android:layout_weight="1"/>
 
         <TextView
+            android:id="@+id/followingLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Following"
             android:textColor="@color/black"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/button_background"/>
 
     </LinearLayout>
 
@@ -112,6 +121,7 @@
         android:divider="@null"
         android:dividerHeight="0dp"
         />
+</LinearLayout>
 
 <!--    <LinearLayout
         android:id="@+id/createButton"
@@ -129,7 +139,7 @@
             />-->
 
 
-    </LinearLayout>
+
 
 <!--
 <?xml version="1.0" encoding="utf-8"?>
