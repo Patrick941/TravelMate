@@ -22,7 +22,10 @@ class ProfileItineraries : AppCompatActivity() {
     lateinit var listViewItinerary: ListView
     lateinit var itineraryListAdapter: ItineraryListAdapter
 
-    val itineraryList: ArrayList<Itinerary> = ArrayList()
+    private val itineraryList: ArrayList<Itinerary> = ArrayList()
+
+    lateinit var friend: User
+    private val filteredItineraries = ArrayList<Itinerary>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +38,7 @@ class ProfileItineraries : AppCompatActivity() {
         val friendJson = intent.getStringExtra("friend")
         if (friendJson != null) {
             try {
-                val friend = Gson().fromJson<User>(friendJson, User::class.java)
+                friend = Gson().fromJson<User>(friendJson, User::class.java)
                 val titleTextView = findViewById<TextView>(R.id.title)
                 titleTextView.text = friend.nick
             } catch (e: Exception) {
@@ -81,7 +84,9 @@ class ProfileItineraries : AppCompatActivity() {
     private fun logItineraryEmails() {
         val db = FirebaseFirestore.getInstance()
 
-        Log.i("ProfileItineraries", "Beggining logging")
+
+
+        Log.i("ProfileItineraries", "Beginning logging for ${friend.email}")
         for (itinerary in itineraryList) {
             Log.i("ProfileItineraries", "Checking new itinerary")
             db.collection("itineraries")
@@ -91,6 +96,11 @@ class ProfileItineraries : AppCompatActivity() {
                     if (document != null) {
                         val userEmail = document.getString("user_email") ?: "No email found"
                         Log.i("ProfileItineraries", "Itinerary ID: ${itinerary.itineraryId}, User Email: $userEmail")
+
+                        if (userEmail == friend.email) {
+                            filteredItineraries.add(itinerary)
+                            Log.i("ProfileItineraries", "Added itinerary to the list as emails match")
+                        }
                     } else {
                         Log.i("ProfileItineraries", "No such document for Itinerary ID: ${itinerary.itineraryId}")
                     }
@@ -98,12 +108,13 @@ class ProfileItineraries : AppCompatActivity() {
                 .addOnFailureListener { exception ->
                     Log.i("ProfileItineraries", "Error getting documents.", exception)
                 }
+        setupItineraryListView()
         }
     }
 
 
     fun setupItineraryListView() {
-        itineraryListAdapter = ItineraryListAdapter(this@ProfileItineraries, itineraryList) { position ->
+        itineraryListAdapter = ItineraryListAdapter(this@ProfileItineraries, filteredItineraries) { position ->
             val intent = Intent(this@ProfileItineraries, ItineraryActivity::class.java)
             intent.putExtra("itinerary_index", position)
             intent.putExtra("is_global", true)
