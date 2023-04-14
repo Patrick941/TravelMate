@@ -256,6 +256,7 @@ class HomeFragment : Fragment() {
                     // Add the Bitmap to the imageArray
                     Log.i("PlacesAPI", "Was able to add image")
                     this@HomeFragment.nearbyImages.add(bitmap)
+                    recommendationsAdapter.notifyDataSetChanged()
                 }
             }
         }.execute()
