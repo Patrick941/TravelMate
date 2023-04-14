@@ -28,9 +28,9 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/profile_picture"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/profiler"
         android:layout_gravity="center"/>
 
     <LinearLayout
@@ -98,8 +98,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="My Itineraries"
-        android:textSize="20dp"
+        android:textSize="25dp"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="30dp"
         android:textColor="@color/black"
         android:textStyle="bold"/>
@@ -108,6 +109,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:divider="@null"
+        android:dividerHeight="0dp"
         />
 
 <!--    <LinearLayout
