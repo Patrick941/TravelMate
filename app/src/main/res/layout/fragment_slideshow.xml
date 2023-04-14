@@ -8,6 +8,17 @@
     android:orientation="vertical">
 
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="For You"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
     <ListView
         android:id="@+id/likedItineraries"
         android:layout_width="match_parent"
@@ -15,6 +26,17 @@
         android:layout_weight="1"
         android:divider="@null"
         android:dividerHeight="0dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Liked"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/followingItineraries"
@@ -24,5 +46,6 @@
         android:divider="@null"
         android:dividerHeight="0dp"
         />
+
 
 </LinearLayout>
