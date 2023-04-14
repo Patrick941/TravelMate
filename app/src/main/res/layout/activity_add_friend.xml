@@ -38,8 +38,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:radius="16dp"
         app:cardBackgroundColor="@color/TextBox"
+        app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,15 +62,14 @@
         android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@color/Button"
+        android:background="@drawable/rounded_button_background"
         android:text="Add"
-        android:radius="8dp"
         android:textColor="@android:color/white"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/editTextCard"
         app:layout_constraintEnd_toEndOf="@id/editTextCard"
-        app:layout_constraintTop_toBottomOf="@id/editTextCard"/>
+        app:layout_constraintHorizontal_bias="0.899"
+        app:layout_constraintStart_toStartOf="@id/editTextCard"
+        app:layout_constraintTop_toBottomOf="@id/editTextCard" />
 
     <TextView
         android:id="@+id/textView2"
