@@ -33,7 +33,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Liked"
+        android:text="Your Favourites"
         android:textColor="@color/black"
         android:textSize="20dp"
         android:textStyle="bold" />
