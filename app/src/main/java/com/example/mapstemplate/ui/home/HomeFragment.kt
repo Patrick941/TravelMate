@@ -127,7 +127,7 @@ class HomeFragment : Fragment() {
         //Attach variable to correct textView
         val locationView: TextView = binding.BasedOnLocation
         homeViewModel.text.observe(viewLifecycleOwner) {
-            locationView.text = "Recommended based on location"
+            locationView.text = "Restaurants near you"
         }
 
         //Attach variable to correct textView
