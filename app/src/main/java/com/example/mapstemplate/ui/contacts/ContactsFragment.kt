@@ -69,11 +69,13 @@ class ContactsFragment : Fragment() {
 
         getFriends()
 
+        getRatings()
+        val userId = mAuth.currentUser?.uid
 
         setupItineraryListView()
         setupItineraryListViewFollowing()
 
-        val userId = mAuth.currentUser?.uid
+
 
         val searchButton = root.findViewById<Button>(R.id.btnSearch)
         val inputField = root.findViewById<EditText>(R.id.itineraryName)
@@ -150,6 +152,43 @@ class ContactsFragment : Fragment() {
         }*/
         return root
     }
+
+    private fun getRatings(){
+        val userId = mAuth.currentUser?.uid
+        val itineraryId = "HOtae1v88r3kFRmAwxQ4"
+
+
+
+        getItineraryRating(userId!!, itineraryId) { receivedRating ->
+            // Do something with the received rating
+            Log.i("ItineraryRating", "Received itinerary rating: $receivedRating")
+        }
+    }
+
+    private fun getItineraryRating(userId: String, itineraryId: String, onRatingRetrieved: (Double) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("user")
+            .document(userId)
+            .collection("itineraryRates")
+            .document(itineraryId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val rating = documentSnapshot.getDouble("rate")
+                    if (rating != null) {
+                        onRatingRetrieved(rating)
+                    } else {
+                        Log.e("ItineraryRating", "Rating is null for itinerary $itineraryId")
+                    }
+                } else {
+                    Log.e("ItineraryRating", "No document found for itinerary $itineraryId")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("ItineraryRating", "Failed to get itinerary rating for itinerary $itineraryId", exception)
+            }
+    }
+
 
     fun setupItineraryListView() {
         itineraryListAdapter = ItineraryListAdapter(requireContext(), filteredItineraries) { position ->
