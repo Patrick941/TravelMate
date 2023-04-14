@@ -15,6 +15,7 @@ import com.example.travelapp.itineraries.Itinerary
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.atomic.AtomicInteger
 
 
 class ProfileItineraries : AppCompatActivity() {
@@ -84,9 +85,8 @@ class ProfileItineraries : AppCompatActivity() {
     private fun logItineraryEmails() {
         val db = FirebaseFirestore.getInstance()
 
-
-
         Log.i("ProfileItineraries", "Beginning logging for ${friend.email}")
+        val pendingRequests = AtomicInteger(itineraryList.size)
         for (itinerary in itineraryList) {
             Log.i("ProfileItineraries", "Checking new itinerary")
             db.collection("itineraries")
@@ -104,13 +104,21 @@ class ProfileItineraries : AppCompatActivity() {
                     } else {
                         Log.i("ProfileItineraries", "No such document for Itinerary ID: ${itinerary.itineraryId}")
                     }
+
+                    if (pendingRequests.decrementAndGet() == 0) {
+                        setupItineraryListView()
+                    }
                 }
                 .addOnFailureListener { exception ->
                     Log.i("ProfileItineraries", "Error getting documents.", exception)
+
+                    if (pendingRequests.decrementAndGet() == 0) {
+                        setupItineraryListView()
+                    }
                 }
-        setupItineraryListView()
         }
     }
+
 
 
     fun setupItineraryListView() {
