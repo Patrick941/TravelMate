@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +37,7 @@ class StepViewActivity : AppCompatActivity() {
     lateinit var deleteButton: ImageView
     lateinit var addImageButton: FloatingActionButton
     lateinit var recyclerView: RecyclerView
+    lateinit var linearLayoutPlaceHolder: LinearLayout
 
     private val storage = FirebaseStorage.getInstance()
     private val storageRef = storage.reference
@@ -76,11 +78,15 @@ class StepViewActivity : AppCompatActivity() {
         deleteButton = findViewById(R.id.button_delete_step)
         addImageButton = findViewById(R.id.button_add_step_image)
         recyclerView = findViewById(R.id.recycler_view_image_step)
+        linearLayoutPlaceHolder = findViewById(R.id.placeholder_step_image_layout)
 
         // Remove delete icone if it's a global itinerary
         if (isGlobal) {
             deleteButton.isVisible = false
         }
+
+        // Recycler view not visible until ther is item in it
+        recyclerView.isVisible = false
 
         // setup recycler view
         recyclerView.adapter = ImageRecyclerViewAdapter(imageList)
@@ -153,6 +159,12 @@ class StepViewActivity : AppCompatActivity() {
                 imageList.add(localfile)
                 recyclerView.adapter?.notifyItemInserted(imageList.size-1)
                 Log.d("DEBUG", "Fetch step image : ${imageRef.name}")
+
+                // Change visibility if recycler view not visible
+                if (!recyclerView.isVisible) {
+                    recyclerView.isVisible = true
+                    linearLayoutPlaceHolder.isVisible = false
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -169,11 +181,7 @@ class StepViewActivity : AppCompatActivity() {
         imageRef.putFile(uri)
             .addOnSuccessListener{
                 Toast.makeText(this, "Upload successful :)", Toast.LENGTH_SHORT).show()
-                val localfile = File.createTempFile(it.storage.name, ".jpg")
-                it.storage.getFile(localfile).addOnSuccessListener {
-                    imageList.add(localfile)
-                    recyclerView.adapter?.notifyItemInserted(imageList.size-1)
-                }
+                fetchSpecificImage(it.storage)
             }
             .addOnFailureListener{
                 Toast.makeText(this, "Upload failed...", Toast.LENGTH_SHORT).show()
