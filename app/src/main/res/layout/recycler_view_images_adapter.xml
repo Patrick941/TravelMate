@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/image_recycle_view"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="300dp"
         android:layout_height="300dp"
+        android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/step_placeholder_image"
-        />
+        app:cardCornerRadius="10dp"
+        >
+
+        <ImageView
+            android:id="@+id/image_recycle_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rectangle_7"
+            android:src="@drawable/step_placeholder_image"
+            android:elevation="4dp"
+            />
+
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
