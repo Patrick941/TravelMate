@@ -63,17 +63,19 @@ class GlobalItinerariesFragment : Fragment() {
     }
 
     fun setupItineraryListView() {
-        itineraryListAdapter = ItineraryListAdapter(requireContext(), itineraryList)
-        listViewItinerary.isClickable = true
-        listViewItinerary.adapter = itineraryListAdapter
-
-        listViewItinerary.setOnItemClickListener { parent, view, position, id ->
+        itineraryListAdapter = ItineraryListAdapter(requireContext(), itineraryList) { position ->
             val intent = Intent(context, ItineraryActivity::class.java)
             intent.putExtra("itinerary_index", position)
             intent.putExtra("is_global", true)
             startActivity(intent)
         }
+
+        listViewItinerary.isClickable = true
+        listViewItinerary.adapter = itineraryListAdapter
     }
+
+
+
 
     override fun onResume() {
         super.onResume()

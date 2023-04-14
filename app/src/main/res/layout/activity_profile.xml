@@ -38,7 +38,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/profile_picture"
+        android:src="@drawable/profile_picture"
         android:layout_gravity="center"/>
 
     <LinearLayout
@@ -134,13 +134,7 @@
                 android:elevation="10dp"
                 app:cardCornerRadius="20dp">
 
-                <ImageView
-                    android:id="@+id/roundedImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/redfish_lake" />
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
