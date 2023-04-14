@@ -30,9 +30,11 @@ class ContactsFragment : Fragment() {
     lateinit var itineraryListAdapterFollowing: ItineraryListAdapter
 
     val itineraryList: ArrayList<Itinerary> = ArrayList()
-    val filteredItineraries : ArrayList<Itinerary> = ArrayList()
 
-    lateinit var friend : User
+    private val likedItineraries : ArrayList<Itinerary> = ArrayList()
+    private val filteredItineraries : ArrayList<Itinerary> = ArrayList()
+
+    //lateinit var friend : User
 
     private lateinit var mDbRef: DatabaseReference
     private lateinit var mAuth : FirebaseAuth
@@ -60,7 +62,7 @@ class ContactsFragment : Fragment() {
 
         mDbRef = FirebaseDatabase.getInstance().reference
 
-        itineraryList.addAll(HomeActivity.globalItineraryList)
+
 
         listViewItinerary = root.findViewById(R.id.likedItineraries)
         listViewItineraryFollowing = root.findViewById(R.id.followingItineraries)
@@ -79,6 +81,7 @@ class ContactsFragment : Fragment() {
 
         mDbRef.child("user").addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                itineraryList.addAll(HomeActivity.globalItineraryList)
                 for(postSnapshot in snapshot.children){
                     val currentUser = postSnapshot.getValue(User::class.java)
 
@@ -104,13 +107,15 @@ class ContactsFragment : Fragment() {
                                 if (friend.email == friendEmail) {
                                     // Add the friend's nickname to a new array
                                     actualFriends.add(friend)
+                                    //logItineraryEmails(friend)
                                     Log.i("MyTag", "Adding friend with nickname ${friend.nick} to actualFriends")
                                     break
                                 }
                             }
                         }
                         //contactsAdapter.notifyDataSetChanged() // Notify the adapter that the data has changed
-
+                        Log.i("MyTag", "Testing the order in which things are executed")
+                        getFriends()
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -147,7 +152,7 @@ class ContactsFragment : Fragment() {
     }
 
     fun setupItineraryListView() {
-        itineraryListAdapter = ItineraryListAdapter(requireContext(), itineraryList) { position ->
+        itineraryListAdapter = ItineraryListAdapter(requireContext(), filteredItineraries) { position ->
             val intent = Intent(context, ItineraryActivity::class.java)
             intent.putExtra("itinerary_index", position)
             intent.putExtra("is_global", true)
@@ -159,7 +164,7 @@ class ContactsFragment : Fragment() {
     }
 
     fun setupItineraryListViewFollowing() {
-        itineraryListAdapterFollowing = ItineraryListAdapter(requireContext(), filteredItineraries) { position ->
+        itineraryListAdapterFollowing = ItineraryListAdapter(requireContext(), likedItineraries) { position ->
             val intent = Intent(context, ItineraryActivity::class.java)
             intent.putExtra("itinerary_index", position)
             intent.putExtra("is_global", true)
@@ -171,13 +176,18 @@ class ContactsFragment : Fragment() {
     }
 
     private fun getFriends(){
-
+        for (friend in actualFriends) {
+            Log.i("MyTag", "Testing for ${friend.nick}")
+            logItineraryEmails(friend)
+        }
     }
 
 
 
-    private fun logItineraryEmails() {
+    private fun logItineraryEmails(friend : User) {
         val db = FirebaseFirestore.getInstance()
+
+        //filteredItineraries.clear()
 
         Log.i("ProfileItineraries", "Beginning logging for ${friend.email}")
         val pendingRequests = AtomicInteger(itineraryList.size)
@@ -192,7 +202,10 @@ class ContactsFragment : Fragment() {
                         Log.i("ProfileItineraries", "Itinerary ID: ${itinerary.itineraryId}, User Email: $userEmail")
 
                         if (userEmail == friend.email) {
-                            //filteredItineraries.add(itinerary)
+                            if (!filteredItineraries.contains(itinerary)) {
+                                filteredItineraries.add(itinerary)
+                            }
+
                             Log.i("ProfileItineraries", "Added itinerary to the list as emails match")
                         }
                     } else {
@@ -211,6 +224,8 @@ class ContactsFragment : Fragment() {
                     }
                 }
         }
+        itineraryListAdapterFollowing.notifyDataSetChanged()
+        itineraryListAdapter.notifyDataSetChanged()
     }
 
 
