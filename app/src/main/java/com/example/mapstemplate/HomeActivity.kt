@@ -1,6 +1,8 @@
 package com.example.mapstemplate
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode

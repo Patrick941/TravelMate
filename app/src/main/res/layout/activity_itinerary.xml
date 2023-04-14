@@ -83,18 +83,11 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button_image_activity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="IMAGE ACTIVITY"
-        />
-
     <ListView
         android:id="@+id/listView_steps"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="20dp"
+        android:layout_marginHorizontal="5dp"
         android:layout_weight="1" />
 
 </LinearLayout>
