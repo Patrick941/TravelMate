@@ -16,7 +16,13 @@
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:buttonStyle">@style/CustomRadioButtonStyle</item>
     </style>
+
+    <style name="CustomRadioButtonStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:buttonTint">@color/Button</item>
+    </style>
+
 
 
     <style name="Theme.MapsTemplate.NoActionBar">

@@ -206,14 +206,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Marker is added to the intented location, camera is zoomed in and map click listener is created
         val location = LatLng(intentedLatitude, intentedLongitude)
-        mMap.addMarker(MarkerOptions().position(location))
-        val temp = CameraPosition.Builder()
-            .target(location)
-            .zoom(18f)
-            .build()
-        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
+        if(location != trinity) {
+            mMap.addMarker(MarkerOptions().position(location))
+        }
+        if(location != trinity) {
+            val temp = CameraPosition.Builder()
+                .target(location)
+                .zoom(18f)
+                .build()
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
+        } else {
+            val temp = CameraPosition.Builder()
+                .target(location)
+                .zoom(12f)
+                .build()
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
+        }
         /////////////////////////Call function
-        getDirectionsAndDrawRoute(destination)
+        //getDirectionsAndDrawRoute(destination)
         /////////////////////////////////////////
         mMap.setOnMapClickListener {
             //val pointsList
@@ -367,13 +377,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.title.toString()) {
-            "Settings" -> {
+            "Tip Calculator" -> {
                 // Handle settings click here
-                val intent = Intent(this, MapSettings::class.java)
+                val intent = Intent(this, TipCalculator::class.java)
                 startActivity(intent)
                 true
             }
-            "MapsThemes" -> {
+            "Maps Themes" -> {
                 // Handle settings click here
                 val intent = Intent(this, MapsThemes::class.java)
                 startActivity(intent)

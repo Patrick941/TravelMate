@@ -66,42 +66,50 @@
             android:checkedButton="@id/option_America"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="@id/service_question"
-            app:layout_constraintTop_toBottomOf="@id/service_question">
+            app:layout_constraintTop_toBottomOf="@id/service_question"
+            android:theme="@style/CustomRadioButtonStyle">
 
             <RadioButton
                 android:id="@+id/option_America"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/America" />
+                android:text="@string/America"
+                tools:ignore="TextSizeCheck" />
 
             <RadioButton
                 android:id="@+id/option_Germany"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Germany" />
+                android:text="@string/Germany"
+                tools:ignore="TextSizeCheck" />
 
             <RadioButton
                 android:id="@+id/option_Spain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Spain" />
+                android:text="@string/Spain"
+                tools:ignore="TextSizeCheck" />
 
             <RadioButton
                 android:id="@+id/option_Italy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Italy" />
+                android:text="@string/Italy"
+                tools:ignore="TextSizeCheck" />
 
             <RadioButton
                 android:id="@+id/option_Holland"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Holland" />
+                android:text="@string/Holland"
+                tools:ignore="TextSizeCheck" />
+
             <RadioButton
                 android:id="@+id/option_Iceland"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Iceland" />
+                android:text="@string/Iceland"
+                tools:ignore="TextSizeCheck" />
 
         </RadioGroup>
 
@@ -121,9 +129,11 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="@string/round_up_tip"
+            android:theme="@style/CustomRadioButtonStyle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tip_options"
-            app:layout_constraintTop_toBottomOf="@id/tip_options" />
+            app:layout_constraintTop_toBottomOf="@id/tip_options"
+            tools:ignore="TextSizeCheck" />
 
         <Button
             android:id="@+id/calculate_button"
