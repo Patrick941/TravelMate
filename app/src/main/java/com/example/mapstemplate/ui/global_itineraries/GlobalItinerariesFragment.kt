@@ -31,6 +31,7 @@ class GlobalItinerariesFragment : Fragment() {
         _binding = FragmentGlobalItinerariesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        itineraryList.clear()
         itineraryList.addAll(HomeActivity.globalItineraryList)
 
         listViewItinerary = root.findViewById(R.id.global_itineraries_list_item)
