@@ -2,6 +2,7 @@ package com.example.mapstemplate.ui.contacts
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +10,15 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.mapstemplate.HomeActivity
 import com.example.mapstemplate.R
+import com.example.mapstemplate.User
 import com.example.mapstemplate.activities.ItineraryActivity
 import com.example.mapstemplate.databinding.FragmentSlideshowBinding
 import com.example.travelapp.adapters.ItineraryListAdapter
 import com.example.travelapp.itineraries.Itinerary
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.atomic.AtomicInteger
 
 class ContactsFragment : Fragment() {
     private var _binding: FragmentSlideshowBinding? = null
@@ -24,6 +30,18 @@ class ContactsFragment : Fragment() {
     lateinit var itineraryListAdapterFollowing: ItineraryListAdapter
 
     val itineraryList: ArrayList<Itinerary> = ArrayList()
+    val filteredItineraries : ArrayList<Itinerary> = ArrayList()
+
+    lateinit var friend : User
+
+    private lateinit var mDbRef: DatabaseReference
+    private lateinit var mAuth : FirebaseAuth
+
+    private lateinit var actualFriends : ArrayList<User>
+    private lateinit var actualFriendsNames : ArrayList<String>
+    private lateinit var friendsList : ArrayList<User>
+    private lateinit var friendsNames : ArrayList<String>
+    private lateinit var friendsToPrint : ArrayList<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,17 +50,80 @@ class ContactsFragment : Fragment() {
         _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        friendsList = ArrayList()
+        friendsNames = ArrayList()
+        actualFriendsNames = ArrayList()
+        actualFriends = ArrayList()
+        friendsToPrint = ArrayList()
+
+        mAuth = FirebaseAuth.getInstance()
+
+        mDbRef = FirebaseDatabase.getInstance().reference
+
         itineraryList.addAll(HomeActivity.globalItineraryList)
 
         listViewItinerary = root.findViewById(R.id.likedItineraries)
         listViewItineraryFollowing = root.findViewById(R.id.followingItineraries)
 
+        getFriends()
+
+
         setupItineraryListView()
         setupItineraryListViewFollowing()
+
+        val userId = mAuth.currentUser?.uid
 
         val searchButton = root.findViewById<Button>(R.id.btnSearch)
         val inputField = root.findViewById<EditText>(R.id.itineraryName)
         var enteredSearch = ""
+
+        mDbRef.child("user").addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(postSnapshot in snapshot.children){
+                    val currentUser = postSnapshot.getValue(User::class.java)
+
+                    if(mAuth.currentUser?.uid == currentUser?.uid) {
+                        currentUser?.nick = "you"
+                    }
+                    friendsList.add(currentUser!!)
+                    currentUser.nick?.let { friendsNames.add(it) }
+                    Log.i("MyTag", "Adding user with email ${currentUser.email} to contacts")
+                }
+                // Move the second query here, inside the onDataChange callback of the first query
+                mDbRef.child("user").child(userId!!).child("Friends").addListenerForSingleValueEvent(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (friendSnapshot in snapshot.children) {
+                            val friendEmail = friendSnapshot.getValue(String::class.java)
+                            actualFriendsNames.add(friendEmail!!)
+                            Log.i("MyTag", "Adding friend with email $friendEmail to contacts")
+
+                            // Check if the email is in the friends list
+                            for (friend in friendsList) {
+                                Log.i("MyTag", "Testing for ${friend.nick}")
+                                if (friend.email == friendEmail) {
+                                    // Add the friend's nickname to a new array
+                                    actualFriends.add(friend)
+                                    Log.i("MyTag", "Adding friend with nickname ${friend.nick} to actualFriends")
+                                    break
+                                }
+                            }
+                        }
+                        //contactsAdapter.notifyDataSetChanged() // Notify the adapter that the data has changed
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w("MyTag", "Failed to read value.", error.toException())
+                    }
+                })
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
 
         /*searchButton.setOnClickListener {
             val newItineraryList = ArrayList<Itinerary>()
@@ -78,7 +159,7 @@ class ContactsFragment : Fragment() {
     }
 
     fun setupItineraryListViewFollowing() {
-        itineraryListAdapterFollowing = ItineraryListAdapter(requireContext(), itineraryList) { position ->
+        itineraryListAdapterFollowing = ItineraryListAdapter(requireContext(), filteredItineraries) { position ->
             val intent = Intent(context, ItineraryActivity::class.java)
             intent.putExtra("itinerary_index", position)
             intent.putExtra("is_global", true)
@@ -86,8 +167,53 @@ class ContactsFragment : Fragment() {
         }
 
         listViewItineraryFollowing.isClickable = true
-        listViewItineraryFollowing.adapter = itineraryListAdapter
+        listViewItineraryFollowing.adapter = itineraryListAdapterFollowing
     }
+
+    private fun getFriends(){
+
+    }
+
+
+
+    private fun logItineraryEmails() {
+        val db = FirebaseFirestore.getInstance()
+
+        Log.i("ProfileItineraries", "Beginning logging for ${friend.email}")
+        val pendingRequests = AtomicInteger(itineraryList.size)
+        for (itinerary in itineraryList) {
+            Log.i("ProfileItineraries", "Checking new itinerary")
+            db.collection("itineraries")
+                .document(itinerary.itineraryId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val userEmail = document.getString("user_email") ?: "No email found"
+                        Log.i("ProfileItineraries", "Itinerary ID: ${itinerary.itineraryId}, User Email: $userEmail")
+
+                        if (userEmail == friend.email) {
+                            //filteredItineraries.add(itinerary)
+                            Log.i("ProfileItineraries", "Added itinerary to the list as emails match")
+                        }
+                    } else {
+                        Log.i("ProfileItineraries", "No such document for Itinerary ID: ${itinerary.itineraryId}")
+                    }
+
+                    if (pendingRequests.decrementAndGet() == 0) {
+                        setupItineraryListView()
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.i("ProfileItineraries", "Error getting documents.", exception)
+
+                    if (pendingRequests.decrementAndGet() == 0) {
+                        setupItineraryListView()
+                    }
+                }
+        }
+    }
+
+
 
 
 
