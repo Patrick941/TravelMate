@@ -7,6 +7,7 @@ import android.os.StrictMode
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -19,6 +20,7 @@ class SearchResults : AppCompatActivity() {
     private lateinit var resultsAdapter : ResultsAdapter
 
     private lateinit var results : ArrayList<String>
+    private lateinit var resultCordinates : ArrayList<LatLng>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +28,7 @@ class SearchResults : AppCompatActivity() {
         setContentView(R.layout.activity_search_results)
 
         results = ArrayList()
+        resultCordinates = ArrayList()
 
         results.clear()
 
@@ -37,7 +40,7 @@ class SearchResults : AppCompatActivity() {
             searchPlace(message)
         }
 
-        resultsAdapter = ResultsAdapter(results)
+        resultsAdapter = ResultsAdapter(results, resultCordinates)
         resultsRecycler = findViewById(R.id.resultsRecycler)
         resultsRecycler.layoutManager = LinearLayoutManager(this)
         resultsRecycler.adapter = resultsAdapter
@@ -83,10 +86,16 @@ class SearchResults : AppCompatActivity() {
         for (i in 0 until resultsArray.length()) {
             val resultObject = resultsArray.getJSONObject(i)
             val name = resultObject.getString("name")
+            val lat = resultObject.getJSONObject("geometry").getJSONObject("location").getDouble("lat")
+            val lng = resultObject.getJSONObject("geometry").getJSONObject("location").getDouble("lng")
+
 
             Log.i("PlacesAPI", "====================================================")
             Log.i("PlacesAPI", "Name: $name")
+            Log.i("PlacesAPI", "Latitude: $lat")
+            Log.i("PlacesAPI", "Longitude: $lng")
             results.add(name)
+            resultCordinates.add(LatLng(lat,lng))
         }
     }
 }

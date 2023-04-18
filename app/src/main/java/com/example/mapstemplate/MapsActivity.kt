@@ -94,7 +94,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mediumSafetyAreas : ArrayList<Polygon>
     private lateinit var lowSafetyAreas : ArrayList<Polygon>
     /////////////////////////////////////////////////////////////////////////////
-    private val trinity = LatLng(53.343792, -6.254572)
+    private val trinity = LatLng(53.343492, -6.250272)
     private val destination = LatLng(53.3494, -6.2606)
     //sample destination
 
@@ -108,6 +108,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var LatLngsRed : ArrayList<LatLng>
     val tempHardCodedArray = Array(10) { Array(10) { LatLng(0.0, 0.0) } }
     private var counter : Int = 1
+
+    private lateinit var mode : Number
 
 
 
@@ -127,6 +129,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             intentedLongitude = intent.getDoubleExtra("lng", 0.0)
             // Do something with the coordinates
             Log.d("mapsTag", "Retrieved coordinates: $intentedLatitude and $intentedLongitude")
+
         } else {
             intentedLongitude = trinity.longitude
             intentedLatitude = trinity.latitude
@@ -149,7 +152,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         searchButton = findViewById(R.id.my_button)
         searchContent = findViewById(R.id.searchText)
-        locateButton = findViewById(R.id.locateButton)
+        //locateButton = findViewById(R.id.locateButton)
 
         searchButton.setOnClickListener{
             val searchData : String = searchContent.text.toString()
@@ -161,16 +164,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         // locationtestbutton
-        locateButton.setOnClickListener {
+        //locateButton.setOnClickListener {
             //checkPermission(Context.LOCATION_SERVICE)
             //usedLocationClient.getLastLocation(LocationManager.GPS_PROVIDER)
-            println("Click")
+            //println("Click")
             // seems to hit click and the never do the rest?
             // okay above is just a declaration, have to call it here
             // currently getting no permission
             //getLastKnownLocation()
-            getLocation()
-        }
+            //getLocation()
+        //}
 
         object {
             private val MAP_TYPE_KEY = "map_type"
@@ -211,7 +214,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onResume()
         Log.i("MyTag", "resuming $thisName")
 
-        getLocation()
+
     }
     override fun onStart(){
         super.onStart()
@@ -240,6 +243,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
 
+    //val trinity = LatLng(53.343793, -6.254571)
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Temporary changes made to help understanding of manipulating the camera
     override fun onMapReady(googleMap: GoogleMap) {
@@ -252,6 +257,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val location = LatLng(intentedLatitude, intentedLongitude)
         if(location != trinity) {
             mMap.addMarker(MarkerOptions().position(location))
+            getLocationWithoutCam()
+        } else {
+            getLocation()
         }
         if(location != trinity) {
             val temp = CameraPosition.Builder()
@@ -266,6 +274,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .build()
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
         }
+
+        mode = if (intent.hasExtra("mode")){
+            1;
+        } else {
+            0
+        }
+        if(mode == 1){
+            Log.i("MyTag", "ATTEMPTING TO DRAW LINE AS MODE WAS SET TO BE HIGH!!!")
+            drawPath()
+        }
         /////////////////////////Call function
         //getDirectionsAndDrawRoute(destination)
         /////////////////////////////////////////
@@ -278,14 +296,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             // heatmapDemo()
         }
         // Add markers for Trinity College and the General Post Office to the map
-        val trinityMarker = mMap.addMarker(MarkerOptions().position(trinityCollege).title("Trinity College"))
-        val gpoMarker = mMap.addMarker(MarkerOptions().position(generalPostOffice).title("General Post Office"))
+        //val trinityMarker = mMap.addMarker(MarkerOptions().position(trinityCollege).title("Trinity College"))
+        //val gpoMarker = mMap.addMarker(MarkerOptions().position(generalPostOffice).title("General Post Office"))
 
         // Define a variable to hold the Polyline object
         var polyline: Polyline? = null
 
         // Set a click listener for the markers
-        mMap.setOnMarkerClickListener { marker ->
+        /*mMap.setOnMarkerClickListener { marker ->
             if (marker == trinityMarker || marker == gpoMarker) {
                 // Get directions between Trinity College and the General Post Office
                 getDirections(trinityCollege, generalPostOffice) { encodedPath ->
@@ -308,9 +326,35 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             false
-        }
+        }*/
         // Move the camera to Trinity College and set the zoom level
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(trinityCollege, 15f))
+    }
+
+    private fun drawPath() {
+        var polyline: Polyline? = null
+        getLocationWithoutCam()
+        val locationToUse = currentLocation
+        mMap.addMarker(MarkerOptions().position(locationToUse).title("Your Location"))
+        mMap.addMarker(MarkerOptions().position(LatLng(intentedLatitude, intentedLongitude)).title("Destination"))
+        getDirections(locationToUse, LatLng(intentedLatitude, intentedLongitude)) { encodedPath ->
+            if (encodedPath != null) {
+                // Draw the Polyline if it doesn't exist, or remove it if it does
+                if (polyline == null) {
+                    polyline = drawPolyline(mMap, encodedPath)
+                } else {
+                    polyline?.remove()
+                    polyline = null
+                }
+                // Calculate distance and update TextView
+                val distance = SphericalUtil.computeDistanceBetween(locationToUse, LatLng(intentedLatitude, intentedLongitude))
+                val distanceTextView: TextView = findViewById(R.id.distanceText)
+                distanceTextView.text = "Distance: ${String.format("%.2f", distance / 1000)} km"
+            } else {
+                // Show an error message if there was an error getting directions
+                Toast.makeText(this, "Error fetching directions", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun locationPermission(): Boolean{
@@ -374,6 +418,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
     }
 
+    private lateinit var currentLocation : LatLng
+
     @SuppressLint("MissingPermission")
     private fun getLocation(){
         // initialising just in case
@@ -392,10 +438,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     val lon = it.longitude
                     print(lon)
                     println(lat)
-                    val currentLocation = LatLng(lat, lon)
+                    currentLocation = LatLng(lat, lon)
                     val temp = CameraPosition.Builder()
                         .target(currentLocation)
-                        .zoom(5f)
+                        .zoom(18f)
                         .build()
                     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
                 }
@@ -403,6 +449,32 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
     }
+    @SuppressLint("MissingPermission")
+    private fun getLocationWithoutCam() {
+        if (locationPermission()) {
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                object : CancellationToken() {
+                    override fun onCanceledRequested(listener: OnTokenCanceledListener) = CancellationTokenSource().token
+
+                    override fun isCancellationRequested() = false
+                }).addOnSuccessListener {
+                if (it == null)
+                    Toast.makeText(this, "Cannot get location.", Toast.LENGTH_SHORT).show()
+                else {
+                    val lat = it.latitude
+                    val lon = it.longitude
+                    print(lon)
+                    println(lat)
+                    currentLocation = LatLng(lat, lon)
+                }
+            }
+        }
+        currentLocation = trinity
+        // Return a default location if currentLocation is null
+        return
+    }
+
 
     //@SuppressLint("MissingPermission")
     //private fun newLocation(){
