@@ -24,6 +24,21 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.LatLng
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+//import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.location.LocationManager
+import android.location.LocationRequest
+import androidx.constraintlayout.motion.widget.Debug.getLocation
+import androidx.core.app.ActivityCompat
+import androidx.core.location.LocationManagerCompat.requestLocationUpdates
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
 ////////////////////////////////////
 import java.io.IOException
 import com.google.maps.android.PolyUtil
@@ -53,6 +68,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     //Map variables
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+
+    private lateinit var locateButton: Button
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     //Polygon Variables
     private lateinit var  polygon : Polygon
@@ -131,6 +149,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         searchButton = findViewById(R.id.my_button)
         searchContent = findViewById(R.id.searchText)
+        locateButton = findViewById(R.id.locateButton)
 
         searchButton.setOnClickListener{
             val searchData : String = searchContent.text.toString()
@@ -138,6 +157,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val intent = Intent(this, SearchResults::class.java)
             intent.putExtra("searchText", searchData)
             startActivity(intent)
+        }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        // locationtestbutton
+        locateButton.setOnClickListener {
+            //checkPermission(Context.LOCATION_SERVICE)
+            //usedLocationClient.getLastLocation(LocationManager.GPS_PROVIDER)
+            println("Click")
+            // seems to hit click and the never do the rest?
+            // okay above is just a declaration, have to call it here
+            // currently getting no permission
+            //getLastKnownLocation()
+            getLocation()
         }
 
         object {
@@ -179,7 +211,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onResume()
         Log.i("MyTag", "resuming $thisName")
 
-
+        getLocation()
     }
     override fun onStart(){
         super.onStart()
@@ -281,7 +313,111 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(trinityCollege, 15f))
     }
 
-// private function to get directions
+    private fun locationPermission(): Boolean{
+        // checks if Coarse or Fine are allowed
+        if (
+            ActivityCompat.checkSelfPermission(
+                this,
+                ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION),
+                1)
+            // then checking if got permission from request
+            if (
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                return false
+            }
+        }
+        return true;
+
+    }
+
+    // ideally this would be used if we had confidence that recent
+    // location data is good enough, need to check how to do that
+    // also getlocation also seems to use a short cache
+    // probably fine to remove this tbh
+    @SuppressLint("MissingPermission") // it gets checked in another function
+    private fun getLastKnownLocation() {
+        if (!locationPermission()) {
+            print("not granted")
+            return
+        }
+
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener {
+                if (it != null) {
+                    // use your location object
+                    // get latitude , longitude and other info from this
+                    //curLoc = LatLng(location.latitude, location.longitude)
+                    println(it.longitude)
+                } else {
+                    println("null")
+                }
+
+            }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLocation(){
+        // initialising just in case
+        if (locationPermission()) {
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                object : CancellationToken(){
+                    override fun onCanceledRequested(listener: OnTokenCanceledListener) = CancellationTokenSource().token
+
+                    override fun isCancellationRequested() = false
+                }).addOnSuccessListener {
+                if (it == null)
+                    Toast.makeText(this, "Cannot get location.", Toast.LENGTH_SHORT).show()
+                else {
+                    val lat = it.latitude
+                    val lon = it.longitude
+                    print(lon)
+                    println(lat)
+                    val currentLocation = LatLng(lat, lon)
+                    val temp = CameraPosition.Builder()
+                        .target(currentLocation)
+                        .zoom(5f)
+                        .build()
+                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
+                }
+            }
+        }
+
+    }
+
+    //@SuppressLint("MissingPermission")
+    //private fun newLocation(){
+    //if (!locationPermission()) return;
+    //val currentLocation: LatLng = getLocation()
+    //val temp = CameraPosition.Builder()
+    //.target(currentLocation)
+    //.zoom(5f)
+    //.build()
+    //mMap.moveCamera(CameraUpdateFactory.newCameraPosition(temp))
+    //}
+
+
+
+    // private function to get directions
 private fun getDirections(origin: LatLng, destination: LatLng, onResult: (String?) -> Unit) {
     val apiKey = "AIzaSyAFNpCw7wcRqIB73JwgO7w7KcSF2M3dsF4"
     val url = "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=$apiKey"
