@@ -83,6 +83,7 @@ class ContactsFragment : Fragment() {
 
         mDbRef.child("user").addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                itineraryList.clear()
                 itineraryList.addAll(HomeActivity.globalItineraryList)
                 for(postSnapshot in snapshot.children){
                     val currentUser = postSnapshot.getValue(User::class.java)
@@ -154,6 +155,7 @@ class ContactsFragment : Fragment() {
     }
 
     private fun getRatings(){
+        likedItineraries.clear()
         for (itinerary in itineraryList) {
             val userId = mAuth.currentUser?.uid
             val itineraryId = itinerary.id
