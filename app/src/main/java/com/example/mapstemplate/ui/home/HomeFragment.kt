@@ -238,7 +238,7 @@ class HomeFragment : Fragment() {
                         // handle unsuccessful response
                         return null
                     }
-                    val responseBody = response.body()
+                    val responseBody = response.body
                     val photoBytes = responseBody?.bytes()
                     responseBody?.close() // Close the response body to avoid resource leak
                     if (photoBytes != null) {

@@ -39,8 +39,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+//import retrofit2.Retrofit
+//import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
 import java.net.URL
 //
@@ -307,7 +307,7 @@ private fun getDirections(origin: LatLng, destination: LatLng, onResult: (String
             response.use {
                 if (!response.isSuccessful) {
                     // Log error if the response is not successful and call the onResult callback with null
-                    Log.e("Error", "Error getting directions: ${response.code()}")
+                    Log.e("Error", "Error getting directions: ${response.code}")
                     runOnUiThread {
                         onResult(null)
                     }
