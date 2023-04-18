@@ -1,5 +1,6 @@
 package com.example.mapstemplate
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -23,7 +24,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.LatLng
+////////////////////////////////////
+import java.io.IOException
 import com.google.maps.android.PolyUtil
+import com.google.android.gms.maps.model.PolylineOptions
+import okhttp3.*
+import com.google.maps.android.SphericalUtil
+///////////////////////////////////
 import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.HeatmapTileProvider
 import kotlinx.coroutines.CoroutineScope
@@ -39,8 +46,7 @@ import java.net.URL
 //
 import kotlin.random.Random
 //imports
-import com.example.mapstemplate.DirectionsApiResponse
-import com.example.mapstemplate.DirectionsApiService
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -56,7 +62,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var searchButton : Button
     private lateinit var testButton : Button
     private lateinit var searchContent : TextView
-
+    private lateinit var distanceTextView: TextView
     //Search results
     private lateinit var searchResult : ArrayList<String>
 
@@ -159,6 +165,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         LatLngs = ArrayList()
         LatLngsRed = ArrayList()
+
+
+
     }
 
     //logging messages
@@ -203,6 +212,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     //Temporary changes made to help understanding of manipulating the camera
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        // Define the coordinates of Trinity College and the General Post Office
+        val trinityCollege = LatLng(53.343793, -6.254571)
+        val generalPostOffice = LatLng(53.349805, -6.26031)
 
         // Marker is added to the intented location, camera is zoomed in and map click listener is created
         val location = LatLng(intentedLatitude, intentedLongitude)
@@ -233,102 +245,153 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             // searchPlace("Restaurant")
             // heatmapDemo()
         }
-    }
+        // Add markers for Trinity College and the General Post Office to the map
+        val trinityMarker = mMap.addMarker(MarkerOptions().position(trinityCollege).title("Trinity College"))
+        val gpoMarker = mMap.addMarker(MarkerOptions().position(generalPostOffice).title("General Post Office"))
 
+        // Define a variable to hold the Polyline object
+        var polyline: Polyline? = null
 
-
-
-    //Edited by Genevieve
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// defines a private function named getDirectionsAndDrawRoute,
-
-    private fun createRetrofitInstance(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://maps.googleapis.com/maps/api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-//which takes two LatLng parameters representing the origin and destination points.
-    private fun getDirectionsAndDrawRoute(destination: LatLng) {
-        // Use the Google Maps API key from AndroidManifest.xml
-        mMap.addMarker(MarkerOptions().position(trinity))
-        mMap.addMarker(MarkerOptions().position(destination))
-//changed api key
-        val apiKey = "AIzaSyAFNpCw7wcRqIB73JwgO7w7KcSF2M3dsF4"
-//string representation of the origin coordinates, formatted as latitude,longitude
-        val originString = "${trinity.latitude},${trinity.longitude}"
-        //For destination
-        val destinationString = "${destination.latitude},${destination.longitude}"
-// calls the previously defined createRetrofitInstance()
-//function to create a Retrofit instance for making API requests.
-        val retrofit = createRetrofitInstance()
-        val directionsApiService = retrofit.create(DirectionsApiService::class.java)
-//launches a coroutine on the Dispatchers.IO dispatcher to perform the network request asynchronously.
-        CoroutineScope(Dispatchers.IO).launch {
-            //This starts a try block to catch any exceptions that may occur during the network request
-            try {
-                //makes the API request to get the directions between the origin and destination points
-                //using the DirectionsApiService instance.
-                val response = directionsApiService.getDirections(originString, destinationString, apiKey)
-                //Correct
-                //https://maps.googleapis.com/maps/api/directions/json?origin=53.343792,-6.254572&destination=53.344999,-6.259663&key=AIzaSyAFNpCw7wcRqIB73JwgO7w7KcSF2M3dsF4
-
-
-                Log.i("MyTag", response.toString())
-                Log.i("MyTag", "Source string was $originString")
-                Log.i("MyTag", "Destination string was $destinationString")
-                //checks if the API request was successful
-                if (response.isSuccessful) {
-                    val directions = response.body()
-                    if (directions != null) {
-                        // Use the first route from the response
-                        val route = directions.routes.firstOrNull()
-                        //checks if a valid route is available
-                        if (route != null) {
-                            val polyline = route.legs.firstOrNull()?.steps?.map { it.polyline.points }?.joinToString(separator = "")
-                            Log.i("MyTag", "PolyLine string was: $polyline")
-                            // checks if there is a valid polyline string
-                            if (polyline != null) {
-                                withContext(Dispatchers.Main) {
-                                    drawPolyline(polyline)
-                                }
-                            }
+        // Set a click listener for the markers
+        mMap.setOnMarkerClickListener { marker ->
+            if (marker == trinityMarker || marker == gpoMarker) {
+                // Get directions between Trinity College and the General Post Office
+                getDirections(trinityCollege, generalPostOffice) { encodedPath ->
+                    if (encodedPath != null) {
+                        // Draw the Polyline if it doesn't exist, or remove it if it does
+                        if (polyline == null) {
+                            polyline = drawPolyline(mMap, encodedPath)
+                        } else {
+                            polyline?.remove()
+                            polyline = null
                         }
-                    }
-                    //else block that will execute if the API request was not successful.
-                } else {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            this@MapsActivity,
-                            "Error getting directions: ${response.message()}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        // Calculate distance and update TextView
+                        val distance = SphericalUtil.computeDistanceBetween(trinityCollege, generalPostOffice)
+                        val distanceTextView: TextView = findViewById(R.id.distanceText)
+                        distanceTextView.text = "Distance: ${String.format("%.2f", distance / 1000)} km"
+                    } else {
+                        // Show an error message if there was an error getting directions
+                        Toast.makeText(this, "Error fetching directions", Toast.LENGTH_SHORT).show()
                     }
                 }
-                //catch block to handle any exceptions that may occur during the network request
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    //displays a toast message with the exception message
-                    Toast.makeText(this@MapsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                    //Finish
-                }
+            }
+            false
+        }
+        // Move the camera to Trinity College and set the zoom level
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(trinityCollege, 15f))
+    }
+
+// private function to get directions
+private fun getDirections(origin: LatLng, destination: LatLng, onResult: (String?) -> Unit) {
+    val apiKey = "AIzaSyAFNpCw7wcRqIB73JwgO7w7KcSF2M3dsF4"
+    val url = "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=$apiKey"
+    // Create an OkHttpClient instance to make the API call
+    val client = OkHttpClient()
+    // Create a new HTTP request with the above URL
+    val request = Request.Builder()
+        .url(url)
+        .build()
+
+    // Enqueue the request to be executed asynchronously
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            // Log error if the request fails and call the onResult callback with null
+            Log.e("Error", "Error getting directions: ${e.localizedMessage}")
+            runOnUiThread {
+                onResult(null)
             }
         }
 
+        override fun onResponse(call: Call, response: Response) {
+            // Process the response if it is successful
+            response.use {
+                if (!response.isSuccessful) {
+                    // Log error if the response is not successful and call the onResult callback with null
+                    Log.e("Error", "Error getting directions: ${response.code}")
+                    runOnUiThread {
+                        onResult(null)
+                    }
+                    return
+                }
 
-        //Problems for future Patrick, remove this demo data
+                // Parse the JSON response to get the encoded path of the polyline
+                val jsonData = response.body?.string()
+                val jsonObject = JSONObject(jsonData)
+                val routes = jsonObject.getJSONArray("routes")
+                if (routes.length() > 0) {
+                    val route = routes.getJSONObject(0)
+                    val polyline = route.getJSONObject("overview_polyline")
+                    val points = polyline.getString("points")
 
-        //mMap.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
+                    // Call the onResult callback with the encoded path
+                    runOnUiThread {
+                        onResult(points)
+                    }
+                } else {
+                    // Call the onResult callback with null if no routes are found
+                    runOnUiThread {
+                        onResult(null)
+                    }
+                }
+            }
+        }
+    })
+}
+
+    // Decode an encoded polyline string and return a list of LatLng objects representing the decode path
+    private fun decodePoly(encoded: String): List<LatLng> {
+        val poly = ArrayList<LatLng>()
+        var index = 0
+        val len = encoded.length
+        var lat = 0
+        var lng = 0
+
+        // Loop through the encoded string and decode the polyline
+        while (index < len) {
+            var b: Int
+            var shift = 0
+            var result = 0
+            // Decode the latitude value from the polyline string
+            do {
+                b = encoded[index++].toInt() - 63
+                result = result or (b and 0x1f shl shift)
+                shift += 5
+            } while (b >= 0x20)
+            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            lat += dlat
+
+            shift = 0
+            result = 0
+            // Decode the longitude value from the polyline string
+            do {
+                b = encoded[index++].toInt() - 63
+                result = result or (b and 0x1f shl shift)
+                shift += 5
+            } while (b >= 0x20)
+            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            lng += dlng
+
+            val latLng = LatLng(
+                lat.toDouble() / 1E5,
+                lng.toDouble() / 1E5
+            )
+            poly.add(latLng)
+        }
+
+        return poly
     }
-    private fun drawPolyline(polylineString: String) {
-        val polylinePoints = PolyUtil.decode(polylineString)
-        Log.i("MyTag", "Decoded String is $polylinePoints")
-        val polylineOptions = PolylineOptions()
-            .addAll(polylinePoints)
-            .color(Color.BLUE)
-            .width(10f)
 
-        mMap.addPolyline(polylineOptions)
+    //Draws a Polyline on the given GoogleMap using the provided encoded path and Return it
+    private fun drawPolyline(googleMap: GoogleMap, encodedPath: String): Polyline {
+        val latLngPath = decodePoly(encodedPath)
+
+        return googleMap.addPolyline(
+            PolylineOptions()
+                .addAll(latLngPath)
+                    //colour blue
+                .color(Color.BLUE)
+                .width(10f)
+        )
     }
 
 
