@@ -225,18 +225,8 @@ class HomeActivity : AppCompatActivity() {
             var rating: Double
             var numberOfRates: Double
 
-            val tmpRating = itineraryDocument.data.getOrDefault("rating", 0.0)
-            val tmpNumberOfRates = itineraryDocument.data.getOrDefault("number_of_rates", 0.0)
-
-            if (tmpRating is Long)
-                rating = tmpRating.toDouble()
-            else
-                rating = tmpRating as Double
-
-            if (tmpNumberOfRates is Long)
-                numberOfRates = tmpNumberOfRates.toDouble()
-            else
-                numberOfRates = tmpNumberOfRates as Double
+            rating = 0.0
+            numberOfRates = 0.0
 
             val itinerary = Itinerary(
                 itineraryDocument.data.get("title") as String,
